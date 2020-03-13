@@ -1,29 +1,19 @@
-# README #
+# Team Members
 
-This README would normally document whatever steps are necessary to get your application up and running.
+* Bogdan Cristina
+* Bratu Andrei
+* Breje Mihai
+* Catargiu Ecaterina
+* Caterenciuc Corina
+* Căpușan Cristian
 
-### What is this repository for? ###
+# Timeline
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+The timeline will be updated as we go along
 
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+* [x] Organize team
+* [ ] Requirements (First Draft Ready)
+* [x] Entity Diagram
+* [ ] Database Diagram
+* [ ] Class Diagram
+* [ ] Decide Tech Stack
