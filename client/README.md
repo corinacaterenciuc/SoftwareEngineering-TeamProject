@@ -1,11 +1,11 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## TheOtherHalf
 
-```
-Dei here: In the current directory run `npm install` from a
-terminal in order to download dependencies such as React.
-``` 
+* See [Base Web official site](https://baseweb.design/) to get started with components
+* First time? Run `npm install` from `client` directory to install dependencies
+
+## Available Scripts
 
 In the project directory, you can run:
 

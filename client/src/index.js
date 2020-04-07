@@ -1,14 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './assets/main.css'
-import App from './App';
+import './index.css';
 import * as serviceWorker from './serviceWorker';
+import {Client as Styletron} from 'styletron-engine-atomic';
+import {Provider as StyletronProvider} from 'styletron-react';
+import {LightTheme, BaseProvider, styled} from 'baseui';
+
+
+const engine = new Styletron();
+const Centered = styled('div', {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100%',
+});
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+      <StyletronProvider value={engine}>
+        <BaseProvider theme={LightTheme}>
+          {/*  Application entry point */}
+          <Centered>
+            <p>Hello world!</p>
+          </Centered>
+        </BaseProvider>
+      </StyletronProvider>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change
