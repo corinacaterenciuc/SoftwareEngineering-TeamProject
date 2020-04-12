@@ -5,7 +5,7 @@ import * as serviceWorker from './serviceWorker';
 import {Client as Styletron} from 'styletron-engine-atomic';
 import {Provider as StyletronProvider} from 'styletron-react';
 import {LightTheme, BaseProvider, styled} from 'baseui';
-
+import ReviewProposalModalDemo from "./components/ReviewProposalModalDemo/ReviewProposalModalDemo";
 
 const engine = new Styletron();
 const Centered = styled('div', {
@@ -21,7 +21,7 @@ ReactDOM.render(
         <BaseProvider theme={LightTheme}>
           {/*  Application entry point */}
           <Centered>
-            <p>Hello world!</p>
+            <ReviewProposalModalDemo/>
           </Centered>
         </BaseProvider>
       </StyletronProvider>
