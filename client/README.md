@@ -2,6 +2,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## TheOtherHalf
 
+* Run the project using `npm start`
 * See [Base Web official site](https://baseweb.design/) to get started with components
 * First time? Run `npm install` from `client` directory to install dependencies
 * You can use `generate-react c Foo` to generate a component `Foo`
