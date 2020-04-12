@@ -4,29 +4,22 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import {Client as Styletron} from 'styletron-engine-atomic';
 import {Provider as StyletronProvider} from 'styletron-react';
-import {LightTheme, BaseProvider, styled} from 'baseui';
-import ReviewProposalModalDemo from "./components/ReviewProposalModalDemo/ReviewProposalModalDemo";
-
+import {LightTheme, BaseProvider} from 'baseui';
+import {Provider} from "react-redux";
+import store from 'store.js'
 
 const engine = new Styletron();
-const Centered = styled('div', {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: '100%',
-});
 
 ReactDOM.render(
-    <React.StrictMode>
-      <StyletronProvider value={engine}>
-        <BaseProvider theme={LightTheme}>
-          {/*  Application entry point */}
-          <Centered>
-            <ReviewProposalModalDemo/>
-          </Centered>
-        </BaseProvider>
-      </StyletronProvider>
-    </React.StrictMode>,
+    <Provider store={store}>
+        <React.StrictMode>
+          <StyletronProvider value={engine}>
+            <BaseProvider theme={LightTheme}>
+            {/*  Insert application here  */}
+            </BaseProvider>
+          </StyletronProvider>
+        </React.StrictMode>
+    </Provider>,
     document.getElementById('root')
 );
 
