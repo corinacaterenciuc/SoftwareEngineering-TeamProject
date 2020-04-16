@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import './ReviewProposalModal.css';
 import {Modal, SIZE, ROLE, ModalHeader, ModalBody, ModalFooter, ModalButton} from "baseui/modal";
 import {FormControl} from "baseui/form-control";
@@ -14,17 +14,25 @@ const ReviewProposalModal = (props) => {
      */
 
     const [formValid, setFormValid] = React.useState(props.review != null);
+    const firstRender = useRef(true);
 
     const [grade, setGrade] = React.useState(props.review != null ? [props.review.grade] : []);
-    const [gradeValid, setGradeValid] = React.useState(props.review != null);
+    const [gradeValid, setGradeValid] = React.useState(true);
 
     const [justification, setJustification] = React.useState(props.review != null ? props.review.justification : '');
-    const [justificationValid, setJustificationValid] = React.useState(props.review != null);
+    const [justificationValid, setJustificationValid] = React.useState(true);
 
     useEffect(() => {
+        if (firstRender.current)
+        {
+            // Else input fields will be marked as error from the start
+            // since useEffect is also called at update but also at render
+            firstRender.current = false;
+            return;
+        }
         setGradeValid(grade.length !== 0);
-        setJustificationValid(justification !== '')
-        setFormValid(grade.length !== 0 && justification !== '')
+        setJustificationValid(justification !== '');
+        setFormValid(grade.length !== 0 && justification !== '');
     }, [grade, justification]);
 
     return (
