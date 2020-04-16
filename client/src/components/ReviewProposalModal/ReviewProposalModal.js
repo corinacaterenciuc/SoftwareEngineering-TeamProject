@@ -17,10 +17,12 @@ const ReviewProposalModal = (props) => {
     const firstRender = useRef(true);
 
     const [grade, setGrade] = React.useState(props.review != null ? [props.review.grade] : []);
-    const [gradeValid, setGradeValid] = React.useState(true);
+    const [gradeValid, setGradeValid] = React.useState(props.review != null);
+    const [gradeInputVisited, setGradeInputVisited] = React.useState(false);
 
     const [justification, setJustification] = React.useState(props.review != null ? props.review.justification : '');
-    const [justificationValid, setJustificationValid] = React.useState(true);
+    const [justificationValid, setJustificationValid] = React.useState(props.review != null);
+    const [justificationInputVisited, setJustificationInputVisited] = React.useState(false);
 
     useEffect(() => {
         if (firstRender.current)
@@ -32,8 +34,11 @@ const ReviewProposalModal = (props) => {
         }
         setGradeValid(grade.length !== 0);
         setJustificationValid(justification !== '');
-        setFormValid(grade.length !== 0 && justification !== '');
     }, [grade, justification]);
+
+    useEffect(() => {
+        setFormValid(gradeValid && justificationValid);
+    }, [gradeValid, justificationValid]);
 
     return (
         <div className="ReviewProposalModal" data-testid="ReviewProposalModal">
@@ -79,18 +84,20 @@ const ReviewProposalModal = (props) => {
                                 { label: "Strong Accept (3)", id: 3 }
                             ]}
                             value={grade}
-                            error={!gradeValid}
+                            error={gradeInputVisited && !gradeValid}
                             placeholder="Grade the Proposal"
-                            onChange={params => setGrade(params.value)}
+                            required
+                            onChange={params => {setGradeInputVisited(true); setGrade(params.value)}}
                         />
                     </FormControl>
 
                     <FormControl label={() => "Justification"}>
                         <Textarea
                             value={justification}
-                            error={!justificationValid}
+                            error={justificationInputVisited && !justificationValid}
                             size={SIZE.default}
-                            onChange={(e) => setJustification(e.target.value)}
+                            required
+                            onChange={(e) => {setJustificationInputVisited(true); setJustification(e.target.value)}}
                         />
                     </FormControl>
 
