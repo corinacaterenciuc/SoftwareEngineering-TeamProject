@@ -8,6 +8,7 @@ import {LightTheme, BaseProvider} from 'baseui';
 import {Provider} from "react-redux";
 import store from './store.js'
 import Evaluation from "./components/Evaluation/Evaluation";
+import Navbar from "./components/Navbar/Navbar";
 
 const engine = new Styletron();
 const colorScale = {
@@ -25,13 +26,7 @@ ReactDOM.render(
         <React.StrictMode>
           <StyletronProvider value={engine}>
             <BaseProvider theme={LightTheme}>
-                <Evaluation
-                    justification="Hello World"
-                    grade={{gradeText: "Weak Reject", gradeValue: -1}}
-                    colorScale={colorScale}
-                    displayCheckbox={true}
-                    authorName={"Dr. Faust"}
-                />
+                <Navbar/>
             </BaseProvider>
           </StyletronProvider>
         </React.StrictMode>
