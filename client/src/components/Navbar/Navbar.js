@@ -6,7 +6,6 @@ import {
   StyledNavigationList as NavigationList,
 } from 'baseui/header-navigation';
 import {StyledLink as Link} from 'baseui/link';
-import {Button, SHAPE} from 'baseui/button';
 
 export default () => (
   <HeaderNavigation>
@@ -18,21 +17,13 @@ export default () => (
     <NavigationList $align={ALIGN.center} />
     <NavigationList $align={ALIGN.right}>
       <NavigationItem>
-        <Link href="#basic-link1">Home</Link>
+        <Link href="/conferences">Conferences</Link>
       </NavigationItem>
       <NavigationItem>
-        <Link href="#basic-link2">Conferences</Link>
+          <Link href="#/proposals">Proposals</Link>
       </NavigationItem>
       <NavigationItem>
-        <Link href="#basic-link3">Contact</Link>
-      </NavigationItem>
-      <NavigationItem>
-        <Link href="#basic-link4">Sign up</Link>
-      </NavigationItem>
-    </NavigationList>
-    <NavigationList $align={ALIGN.right}>
-      <NavigationItem>
-        <Button  onClick={() => alert("")}>Log in</Button>
+          <Link href="/sign-out" style={{marginRight: "1em"}}>Sign Out</Link>
       </NavigationItem>
     </NavigationList>
   </HeaderNavigation>
