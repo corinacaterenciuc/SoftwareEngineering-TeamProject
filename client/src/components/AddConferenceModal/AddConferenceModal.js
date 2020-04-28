@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import PropTypes from 'prop-types'
 import './AddConferenceModal.css';
 import {Modal, ROLE, ModalHeader, ModalBody, ModalButton, ModalFooter} from "baseui/modal";
 import {KIND} from "baseui/button";
@@ -176,7 +177,10 @@ const AddConferenceModal = (props) => {
     )
 };
 
-AddConferenceModal.propTypes = {};
+AddConferenceModal.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    setIsOpen: PropTypes.func.isRequired
+};
 
 AddConferenceModal.defaultProps = {};
 
