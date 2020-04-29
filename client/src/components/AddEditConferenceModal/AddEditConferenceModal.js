@@ -1,40 +1,63 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types'
-import './AddConferenceModal.css';
+import './AddEditConferenceModal.css';
 import {Modal, ROLE, ModalHeader, ModalBody, ModalButton, ModalFooter} from "baseui/modal";
 import {KIND} from "baseui/button";
 import {Input, SIZE} from "baseui/input";
 import {Datepicker} from "baseui/datepicker";
 import {FormControl} from "baseui/form-control";
 import {Textarea} from "baseui/textarea";
+import {Select} from "baseui/select";
 
-const AddConferenceModal = (props) => {
+const AddEditConferenceModal = (props) => {
 
-    const [formValid, setFormValid] = React.useState(false);
+    /*
+        The form starts as valid in the edit scenario - i.e. all fields
+        were successfully completed at least once before.
+    */
+    const conferencePropNull = props.conference != null;
 
-    const [conferenceName, setConferenceName] = React.useState('');
-    const [conferenceNameValid, setConferenceNameValid] = React.useState(true);
+    const [formValid, setFormValid] = React.useState(props.scmUsers != null && props.pcmUsers != null);
 
-    const [conferenceDescription, setConferenceDescription] = React.useState('');
-    const [conferenceDescriptionValid, setConferenceDescriptionValid] = React.useState(true);
+    const [conferenceName, setConferenceName] = React.useState(
+        conferencePropNull ? props.conference.name : ''
+    );
+    const [conferenceNameValid, setConferenceNameValid] = React.useState(conferencePropNull);
 
-    const [zeroDeadline, setZeroDeadline] = React.useState(null);
-    const [zeroDeadlineValid, setZeroDeadlineValid] = React.useState(true);
+    const [conferenceDescription, setConferenceDescription] = React.useState(
+        conferencePropNull ? props.conference.description : ''
+    );
+    const [conferenceDescriptionValid, setConferenceDescriptionValid] = React.useState(conferencePropNull);
 
-    const [abstractDeadline, setAbstractDeadline] = React.useState(null);
-    const [abstractDeadlineValid, setAbstractDeadlineValid] = React.useState(true);
+    const [zeroDeadline, setZeroDeadline] = React.useState(
+        conferencePropNull ? props.conference.zeroDeadline : null);
+    const [zeroDeadlineValid, setZeroDeadlineValid] = React.useState(conferencePropNull);
 
-    const [proposalDeadline, setProposalDeadline] = React.useState(null);
-    const [proposalDeadlineValid, setProposalDeadlineValid] = React.useState(true);
+    const [abstractDeadline, setAbstractDeadline] = React.useState(
+        conferencePropNull ? props.conference.abstractDeadline : null);
+    const [abstractDeadlineValid, setAbstractDeadlineValid] = React.useState(conferencePropNull);
 
-    const [biddingDeadline, setBiddingDeadline] = React.useState(null);
-    const [biddingDeadlineValid, setBiddingDeadlineValid] = React.useState(true);
+    const [proposalDeadline, setProposalDeadline] = React.useState(
+        conferencePropNull ? props.conference.proposalDeadline : null);
+    const [proposalDeadlineValid, setProposalDeadlineValid] = React.useState(conferencePropNull);
 
-    const [evaluationDeadline, setEvaluationDeadline] = React.useState(null);
-    const [evaluationDeadlineValid, setEvaluationDeadlineValid] = React.useState(true);
+    const [biddingDeadline, setBiddingDeadline] = React.useState(
+        conferencePropNull ? props.conference.biddingDeadline : null);
+    const [biddingDeadlineValid, setBiddingDeadlineValid] = React.useState(conferencePropNull);
 
-    const [presentationDeadline, setPresentationDeadline] = React.useState(null);
-    const [presentationDeadlineValid, setPresentationDeadlineValid] = React.useState(true);
+    const [evaluationDeadline, setEvaluationDeadline] = React.useState(
+        conferencePropNull ? props.conference.evaluationDeadline : null);
+    const [evaluationDeadlineValid, setEvaluationDeadlineValid] = React.useState(conferencePropNull);
+
+    const [presentationDeadline, setPresentationDeadline] = React.useState(
+        conferencePropNull ? props.conference.presentationDeadline : null);
+    const [presentationDeadlineValid, setPresentationDeadlineValid] = React.useState(conferencePropNull);
+
+    const [scmUsers, setScmUsers] = React.useState(props.scmUsers);
+    const [scmUsersValid, setScmUsersValid] = React.useState(props.scmUsers != null);
+
+    const [pcmUsers, setPcmUsers] = React.useState(props.pcmUsers);
+    const [pcmUsersValid, setPcmUsersValid] = React.useState(props.pcmUsers != null);
 
     useEffect(() => {
        setConferenceNameValid(conferenceName != null);
@@ -72,16 +95,25 @@ const AddConferenceModal = (props) => {
     }, [presentationDeadline, evaluationDeadline]);
 
     useEffect(() => {
+        setScmUsersValid(scmUsers != null)
+    }, [scmUsers]);
+
+    useEffect(() => {
+        setPcmUsersValid(pcmUsers != null)
+    }, [pcmUsers]);
+
+    useEffect(() => {
       setFormValid([
           conferenceNameValid, conferenceDescriptionValid, zeroDeadlineValid, proposalDeadlineValid,
-          biddingDeadlineValid, evaluationDeadlineValid, presentationDeadlineValid].every(v => v === true))
+          biddingDeadlineValid, evaluationDeadlineValid, presentationDeadlineValid, scmUsersValid, pcmUsersValid]
+          .every(v => v === true))
     }, [
         conferenceNameValid, conferenceDescriptionValid, zeroDeadlineValid, proposalDeadlineValid,
-        biddingDeadlineValid, evaluationDeadlineValid, presentationDeadlineValid]
+        biddingDeadlineValid, evaluationDeadlineValid, presentationDeadlineValid, scmUsersValid, pcmUsersValid]
     );
 
     return (
-        <div className="ConferenceModal" data-testid="AddConferenceModal">
+        <div className="ConferenceModal" data-testid="AddEditConferenceModal">
             <Modal
                 onClose={() => props.setIsOpen(false)}
                 closeable
@@ -89,8 +121,7 @@ const AddConferenceModal = (props) => {
                 animate
                 autoFocus
                 size={SIZE.default}
-                role={ROLE.default}
-            >
+                role={ROLE.default}>
                 <ModalHeader>Add Conference</ModalHeader>
                 <ModalBody>
                     <FormControl label={() => "Conference Name"}>
@@ -99,8 +130,7 @@ const AddConferenceModal = (props) => {
                             onChange={e => setConferenceName(e.target.value)}
                             error={!conferenceNameValid}
                             placeholder="Input conference name"
-                            size={SIZE.compact}
-                        />
+                            size={SIZE.compact}/>
                     </FormControl>
 
                     <FormControl label={() => "Conference Description"}>
@@ -109,8 +139,7 @@ const AddConferenceModal = (props) => {
                             onChange={e => setConferenceDescription(e.target.value)}
                             error={!conferenceDescriptionValid}
                             placeholder="Input conference description"
-                            size={SIZE.compact}
-                        />
+                            size={SIZE.compact}/>
                     </FormControl>
 
                     <FormControl label={() => "Zero Deadline"}>
@@ -118,8 +147,7 @@ const AddConferenceModal = (props) => {
                             value={zeroDeadline}
                             onChange={({ date }) => setZeroDeadline(date)}
                             error={!zeroDeadlineValid}
-                            size={SIZE.compact}
-                        />
+                            size={SIZE.compact}/>
                     </FormControl>
 
                     <FormControl label={() => "Submit Abstract Deadline"} caption={() => "Leave blank if only integral Proposals are accepted.Z"}>
@@ -127,8 +155,7 @@ const AddConferenceModal = (props) => {
                             value={abstractDeadline}
                             onChange={({ date }) => setAbstractDeadline(date)}
                             error={!abstractDeadlineValid}
-                            size={SIZE.compact}
-                        />
+                            size={SIZE.compact}/>
                     </FormControl>
 
                     <FormControl label={() => "Submit Proposal Deadline"}>
@@ -136,8 +163,7 @@ const AddConferenceModal = (props) => {
                             value={proposalDeadline}
                             onChange={({ date }) => setProposalDeadline(date)}
                             error={!proposalDeadlineValid}
-                            size={SIZE.compact}
-                        />
+                            size={SIZE.compact}/>
                     </FormControl>
 
                     <FormControl label={() => "Bidding Deadline"}>
@@ -145,8 +171,7 @@ const AddConferenceModal = (props) => {
                             value={biddingDeadline}
                             onChange={({ date }) => setBiddingDeadline(date)}
                             error={!biddingDeadlineValid}
-                            size={SIZE.compact}
-                        />
+                            size={SIZE.compact}/>
                     </FormControl>
 
                     <FormControl label={() => "Evaluation Deadline"}>
@@ -154,8 +179,7 @@ const AddConferenceModal = (props) => {
                             value={evaluationDeadline}
                             onChange={({ date }) => setEvaluationDeadline(date)}
                             error={!evaluationDeadlineValid}
-                            size={SIZE.compact}
-                        />
+                            size={SIZE.compact}/>
                     </FormControl>
 
                     <FormControl label={() => "Presentation Deadline"}>
@@ -163,8 +187,29 @@ const AddConferenceModal = (props) => {
                             value={presentationDeadline}
                             onChange={({ date }) => setPresentationDeadline(date)}
                             error={!presentationDeadlineValid}
-                            size={SIZE.compact}
-                        />
+                            size={SIZE.compact}/>
+                    </FormControl>
+
+                    <FormControl label={() => "SCM Members"}>
+                        <Select
+                            options={props.users}
+                            value={scmUsers}
+                            placeholder="Select SCM members"
+                            error={!scmUsersValid}
+                            onChange={params => setScmUsers(params.value)}
+                            multi
+                            closeOnSelect={false}/>
+                    </FormControl>
+
+                    <FormControl label={() => "PCM Members"}>
+                        <Select
+                            options={props.users}
+                            value={pcmUsers}
+                            error={!pcmUsersValid}
+                            placeholder="Select PCM members"
+                            onChange={params => setPcmUsers(params.value)}
+                            multi
+                            closeOnSelect={false}/>
                     </FormControl>
                 </ModalBody>
 
@@ -177,11 +222,27 @@ const AddConferenceModal = (props) => {
     )
 };
 
-AddConferenceModal.propTypes = {
+const userType = PropTypes.exact({label: PropTypes.string.isRequired, id: PropTypes.number.isRequired});
+
+AddEditConferenceModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
-    setIsOpen: PropTypes.func.isRequired
+    setIsOpen: PropTypes.func.isRequired,
+    conference: PropTypes.exact({
+        name: PropTypes.string.isRequired,
+        description: PropTypes.string.isRequired,
+        zeroDeadline: PropTypes.instanceOf(Date).isRequired,
+        abstractDeadline: PropTypes.instanceOf(Date).isRequired,
+        proposalDeadline: PropTypes.instanceOf(Date).isRequired,
+        biddingDeadline: PropTypes.instanceOf(Date).isRequired,
+        evaluationDeadline: PropTypes.instanceOf(Date).isRequired,
+        presentationDeadline: PropTypes.instanceOf(Date).isRequired
+    }),
+    scmUsers: PropTypes.arrayOf(userType),
+    pcmUsers: PropTypes.arrayOf(userType),
+    users: PropTypes.arrayOf(userType)
 };
 
-AddConferenceModal.defaultProps = {};
+AddEditConferenceModal.defaultProps = {
+};
 
-export default AddConferenceModal;
+export default AddEditConferenceModal;
