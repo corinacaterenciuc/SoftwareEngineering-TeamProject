@@ -1,0 +1,12 @@
+export const USER = 'USER';
+export const C_SCM = 'C_SCM';
+export const cC_SCM = 'cC_SCM';
+export const SCM = 'SCM';
+export const C_PCM = 'C_PCM';
+export const cC_PCM = 'cC_PCM';
+export const PCM = 'PCM';
+export const REVIEWER = 'REVIEWER';
+export const AUTHOR = 'AUTHOR';
+export const SPEAKER = 'SPEAKER';
+export const ADMIN = 'ADMIN';
+export const C_SESSION = 'C_SESSION';

@@ -26,7 +26,7 @@ export default function Conference(props){
               <h3>DEADLINES: </h3>
               <h3>Zero Phase </h3> {props.conference.zeroDeadline.toLocaleDateString("ro-RO")}
               <h3>Abstract </h3> {props.conference.abstractDeadline.toLocaleDateString("ro-RO")}
-              <h3>Full Proposal </h3>: {props.conference.proposalDeadline.toLocaleDateString("ro-RO")}
+              <h3>Full Proposal </h3>{props.conference.proposalDeadline.toLocaleDateString("ro-RO")}
               <h3>Bidding </h3> {props.conference.biddingDeadline.toLocaleDateString("ro-RO")}
               <h3>Evaluation </h3> {props.conference.evaluationDeadline.toLocaleDateString("ro-RO")}
               <h3>Presentation </h3> {props.conference.presentationDeadline.toLocaleDateString("ro-RO")}
@@ -44,6 +44,7 @@ export default function Conference(props){
                   props.setOpen(true);} }>
               Edit
             </Button>
+
 
           </StyledAction>
         </Card>

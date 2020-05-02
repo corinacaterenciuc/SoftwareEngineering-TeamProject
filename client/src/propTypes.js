@@ -12,4 +12,8 @@ const conferenceType = PropTypes.exact({
     presentationDeadline: PropTypes.instanceOf(Date).isRequired
 });
 
+const sectionType = PropTypes.exact({
+
+});
+
 export {conferenceType}
