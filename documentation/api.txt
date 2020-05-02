@@ -1,0 +1,562 @@
+User stuff:
+
+  add a user:
+      /api/users/
+      POST
+      body:
+        {
+          "firstname": string,
+          "lastname": string,
+          "email": string,
+          "password": string
+        }
+      response:
+        STATUS: 200 or 400
+
+  remove a user
+      /api/users/
+      DELETE
+      body:
+        {
+          "email": string
+        }
+      response:
+        STATUS: 200 or 400
+
+  get users
+      /api/users/
+      GET
+      body: N/A
+      response:
+        body:
+          [
+            {
+              "firstname": string,
+              "lastname": string,
+              "email": string,
+            }
+          ]
+
+  make admin
+      /api/users/admins/
+      PUT
+      body:
+        {
+          "email": string
+        }
+      response:
+        STATUS: 200 or 400
+
+  remove admin
+      /api/users/admins/
+      DELETE
+      body:
+        {
+          "email": string
+        }
+      response:
+        STATUS: 200 or 400
+
+
+Conferences stuff:
+
+  add Conferences
+      /api/conferences/
+      POST
+      body:
+        {
+          "name": string,
+          "description": string,
+          "zeroDeadline": string,
+          "abstractDeadline": string,
+          "proposalDeadline": string,
+          "biddingDeadline": string,
+          "evaluationDeadline": string,
+          "presentationDeadline": string
+        }
+      response:
+        STATUS: 200 or 400
+
+  remove Conferences
+      /api/conferences/
+      DELETE
+      body:
+        {
+          "id": int
+        }
+      response:
+        STATUS: 200 or 400
+
+  get conferences
+      /api/conferences/
+      GET
+      body: N/A
+      response:
+        body:
+          [
+            {
+              "id": int
+              "name": String,
+              "description": String,
+              "zeroDeadline": String,
+              "abstractDeadline": String,
+              "proposalDeadline": String,
+              "biddingDeadline": String,
+              "evaluationDeadline": String,
+              "presentationDeadline": String
+            }
+          ]
+
+  add participants on conference
+      /api/conferences/{conferenceid}/participants/
+      PUT
+      body:
+        {
+          "email": String
+        }
+      response:
+        STATUS: 200 or 400
+
+  remove participants on conference
+      /api/conferences/{conferenceid}/participants/
+      DELETE
+      body:
+        {
+          "email": String
+        }
+      response:
+        STATUS: 200 or 400
+
+  make scm
+      /api/conferences/{conferenceid}/scm/
+      PUT
+      body:
+        {
+          "email": string
+        }
+      response:
+        STATUS: 200 or 400
+
+  remove scm
+      /api/conferences/{conferenceid}/scm/
+      DELETE
+      body:
+        {
+          "email": string
+        }
+      response:
+        STATUS: 200 or 400
+
+  make cscm
+      /api/conferences/{conferenceid}/cscm/
+      PUT
+      body:
+        {
+          "email": string
+        }
+      response:
+        STATUS: 200 or 400
+
+  remove cscm
+      /api/conferences/{conferenceid}/cscm/
+      DELETE
+      body:
+        {
+          "email": string
+        }
+      response:
+        STATUS: 200 or 400
+
+  make ccscm
+      /api/conferences/{conferenceid}/ccscm/
+      PUT
+      body:
+        {
+          "email": string
+        }
+      response:
+        STATUS: 200 or 400
+
+  remove ccscm
+      /api/conferences/{conferenceid}/ccscm/
+      DELETE
+      body:
+        {
+          "email": string
+        }
+      response:
+        STATUS: 200 or 400
+
+  get all scm
+      /api/conferences/{conferenceid}/scm/
+      GET
+      body: N/A
+      response:
+        body:
+          [
+            {
+              "firstname": string,
+              "lastname": string,
+              "email": string,
+            }
+          ]
+
+  make pcm
+      /api/conferences/{conferenceid}/pcm/
+      PUT
+      body:
+        {
+          "email": string
+        }
+      response:
+        STATUS: 200 or 400
+
+  remove pcm
+      /api/conferences/{conferenceid}/pcm/
+      DELETE
+      body:
+        {
+          "email": string
+        }
+      response:
+        STATUS: 200 or 400
+
+  make cpcm
+      /api/conferences/{conferenceid}/cpcm/
+      PUT
+      body:
+        {
+          "email": string
+        }
+      response:
+        STATUS: 200 or 400
+
+  remove cpcm
+      /api/conferences/{conferenceid}/cpcm
+      DELETE
+      body:
+        {
+          "email": string
+        }
+      response:
+        STATUS: 200 or 400
+
+  make ccpcm
+      /api/conferences/{conferenceid}/ccpcm
+      POST
+      body:
+        {
+          "email" string
+        }
+      response:
+        STATUS: 200 or 400
+
+  remove ccpcm
+      /api/conferences/{conferenceid}/ccpcm
+      DELETE
+      body:
+        {
+          "email" string
+        }
+      response:
+        STATUS: 200 or 400
+
+  get all pcm
+      /api/conferences/{conferenceid}/pcm/
+      GET
+      body: N/A
+      response:
+        body:
+          [
+            {
+              "firstname": string,
+              "lastname": string,
+              "email": string,
+            }
+          ]
+
+  make session chair
+      /api/conferences/{conferenceid}/sections/{sectionid}/chair
+      POST
+      body:
+        {
+          "email" string
+        }
+      response:
+        STATUS: 200 or 400
+
+  remove session chair
+      /api/conferences/{conferenceid}/sections/{sectionid}/chair
+      DELETE
+      body:
+        {
+          "email" string
+        }
+      response:
+        STATUS: 200 or 400
+
+  get session chair
+      /api/conferences/{conferenceid}/sections/{sectionid}/chair
+      GET
+      body: N/A
+      response:
+        body:
+          {
+            "firstname": string,
+            "lastname": string,
+            "email": string,
+          }
+
+  add section
+      /api/conferences/{conferenceid}/sections
+      POST
+      body:
+        {
+          "chair": "email",
+          "topics":
+          [
+            "unu",
+            "doua"
+          ],
+          "proposals":
+          [
+            {
+              "email": String
+              "title": String
+            }
+          ],
+          "participants":
+          [
+            {
+              "email": String
+            }
+          ],
+          "room": int
+        }
+      response:
+        STATUS: 200 or 400
+
+  remove section
+      /api/conferences/{conferenceid}/sections/{sectionid}
+      DELETE
+      body: N/A
+      response:
+        STATUS: 200 or 400
+
+  add participants to section
+      /api/conferences/{conferenceid}/sections/{sectionid}/participants
+      PUT
+      body:
+        {
+          "email": String
+        }
+      response:
+        STATUS: 200 or 400
+
+  get sections
+      /api/conferences/{conferenceid}/sections
+      GET
+      body: N/A
+      response:
+        body:
+          [
+            {
+              "chair": "email",
+              "topics":
+              [
+                "unu",
+                "doua"
+              ],
+              "proposals":
+              [
+                {
+                  "email": String
+                  "title": String
+                }
+              ],
+              "participants":
+              [
+                {
+                  "email": String
+                }
+              ],
+              "room": int
+            }
+          ]
+
+Proposals:
+
+  add proposal
+      /api/conferences/{conferenceid}/proposals
+      POST
+      body:
+        {
+          "author": "email",
+          "proposalName": String,
+          "filePath": String,
+          "abstractPath": String,
+          "topics":
+          [
+            "unu",
+            "dou"
+          ],
+          "keywords":
+          [
+            "unu",
+            "doi"
+          ],
+          "coAuthors":
+          [
+            "email1",
+            "email2"
+          ],
+          "bidders":
+          [
+            "email1",
+            "email2"
+          ],
+          "reviewers":
+          [
+            "email1",
+            "email2"
+          ],
+          "reviews":
+          [
+            //can be empty
+            {
+              "email": String,
+              "proposal":
+              {
+                "proposalName": String,
+                "author": "email"
+              }
+            }
+          ]
+        }
+      response:
+        STATUS: 200 or 400
+
+  remove proposal
+      /api/conferences/{conferenceid}/proposals
+      DELETE
+      body:
+        {
+          "proposalName": String,
+          "author": "email"
+        }
+      response:
+        STATUS: 200 or 400
+
+  get proposals
+      /api/conferences/{conferenceid}/proposals
+      GET
+      body: N/A
+      response:
+        [
+          {
+            "author": "email",
+            "proposalName": String,
+            "filePath": String,
+            "abstractPath": String,
+            "topics":
+            [
+              "unu",
+              "dou"
+            ],
+            "keywords":
+            [
+              "unu",
+              "doi"
+            ],
+            "coAuthors":
+            [
+              "email1",
+              "email2"
+            ],
+            "bidders":
+            [
+              "email1",
+              "email2"
+            ],
+            "reviewers":
+            [
+              "email1",
+              "email2"
+            ],
+            "reviews":
+            [
+              //can be empty
+              {
+                "email": String,
+                "proposal":
+                {
+                  "proposalName": String,
+                  "author": "email"
+                }
+              }
+            ]
+          }
+        ]
+
+  add review
+      /api/conferences/{conferenceid}/proposals/{proposalid}/reviews
+      POST
+      body:
+        {
+          "email": String,
+          "proposal":
+          {
+            "proposalName": String,
+            "author": "email"
+          }
+        }
+      response:
+        STATUS: 200 or 400
+
+  get reviews
+      /api/conferences/{conferenceid}/proposals/{proposalid}/reviews
+      GET
+      body: N/A
+      response:
+        body:
+          [
+            {
+              "email": String,
+              "proposal":
+              {
+                "proposalName": String,
+                "author": "email"
+              }
+            }
+          ]
+
+  bid
+      /api/conferences/{conferenceid}/proposals/{proposalid}/bid
+      PUT
+      body:
+        {
+          "email": String
+        }
+      response:
+        STATUS: 200 or 400
+
+  get bidders
+      /api/conferences/{conferenceid}/proposals/{proposalid}/bid
+      GET
+      body: N/A
+      response:
+        body:
+          [
+            {
+              "firstname": string,
+              "lastname": string,
+              "email": string,
+            }
+          ]
+
+
+Notification stuff:
+
+  emit Notification
+  mark notification as read
+  get all notifications
