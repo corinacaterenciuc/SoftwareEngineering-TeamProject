@@ -84,7 +84,7 @@ const LoginRegister = (props) => {
                                 onClick={(e) => { 
                                         e.preventDefault();
                                         setAccount(!account); }} >
-                                {account ? "Already have an account?" : "You don't have an account?Resgister here"}
+                                {account ? "Already have an account?" : "You don't have an account?Register here"}
                         </StyledLink>
                     </ModalBody>
 
