@@ -1,0 +1,13 @@
+/*
+ * Conference css File
+*/
+
+.center-container{
+
+    background-color: aqua;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+}

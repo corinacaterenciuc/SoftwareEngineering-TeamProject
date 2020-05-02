@@ -8,49 +8,54 @@ import {Datepicker} from "baseui/datepicker";
 import {FormControl} from "baseui/form-control";
 import {Textarea} from "baseui/textarea";
 import {Select} from "baseui/select";
+import {conferenceType} from "../../propTypes";
+import {useSelector} from "react-redux";
 
 const AddEditConferenceModal = (props) => {
 
     /*
         The form starts as valid in the edit scenario - i.e. all fields
         were successfully completed at least once before.
+
     */
-    const conferencePropNull = props.conference != null;
+    let conference = useSelector( (state) => state.editConference);
+
+    const conferencePropNull = conference != null;
 
     const [formValid, setFormValid] = React.useState(props.scmUsers != null && props.pcmUsers != null);
 
     const [conferenceName, setConferenceName] = React.useState(
-        conferencePropNull ? props.conference.name : ''
+        conferencePropNull ? conference.name : ''
     );
     const [conferenceNameValid, setConferenceNameValid] = React.useState(conferencePropNull);
 
     const [conferenceDescription, setConferenceDescription] = React.useState(
-        conferencePropNull ? props.conference.description : ''
+        conferencePropNull ? conference.description : ''
     );
     const [conferenceDescriptionValid, setConferenceDescriptionValid] = React.useState(conferencePropNull);
 
     const [zeroDeadline, setZeroDeadline] = React.useState(
-        conferencePropNull ? props.conference.zeroDeadline : null);
+        conferencePropNull ? conference.zeroDeadline : null);
     const [zeroDeadlineValid, setZeroDeadlineValid] = React.useState(conferencePropNull);
 
     const [abstractDeadline, setAbstractDeadline] = React.useState(
-        conferencePropNull ? props.conference.abstractDeadline : null);
+        conferencePropNull ? conference.abstractDeadline : null);
     const [abstractDeadlineValid, setAbstractDeadlineValid] = React.useState(conferencePropNull);
 
     const [proposalDeadline, setProposalDeadline] = React.useState(
-        conferencePropNull ? props.conference.proposalDeadline : null);
+        conferencePropNull ? conference.proposalDeadline : null);
     const [proposalDeadlineValid, setProposalDeadlineValid] = React.useState(conferencePropNull);
 
     const [biddingDeadline, setBiddingDeadline] = React.useState(
-        conferencePropNull ? props.conference.biddingDeadline : null);
+        conferencePropNull ? conference.biddingDeadline : null);
     const [biddingDeadlineValid, setBiddingDeadlineValid] = React.useState(conferencePropNull);
 
     const [evaluationDeadline, setEvaluationDeadline] = React.useState(
-        conferencePropNull ? props.conference.evaluationDeadline : null);
+        conferencePropNull ? conference.evaluationDeadline : null);
     const [evaluationDeadlineValid, setEvaluationDeadlineValid] = React.useState(conferencePropNull);
 
     const [presentationDeadline, setPresentationDeadline] = React.useState(
-        conferencePropNull ? props.conference.presentationDeadline : null);
+        conferencePropNull ? conference.presentationDeadline : null);
     const [presentationDeadlineValid, setPresentationDeadlineValid] = React.useState(conferencePropNull);
 
     const [scmUsers, setScmUsers] = React.useState(props.scmUsers);
@@ -227,16 +232,7 @@ const userType = PropTypes.exact({label: PropTypes.string.isRequired, id: PropTy
 AddEditConferenceModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     setIsOpen: PropTypes.func.isRequired,
-    conference: PropTypes.exact({
-        name: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
-        zeroDeadline: PropTypes.instanceOf(Date).isRequired,
-        abstractDeadline: PropTypes.instanceOf(Date).isRequired,
-        proposalDeadline: PropTypes.instanceOf(Date).isRequired,
-        biddingDeadline: PropTypes.instanceOf(Date).isRequired,
-        evaluationDeadline: PropTypes.instanceOf(Date).isRequired,
-        presentationDeadline: PropTypes.instanceOf(Date).isRequired
-    }),
+    conference: conferenceType,
     scmUsers: PropTypes.arrayOf(userType),
     pcmUsers: PropTypes.arrayOf(userType),
     users: PropTypes.arrayOf(userType)
