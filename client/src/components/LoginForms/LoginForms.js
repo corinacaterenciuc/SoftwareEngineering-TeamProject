@@ -1,25 +1,15 @@
 import React from 'react';
-//import './ModalDemo.css';
-import {Button} from "baseui/button";
-
-
-import LoginFormDemo from "../LoginFormDemo/LoginFormDemo";
-import RegisterFormDemo from "../RegisterFormDemo/RegisterFormDemo";
-
+import './LoginForms.css';
+import LoginRegister from "../LoginRegister/LoginRegister";
 
 const LoginForms = () => {
 
-    const [isLoginOpen, setLoginOpen] = React.useState(false);
-    const [isRegisterOpen, setRegisterOpen] = React.useState(false);
-
+    const [isLoginRegisterOpen, setLoginRegisterOpen] = React.useState(false);
 
     return(
         <div className="LoginForms" data-testid="LoginForms">
             <h1>Demo for Login/Register Forms</h1>
-            <LoginFormDemo isOpen={isLoginOpen} setIsOpen={setLoginOpen}/>
-            <Button onClick={ () => setLoginOpen(true)}>Login</Button>
-            <RegisterFormDemo isOpen={isRegisterOpen} setIsOpen={setRegisterOpen}/>
-            <Button onClick={ () => setRegisterOpen(true)}>Register into your account</Button>
+            <LoginRegister isOpen={isLoginRegisterOpen} setIsOpen={setLoginRegisterOpen}/>
         </div>
     );
 };
