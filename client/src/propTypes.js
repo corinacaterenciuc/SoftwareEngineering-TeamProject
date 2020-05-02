@@ -10,7 +10,6 @@ const conferenceType = PropTypes.exact({
     biddingDeadline: PropTypes.instanceOf(Date).isRequired,
     evaluationDeadline: PropTypes.instanceOf(Date).isRequired,
     presentationDeadline: PropTypes.instanceOf(Date).isRequired
-
-})
+});
 
 export {conferenceType}

@@ -18,45 +18,42 @@ const AddEditConferenceModal = (props) => {
         were successfully completed at least once before.
 
     */
-    let conference = useSelector( (state) => state.editConference);
-
-    const conferencePropNull = conference != null;
+    let conference = useSelector(state => state.conference.editConference);
+    const isConferenceNotNull = conference !== null;
 
     const [formValid, setFormValid] = React.useState(props.scmUsers != null && props.pcmUsers != null);
 
-    const [conferenceName, setConferenceName] = React.useState(
-        conferencePropNull ? conference.name : ''
-    );
-    const [conferenceNameValid, setConferenceNameValid] = React.useState(conferencePropNull);
+    const [conferenceName, setConferenceName] = React.useState(isConferenceNotNull ? conference.name : '');
+    const [conferenceNameValid, setConferenceNameValid] = React.useState(isConferenceNotNull);
 
     const [conferenceDescription, setConferenceDescription] = React.useState(
-        conferencePropNull ? conference.description : ''
+        isConferenceNotNull ? conference.description : ''
     );
-    const [conferenceDescriptionValid, setConferenceDescriptionValid] = React.useState(conferencePropNull);
+    const [conferenceDescriptionValid, setConferenceDescriptionValid] = React.useState(isConferenceNotNull);
 
     const [zeroDeadline, setZeroDeadline] = React.useState(
-        conferencePropNull ? conference.zeroDeadline : null);
-    const [zeroDeadlineValid, setZeroDeadlineValid] = React.useState(conferencePropNull);
+        isConferenceNotNull ? conference.zeroDeadline : null);
+    const [zeroDeadlineValid, setZeroDeadlineValid] = React.useState(isConferenceNotNull);
 
     const [abstractDeadline, setAbstractDeadline] = React.useState(
-        conferencePropNull ? conference.abstractDeadline : null);
-    const [abstractDeadlineValid, setAbstractDeadlineValid] = React.useState(conferencePropNull);
+        isConferenceNotNull ? conference.abstractDeadline : null);
+    const [abstractDeadlineValid, setAbstractDeadlineValid] = React.useState(isConferenceNotNull);
 
     const [proposalDeadline, setProposalDeadline] = React.useState(
-        conferencePropNull ? conference.proposalDeadline : null);
-    const [proposalDeadlineValid, setProposalDeadlineValid] = React.useState(conferencePropNull);
+        isConferenceNotNull ? conference.proposalDeadline : null);
+    const [proposalDeadlineValid, setProposalDeadlineValid] = React.useState(isConferenceNotNull);
 
     const [biddingDeadline, setBiddingDeadline] = React.useState(
-        conferencePropNull ? conference.biddingDeadline : null);
-    const [biddingDeadlineValid, setBiddingDeadlineValid] = React.useState(conferencePropNull);
+        isConferenceNotNull ? conference.biddingDeadline : null);
+    const [biddingDeadlineValid, setBiddingDeadlineValid] = React.useState(isConferenceNotNull);
 
     const [evaluationDeadline, setEvaluationDeadline] = React.useState(
-        conferencePropNull ? conference.evaluationDeadline : null);
-    const [evaluationDeadlineValid, setEvaluationDeadlineValid] = React.useState(conferencePropNull);
+        isConferenceNotNull ? conference.evaluationDeadline : null);
+    const [evaluationDeadlineValid, setEvaluationDeadlineValid] = React.useState(isConferenceNotNull);
 
     const [presentationDeadline, setPresentationDeadline] = React.useState(
-        conferencePropNull ? conference.presentationDeadline : null);
-    const [presentationDeadlineValid, setPresentationDeadlineValid] = React.useState(conferencePropNull);
+        isConferenceNotNull ? conference.presentationDeadline : null);
+    const [presentationDeadlineValid, setPresentationDeadlineValid] = React.useState(isConferenceNotNull);
 
     const [scmUsers, setScmUsers] = React.useState(props.scmUsers);
     const [scmUsersValid, setScmUsersValid] = React.useState(props.scmUsers != null);
@@ -117,6 +114,19 @@ const AddEditConferenceModal = (props) => {
         biddingDeadlineValid, evaluationDeadlineValid, presentationDeadlineValid, scmUsersValid, pcmUsersValid]
     );
 
+    useEffect(() =>
+    {
+        const conferenceNotNull = conference !== null;
+        setConferenceName(conferenceNotNull ? conference.name : '');
+        setConferenceDescription( conferenceNotNull ? conference.description : '');
+        setZeroDeadline(conferenceNotNull ? conference.zeroDeadline : null);
+        setAbstractDeadline(conferenceNotNull ? conference.abstractDeadline : null);
+        setProposalDeadline(conferenceNotNull ? conference.proposalDeadline : null);
+        setBiddingDeadline(conferenceNotNull ? conference.biddingDeadline : null);
+        setEvaluationDeadline(conferenceNotNull ? conference.biddingDeadline : null);
+        setPresentationDeadline(conferenceNotNull ? conference.presentationDeadline : null);
+    }, [conference]);
+
     return (
         <div className="ConferenceModal" data-testid="AddEditConferenceModal">
             <Modal
@@ -155,7 +165,7 @@ const AddEditConferenceModal = (props) => {
                             size={SIZE.compact}/>
                     </FormControl>
 
-                    <FormControl label={() => "Submit Abstract Deadline"} caption={() => "Leave blank if only integral Proposals are accepted.Z"}>
+                    <FormControl label={() => "Submit Abstract Deadline"} caption={() => "Leave blank if only integral Proposals are accepted."}>
                         <Datepicker
                             value={abstractDeadline}
                             onChange={({ date }) => setAbstractDeadline(date)}

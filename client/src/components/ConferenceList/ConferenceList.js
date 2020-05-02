@@ -10,7 +10,8 @@ const ConferenceList = (props) => {
   const [editConference, setEditConference] = React.useState(null);
   const [open, setOpen] = React.useState(false);
 
-  let conferences = useSelector((state) => state.conferences);
+  let conferences = useSelector(state => state.conference.conferences);
+  console.log(conferences);
 
   return(
     <div className="ConferenceList" data-testid="ConferenceList">

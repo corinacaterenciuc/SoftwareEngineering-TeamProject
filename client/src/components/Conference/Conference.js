@@ -1,10 +1,5 @@
 import './Conference.css'
-// import { connect } from "react-redux";
-// import { bindActionCreators } from "redux";
-// import * as conferenceActions from "../../store/Conference/actions";
-
 import React from "react";
-
 import {
   Card,
   StyledBody,
@@ -14,7 +9,7 @@ import { Button } from "baseui/button";
 import PropTypes from "prop-types";
 import {conferenceType} from "../../propTypes";
 import {useDispatch} from "react-redux";
-import {SET_EDIT_CONFERENCE} from "../../actions/types";
+import {SET_EDIT_CONFERENCE} from "../../redux/actions";
 
 
 export default function Conference(props){
@@ -61,7 +56,7 @@ Conference.propTypes = {
   conference: conferenceType.isRequired,
   setEditConference: PropTypes.func.isRequired,
   setOpen: PropTypes.func.isRequired
-}
+};
 
 
 
