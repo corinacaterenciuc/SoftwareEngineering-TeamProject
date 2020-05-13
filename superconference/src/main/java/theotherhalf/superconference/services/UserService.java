@@ -32,11 +32,7 @@ public class UserService
 
     public boolean addUser(User user) throws ConferenceManagementSystemException
     {
-        if (null == user.getID())
-        {
-            user.setID(new Random().nextLong());
-        }
-        if (this.repository.findById(user.getID()).isPresent())
+        if (this.repository.findById(user.getEmail()).isPresent())
         {
             throw new ConferenceManagementSystemException("User already exists");
         }
@@ -45,9 +41,9 @@ public class UserService
         return true;
     }
 
-    public boolean deleteUser(Long ID)
+    public boolean deleteUser(String email)
     {
-        this.repository.deleteById(ID);
+        this.repository.deleteById(email);
         return true;
     }
 
@@ -72,9 +68,9 @@ public class UserService
         return this.repository.findAll();
     }
 
-    public Optional<User> findById(Long userID)
+    public Optional<User> findByEmail(String email)
     {
-        return this.repository.findById(userID);
+        return this.repository.findById(email);
     }
 
     public void addSCM(User user, Conference conference)
@@ -85,7 +81,7 @@ public class UserService
 
     public List<UserClaims> getAllRolesForUser(User user)
     {
-        List<UserClaims> claimsList = this.roleRepository.findAll().stream().filter( x-> x.getUser().getID().equals(user.getID())).collect(Collectors.toList());
+        List<UserClaims> claimsList = this.roleRepository.findAll().stream().filter( x-> x.getUser().getEmail().equals(user.getEmail())).collect(Collectors.toList());
         return claimsList;
     }
 }

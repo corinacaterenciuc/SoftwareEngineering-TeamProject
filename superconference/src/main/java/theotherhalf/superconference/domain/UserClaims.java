@@ -17,6 +17,7 @@ public class UserClaims extends BaseEntity
     private User user;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private ENUMERATION_ROLES role;
 
     public UserClaims(@JsonProperty("user") User user,

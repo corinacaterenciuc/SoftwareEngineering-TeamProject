@@ -1,6 +1,10 @@
 package theotherhalf.superconference.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.GsonJsonParser;
+import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.Conference;
 import theotherhalf.superconference.domain.User;
@@ -35,10 +39,12 @@ public class UserController
         this.userService.addUser(user);
     }
 
-    @DeleteMapping(value = "{id}")
-    public void deleteUser(@PathVariable("id") Long ID)
+    @DeleteMapping
+    public void deleteUser(@RequestBody String email)
     {
-        this.userService.deleteUser(ID);
+        JacksonJsonParser gson = new JacksonJsonParser();
+        String eml = gson.parseMap(email).get("email").toString();
+        this.userService.deleteUser(eml);
     }
 
     @GetMapping
@@ -48,10 +54,10 @@ public class UserController
         return userList.stream().map(UserDTO::toDTO).collect(Collectors.toList());
     }
 
-    @PutMapping(path="/scm/user={uid}&conf={cid}")
-    public void addSCM(@PathVariable("uid") Long userID,@PathVariable("cid") Long conferenceID)
+    @PutMapping(path="/scm/user={useremail}&conf={cid}")
+    public void addSCM(@PathVariable("useremail") String userEmail, @PathVariable("cid") Long conferenceID)
     {
-        User user = this.userService.findById(userID).orElse(null);
+        User user = this.userService.findByEmail(userEmail).orElse(null);
         Conference conference = this.conferenceService.findById(conferenceID).orElse(null);
         if(null == user && null == conference)
         {
@@ -61,10 +67,10 @@ public class UserController
         this.userService.addSCM(user, conference);
     }
 
-    @GetMapping(path="/user/{id}")
-    public List<UserClaimsDTO> getAllRoles(@PathVariable("id") Long userID)
+    @GetMapping(path="/user/{email}")
+    public List<UserClaimsDTO> getAllRoles(@PathVariable("email") String userEmail)
     {
-        User user = this.userService.findById(userID).orElse(null);
+        User user = this.userService.findByEmail(userEmail).orElse(null);
         if (null == user)
         {
             //raise
@@ -72,4 +78,5 @@ public class UserController
         }
         return this.userService.getAllRolesForUser(user).stream().map(UserClaimsDTO::toDTO).collect(Collectors.toList());
     }
+
 }

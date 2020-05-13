@@ -34,11 +34,11 @@ public class UserValidator implements BasicValidator<User>
         {
             throw new ValidationException("[VALIDATION ERROR] E-mail address is not a valid e-mail address");
         }
-        if(null == entity.getFirst_name() || null == entity.getLast_name())
+        if(null == entity.getFirstName() || null == entity.getLastName())
         {
             throw new ValidationException("[VALIDATIOR ERROR] Null user names provided");
         }
-        else if(entity.getFirst_name().strip().equals("") || entity.getLast_name().strip().equals(""))
+        else if(entity.getFirstName().strip().equals("") || entity.getLastName().strip().equals(""))
         {
             throw new ValidationException("[VALIDATION ERROR] User names should not be blank");
         }

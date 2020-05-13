@@ -5,100 +5,76 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Entity
 @Table(name="CMSUser")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class User extends BaseEntity
+public class User
 {
+    @Id
+    @NotNull
+    @Column(nullable = false, name="email")
+    private String email;
+
     @Column(nullable = false, name="first_name")
-    private String first_name;
+    private String firstName;
 
     @Column(nullable = false, name="last_name")
-    private String last_name;
+    private String lastName;
 
-    @Column(nullable = false, unique = true, name="email")
-    private String email;
 
     @Column(nullable = false, name="_password")
     private Long password;
+
+    public User(String firstName,
+                String lastName,
+                String email,
+                Long password)
+    {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+    }
 
     public User()
     {
 
     }
 
-    public User(Long ID,
-                String first_name,
-                String last_name,
-                String email,
-                Long password)
-    {
-        this.setID(ID);
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.email = email;
-        this.password = password;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public User(String first_name,
-                String last_name,
-                String email,
-                Long password)
-    {
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.email = email;
-        this.password = password;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    @Override
-    public String toString()
-    {
-        return "User{" + "first_name='" + first_name + '\'' + ", last_name='" + last_name + '\'' + ", email='" + email + "\'}";
+    public String getLastName() {
+        return lastName;
     }
 
-
-    public String getFirst_name()
-    {
-        return first_name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public void setFirst_name(String first_name)
-    {
-        this.first_name = first_name;
-    }
-
-    public String getLast_name()
-    {
-        return last_name;
-    }
-
-    public void setLast_name(String last_name)
-    {
-        this.last_name = last_name;
-    }
-
-    public String getEmail()
-    {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email)
-    {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public Long getPassword()
-    {
+    public Long getPassword() {
         return password;
     }
 
-    public void setPassword(Long password)
-    {
+    public void setPassword(Long password) {
         this.password = password;
     }
-
 }

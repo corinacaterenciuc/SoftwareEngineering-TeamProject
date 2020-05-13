@@ -10,10 +10,10 @@ import javax.validation.constraints.NotNull;
 public class UserDTO
 {
     @NotBlank
-    private String first_name;
+    private String firstName;
 
     @NotBlank
-    private String last_name;
+    private String lastName;
 
     @NotBlank
     private String email;
@@ -22,36 +22,36 @@ public class UserDTO
     private Long password;
 
 
-    public UserDTO(@JsonProperty("firstname") String first_name,
-                   @JsonProperty("lastname") String last_name,
+    public UserDTO(@JsonProperty("firstname") String firstName,
+                   @JsonProperty("lastname") String lastName,
                    @JsonProperty("email") String email,
                    @JsonProperty("pass") Long password)
     {
-        this.first_name = first_name;
-        this.last_name = last_name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
     }
 
 
-    public String getFirst_name()
+    public String getfirstName()
     {
-        return first_name;
+        return firstName;
     }
 
-    public void setFirst_name(String first_name)
+    public void setfirstName(String firstName)
     {
-        this.first_name = first_name;
+        this.firstName = firstName;
     }
 
-    public String getLast_name()
+    public String getlastName()
     {
-        return last_name;
+        return lastName;
     }
 
-    public void setLast_name(String last_name)
+    public void setlastName(String lastName)
     {
-        this.last_name = last_name;
+        this.lastName = lastName;
     }
 
     public String getEmail()
@@ -77,16 +77,16 @@ public class UserDTO
 
     public static User toDomain(UserDTO dto)
     {
-        return new User(dto.getFirst_name(),
-                        dto.getLast_name(),
+        return new User(dto.getfirstName(),
+                        dto.getlastName(),
                         dto.getEmail(),
                         dto.getPassword());
     }
 
     public static UserDTO toDTO(final User user)
     {
-        return new UserDTO(user.getFirst_name(),
-                           user.getLast_name(),
+        return new UserDTO(user.getFirstName(),
+                           user.getLastName(),
                            user.getEmail(),
                            user.getPassword());
     }
