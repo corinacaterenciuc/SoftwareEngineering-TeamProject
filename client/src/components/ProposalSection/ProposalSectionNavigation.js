@@ -17,12 +17,12 @@ const ProposalSectionNavigation = [
 ];
 
 export default () => {
-  const [location, setLocation] = useState('#level1.1.1');
-  const [css] = useStyletron();
+  const [location, setLocation] = useState('activeItemId={location}');
+  
   return (
   
       <Navigation
-      items={ProposalMenu}
+      items={ProposalSectionNavigation}
       activeItemId={location}
       onChange={({item}) => setLocation(item.itemId)}
     />
