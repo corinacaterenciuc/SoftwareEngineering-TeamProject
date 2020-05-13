@@ -21,15 +21,17 @@ export default function Conference(props){
         <Card className="cardConference">
           <StyledBody>
             <div className="center-container">
-              <h3>Name </h3> {props.conference.name},
-              <h3>Description</h3>{props.conference.description}
-              <h3>DEADLINES: </h3>
-              <h3>Zero Phase </h3> {props.conference.zeroDeadline.toLocaleDateString("ro-RO")}
-              <h3>Abstract </h3> {props.conference.abstractDeadline.toLocaleDateString("ro-RO")}
-              <h3>Full Proposal </h3>{props.conference.proposalDeadline.toLocaleDateString("ro-RO")}
-              <h3>Bidding </h3> {props.conference.biddingDeadline.toLocaleDateString("ro-RO")}
-              <h3>Evaluation </h3> {props.conference.evaluationDeadline.toLocaleDateString("ro-RO")}
-              <h3>Presentation </h3> {props.conference.presentationDeadline.toLocaleDateString("ro-RO")}
+                <ul>
+                    <li><h3>Name </h3> {props.conference.name}</li>
+                    <li><h3>Description</h3>{props.conference.description}</li>
+                    <h3>DEADLINES: </h3>
+                    <li><h3>Zero Phase </h3> {props.conference.zeroDeadline.toLocaleDateString("ro-RO")}</li>
+                    <li><h3>Abstract </h3> {props.conference.abstractDeadline.toLocaleDateString("ro-RO")}</li>
+                    <li><h3>Full Proposal </h3>{props.conference.proposalDeadline.toLocaleDateString("ro-RO")}</li>
+                    <li><h3>Bidding </h3> {props.conference.biddingDeadline.toLocaleDateString("ro-RO")}</li>
+                    <li><h3>Evaluation </h3> {props.conference.evaluationDeadline.toLocaleDateString("ro-RO")}</li>
+                    <li><h3>Presentation </h3> {props.conference.presentationDeadline.toLocaleDateString("ro-RO")}</li>
+                </ul>
             </div>
           </StyledBody>
           <StyledAction>
