@@ -2,6 +2,7 @@ import {FETCH_CONFERENCES, NEW_CONFERENCE} from "./types";
 
 export const fetchConferences = () => dispatch =>
 {
+
         // GET request for Conferences goes here.
         /**
          * .......
@@ -10,6 +11,7 @@ export const fetchConferences = () => dispatch =>
          *    type: FETCH_CONFERENCES,
          *    payload: conferences
          *  )});
+         * 
          */
 };
 
