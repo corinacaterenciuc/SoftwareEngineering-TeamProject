@@ -1,9 +1,12 @@
 import React, {useEffect} from 'react';
 import request from 'request-promise';
 import domain from './constants';
+import Proposal from './serviceTypes';
+import Review from './serviceTypes';
 
-type Proposal = {email : String, title : String}
-type Review = { email: String, proposal : Proposal}
+
+
+
 
 var proposalsService = {
 
