@@ -7,8 +7,7 @@ import {Provider as StyletronProvider} from 'styletron-react';
 import {LightTheme, BaseProvider} from 'baseui';
 import {Provider} from "react-redux";
 import store from './store.js'
-import Navbar from "./components/Navbar/Navbar";
-import ConferenceModalDemo from "./components/ConferenceModalDemo/ConferenceModalDemo";
+import ProposalSection from "./components/ProposalSection/ProposalSection";
 
 const engine = new Styletron();
 // const colorScale = {
@@ -26,7 +25,7 @@ ReactDOM.render(
         <React.StrictMode>
           <StyletronProvider value={engine}>
             <BaseProvider theme={LightTheme}>
-                <ConferenceModalDemo/>
+                <ProposalSection/>
             </BaseProvider>
           </StyletronProvider>
         </React.StrictMode>

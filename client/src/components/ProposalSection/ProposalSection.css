@@ -1,27 +1,6 @@
 .ProposalSection {
-    height: 100%;
-    width: 100%;
-    background-color: pink;
-    
-}
-
-.ProposalSectionNavigation {
+    height: 100vh;
+    width: 100vw;
+    background-color: gold;
     display: flex;
-    width: 20%;
-    height: 100%;
-    background-color: red;
-}
-
-.ProposalSectionContent {
-  
-    width: 80%;
-    height: 100%;
-    background-color: blue;
-    margin: 0;
-}
-body{
-    height:100vh;
-    width:100vw;
-    background-color: green;
-    margin: 0;
 }

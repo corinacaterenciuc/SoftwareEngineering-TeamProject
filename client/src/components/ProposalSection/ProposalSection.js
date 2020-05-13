@@ -1,33 +1,20 @@
 import React from "react";
 
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { MyProposalsPage } from './MyProposalsPage';
-import { AllProposalsPage } from './AllProposalsPage';
 import './ProposalSection.css';
 
-import ProposalSectionNavigation from "./ProposalSectionNavigation";
+import {MyProposalsPage} from "../MyProposalsPage/MyProposalsPage";
+import {AllProposalsPage} from "../AllProposalsPage/AllProposalsPage";
+import ProposalSectionNavigation from "../ProposalSectionNavigation/ProposalSectionNavigation";
 
-export default () => {
-    
-    return (
-        
-        <div className="ProposalSection" data-testid="ProposalSection">
-        <div className={"ProposalSectionNavigation"}>
-          
-             <React.Fragment>
-                <Router>
-                     <ProposalSectionNavigation />
-                         <Switch>
-                            <Route exact path="/MyProposalsPage" component={MyProposalsPage} />
-                            <Route path="/AllProposalsPage" component={AllProposalsPage} />
-                    
-                        </Switch>
-                </Router>
-            </React.Fragment>
-        </div>
-        
-      </div>
-        
-       
-    );
-  };
+export default () => (
+    <div className={"ProposalSection"}>
+        <ProposalSectionNavigation/>
+        <Router>
+            <Switch>
+                <Route exact path="/my-proposals" component={MyProposalsPage} />
+                <Route path="/all-proposals" component={AllProposalsPage} />
+            </Switch>
+        </Router>
+    </div>
+);
