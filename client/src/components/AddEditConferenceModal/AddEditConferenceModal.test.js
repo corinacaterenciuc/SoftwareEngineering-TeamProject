@@ -7,7 +7,7 @@ describe('<AddEditConferenceModal />', () => {
   afterEach(cleanup);
 
   test('it should mount', () => {
-    const { getByTestId } = render(<AddEditConferenceModal />);
+    const { getByTestId } = render(<AddEditConferenceModal/>);
     const conferenceModal = getByTestId('AddEditConferenceModal');
 
     expect(conferenceModal).toBeInTheDocument();
