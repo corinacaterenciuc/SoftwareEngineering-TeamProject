@@ -28,8 +28,8 @@ ReactDOM.render(
     <React.StrictMode>
       <StyletronProvider value={engine}>
         <BaseProvider theme={LightTheme}>
-          {/*  Application entry point */}
           <Centered>
+              {/*  Application entry point */}
               <LoginRegister/>
           </Centered>
         </BaseProvider>
