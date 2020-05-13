@@ -6,7 +6,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-    "baseui": "^9.67.2",
+    "baseui": "^9.69.0",
     "generate-react-cli": "^4.0.2",
     "prop-types": "latest",
     "react": "^16.13.1",
@@ -41,5 +41,7 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint-plugin-baseui": "^9.69.0"
+  }
 }

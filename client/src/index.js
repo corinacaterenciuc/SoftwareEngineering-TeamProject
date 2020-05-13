@@ -4,13 +4,16 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import {Client as Styletron} from 'styletron-engine-atomic';
 import {Provider as StyletronProvider} from 'styletron-react';
-import {LightTheme, BaseProvider} from 'baseui';
-import {Provider} from "react-redux";
-import store from './store.js'
-import Navbar from "./components/Navbar/Navbar";
-import ConferenceModalDemo from "./components/ConferenceModalDemo/ConferenceModalDemo";
+import {LightTheme, BaseProvider, styled } from 'baseui';
+import LoginForms from "./components/LoginForms/LoginForms";
 
 const engine = new Styletron();
+const Centered = styled('div', {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100%',
+});
 // const colorScale = {
 //     '-3': '#ff0000',
 //     '-2': '#fb5600',
@@ -22,15 +25,16 @@ const engine = new Styletron();
 // };
 
 ReactDOM.render(
-    <Provider store={store}>
-        <React.StrictMode>
-          <StyletronProvider value={engine}>
-            <BaseProvider theme={LightTheme}>
-                <ConferenceModalDemo/>
-            </BaseProvider>
-          </StyletronProvider>
-        </React.StrictMode>
-    </Provider>,
+    <React.StrictMode>
+      <StyletronProvider value={engine}>
+        <BaseProvider theme={LightTheme}>
+          {/*  Application entry point */}
+          <Centered>
+            <LoginForms/>
+          </Centered>
+        </BaseProvider>
+      </StyletronProvider>
+    </React.StrictMode>,
     document.getElementById('root')
 );
 
