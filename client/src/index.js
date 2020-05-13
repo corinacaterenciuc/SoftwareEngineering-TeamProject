@@ -5,7 +5,7 @@ import * as serviceWorker from './serviceWorker';
 import {Client as Styletron} from 'styletron-engine-atomic';
 import {Provider as StyletronProvider} from 'styletron-react';
 import {LightTheme, BaseProvider, styled } from 'baseui';
-import LoginForms from "./components/LoginForms/LoginForms";
+import LoginRegister from "./components/LoginRegister/LoginRegister";
 
 const engine = new Styletron();
 const Centered = styled('div', {
@@ -30,7 +30,7 @@ ReactDOM.render(
         <BaseProvider theme={LightTheme}>
           {/*  Application entry point */}
           <Centered>
-            <LoginForms/>
+              <LoginRegister/>
           </Centered>
         </BaseProvider>
       </StyletronProvider>
