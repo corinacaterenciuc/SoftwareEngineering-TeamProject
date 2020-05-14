@@ -17,8 +17,8 @@ const conferenceService = {
      presentationDeadline: string)
     {
         return request({
-            method : "POST",
-            url : `${domain}/api/conferences/`,
+            method: "POST",
+            url: `${domain}/api/conferences/`,
             json: true,
             body:
                 {
@@ -228,7 +228,7 @@ const conferenceService = {
             url: `${domain}/api/conferences/${conferenceId}/sections/${sectionId}/chair`,
             json: true,
             body: {
-                "email" : email
+                "email": email
             }
         })
     },
@@ -239,7 +239,7 @@ const conferenceService = {
             url: `${domain}/api/conferences/${conferenceId}/sections/${sectionId}/chair`,
             json: true,
             body: {
-                "email" : email
+                "email": email
             }
         })
     },
@@ -258,8 +258,8 @@ const conferenceService = {
                           room: number,
                           conferenceId: number ) {
         return request({
-            method : "POST",
-            url : `${domain}/api/conferences/${conferenceId}/sections`,
+            method: "POST",
+            url: `${domain}/api/conferences/${conferenceId}/sections`,
             json: true,
             body: {
                 chair: chair_email,
@@ -273,8 +273,8 @@ const conferenceService = {
 
     removeSection: function (conferenceId: number, sectionId: number) {
         return request({
-            method : "DELETE",
-            url : `${domain}/api/conferences/${conferenceId}/sections/${sectionId}`
+            method: "DELETE",
+            url: `${domain}/api/conferences/${conferenceId}/sections/${sectionId}`
         })
     },
 
@@ -290,8 +290,8 @@ const conferenceService = {
 
     getSections: function (conferenceId: number) {
         return request({
-            method : "GET",
-            url : `${domain}/api/conferences/${conferenceId}/sections`
+            method: "GET",
+            url: `${domain}/api/conferences/${conferenceId}/sections`
         })
     },
 
