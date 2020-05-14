@@ -4,24 +4,8 @@ import {Proposal} from './serviceTypes';
 import {Participant} from './serviceTypes';
 
 
-var conferenceService = {
-    /* add Conferences
-          /api/conferences/
-          POST
-          body:
-            {
-              "name": String,
-              "description": String,
-              "zeroDeadline": String,
-              "abstractDeadline": String,
-              "proposalDeadline": String,
-              "biddingDeadline": String,
-              "evaluationDeadline": String,
-              "presentationDeadline": String
-            }
-          response:
-            STATUS: 200 or 400
-    */
+const conferenceService = {
+
     addConference: function
     (name: string,
      description: string,
@@ -50,19 +34,6 @@ var conferenceService = {
         })
     },
 
-    /*
-     remove Conferences
-      /api/conferences/
-      DELETE
-      body:
-        {
-          "id": int
-        }
-      response:
-        STATUS: 200 or 400
-
-     */
-
     removeConferences: function (id: number) {
         return request({
             method: "DELETE",
@@ -75,28 +46,6 @@ var conferenceService = {
 
     },
 
-    /*
-    get conferences
-      /api/conferences/
-      GET
-      body: N/A
-      response:
-        body:
-          [
-            {
-              "id": int
-              "name": String,
-              "description": String,
-              "zeroDeadline": String,
-              "abstractDeadline": String,
-              "proposalDeadline": String,
-              "biddingDeadline": String,
-              "evaluationDeadline": String,
-              "presentationDeadline": String
-            }
-          ]
-
-     */
     getConferences: function () {
         return request({
             method: "GET",
@@ -104,19 +53,7 @@ var conferenceService = {
         })
     },
 
-    /*
 
-  add participants on conference
-      /api/conferences/{conferenceid}/participants/
-      PUT
-      body:
-        {
-          "email": String
-        }
-      response:
-        STATUS: 200 or 400
-
-     */
     addParticipantsOnConference: function (email: string, conferenceId: number) {
         return request({
             method: "PUT",
@@ -127,19 +64,6 @@ var conferenceService = {
             }
         })
     },
-
-    /*
-    remove participants on conference
-      /api/conferences/{conferenceid}/participants/
-      DELETE
-      body:
-        {
-          "email": String
-        }
-      response:
-        STATUS: 200 or 400
-
-     */
 
     removeParticipantsOnConference: function (email: string, conferenceId: number) {
         return request({
@@ -152,18 +76,6 @@ var conferenceService = {
         })
     },
 
-    /*
-      make scm
-      /api/conferences/{conferenceid}/scm/
-      PUT
-      body:
-        {
-          "email": string
-        }
-      response:
-        STATUS: 200 or 400
-
-     */
     makeSCM: function (email: string, conferenceId: number) {
         return request({
             method: "PUT",
@@ -174,18 +86,7 @@ var conferenceService = {
             }
         })
     },
-    /*
-     remove scm
-      /api/conferences/{conferenceid}/scm/
-      DELETE
-      body:
-        {
-          "email": string
-        }
-      response:
-        STATUS: 200 or 400
 
-     */
     removeSCM: function (email: string, conferenceId: number) {
         return request({
             method: "DELETE",
@@ -196,18 +97,6 @@ var conferenceService = {
             }
         })
     },
-
-    /*
-    make cscm
-      /api/conferences/{conferenceid}/cscm/
-      PUT
-      body:
-        {
-          "email": string
-        }
-      response:
-        STATUS: 200 or 400
-     */
 
     makeCSCM: function (email: string, conferenceId: number) {
         return request({
@@ -220,18 +109,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    remove cscm
-      /api/conferences/{conferenceid}/cscm/
-      DELETE
-      body:
-        {
-          "email": string
-        }
-      response:
-        STATUS: 200 or 400
-
-     */
     removeCSCM:  function (email: string, conferenceId: number) {
         return request({
             method: "DELETE",
@@ -243,18 +120,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    make ccscm
-      /api/conferences/{conferenceid}/ccscm/
-      PUT
-      body:
-        {
-          "email": string
-        }
-      response:
-        STATUS: 200 or 400
-
-     */
     makeCCSCM: function (email: string, conferenceId: number) {
         return request({
             method: "PUT",
@@ -265,19 +130,6 @@ var conferenceService = {
             }
         })
     },
-
-    /*
-     remove ccscm
-      /api/conferences/{conferenceid}/ccscm/
-      DELETE
-      body:
-        {
-          "email": string
-        }
-      response:
-        STATUS: 200 or 400
-
-     */
 
     removeCCSCM: function (email: string, conferenceId: number) {
         return request({
@@ -290,22 +142,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    get all scm
-      /api/conferences/{conferenceid}/scm/
-      GET
-      body: N/A
-      response:
-        body:
-          [
-            {
-              "firstname": string,
-              "lastname": string,
-              "email": string,
-            }
-          ]
-
-     */
     getAllSCM: function (conferenceId: number) {
         return request({
             method: "GET",
@@ -313,17 +149,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    make pcm
-      /api/conferences/{conferenceid}/pcm/
-      PUT
-      body:
-        {
-          "email": string
-        }
-      response:
-        STATUS: 200 or 400
-     */
     makePCM: function (email: string, conferenceId: number) {
         return request({
             method: "PUT",
@@ -335,17 +160,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    remove pcm
-      /api/conferences/{conferenceid}/pcm/
-      DELETE
-      body:
-        {
-          "email": string
-        }
-      response:
-        STATUS: 200 or 400
-     */
     removePCM: function (email: string, conferenceId: number) {
         return request({
             method: "DELETE",
@@ -356,18 +170,6 @@ var conferenceService = {
             }
         })
     },
-
-    /*
-    make cpcm
-      /api/conferences/{conferenceid}/cpcm/
-      PUT
-      body:
-        {
-          "email": string
-        }
-      response:
-        STATUS: 200 or 400
-     */
 
     makeCPCM: function (email: string, conferenceId: number) {
         return request({
@@ -380,18 +182,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    remove cpcm
-      /api/conferences/{conferenceid}/cpcm
-      DELETE
-      body:
-        {
-          "email": string
-        }
-      response:
-        STATUS: 200 or 400
-
-     */
     removeCPCM:  function (email: string, conferenceId: number) {
         return request({
             method: "DELETE",
@@ -403,18 +193,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    make ccpcm
-      /api/conferences/{conferenceid}/ccpcm
-      POST
-      body:
-        {
-          "email" string
-        }
-      response:
-        STATUS: 200 or 400
-
-     */
     makeCCPCM: function (email: string, conferenceId: number) {
         return request({
             method: "POST",
@@ -426,17 +204,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    remove ccpcm
-      /api/conferences/{conferenceid}/ccpcm
-      DELETE
-      body:
-        {
-          "email" string
-        }
-      response:
-        STATUS: 200 or 400
-     */
     removeCCPCM: function (email: string, conferenceId: number) {
         return request({
             method: "DELETE",
@@ -448,21 +215,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    get all pcm
-      /api/conferences/{conferenceid}/pcm/
-      GET
-      body: N/A
-      response:
-        body:
-          [
-            {
-              "firstname": string,
-              "lastname": string,
-              "email": string,
-            }
-          ]
-     */
     getAllPCM: function (conferenceId: number) {
         return request({
             method: "GET",
@@ -470,17 +222,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    make session chair
-      /api/conferences/{conferenceid}/sections/{sectionid}/chair
-      POST
-      body:
-        {
-          "email" string
-        }
-      response:
-        STATUS: 200 or 400
-     */
     makeSessionChair: function (email: string, conferenceId: number, sectionId: number) {
         return request({
             method: "POST",
@@ -492,17 +233,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    remove session chair
-      /api/conferences/{conferenceid}/sections/{sectionid}/chair
-      DELETE
-      body:
-        {
-          "email" string
-        }
-      response:
-        STATUS: 200 or 400
-     */
     removeSessionChair: function (email: string, conferenceId: number, sectionId: number) {
         return request({
             method: "DELETE",
@@ -514,19 +244,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    get session chair
-      /api/conferences/{conferenceid}/sections/{sectionid}/chair
-      GET
-      body: N/A
-      response:
-        body:
-          {
-            "firstname": string,
-            "lastname": string,
-            "email": string,
-          }
-     */
     getSessionChair: function (conferenceId: number, sectionId: number) {
         return request({
             method: "GET",
@@ -534,36 +251,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    add section
-      /api/conferences/{conferenceid}/sections
-      POST
-      body:
-        {
-          "chair": "email",
-          "topics":
-          [
-            "unu",
-            "doua"
-          ],
-          "proposals":
-          [
-            {
-              "email": String
-              "title": String
-            }
-          ],
-          "participants":
-          [
-            {
-              "email": String
-            }
-          ],
-          "room": int
-        }
-      response:
-        STATUS: 200 or 400
-     */
     addSection: function (chair_email: string,
                           topics: string[],
                           proposals: Proposal[],
@@ -584,14 +271,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    remove section
-      /api/conferences/{conferenceid}/sections/{sectionid}
-      DELETE
-      body: N/A
-      response:
-        STATUS: 200 or 400
-     */
     removeSection: function (conferenceId: number, sectionId: number) {
         return request({
             method : "DELETE",
@@ -599,17 +278,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    add participants to section
-      /api/conferences/{conferenceid}/sections/{sectionid}/participants
-      PUT
-      body:
-        {
-          "email": String
-        }
-      response:
-        STATUS: 200 or 400
-     */
     addParticipantsToSection: function (email: string, conferenceId: number, sectionId: number) {
         return request({
             method: "PUT",
@@ -620,38 +288,6 @@ var conferenceService = {
         })
     },
 
-    /*
-    get sections
-      /api/conferences/{conferenceid}/sections
-      GET
-      body: N/A
-      response:
-        body:
-          [
-            {
-              "chair": "email",
-              "topics":
-              [
-                "unu",
-                "doua"
-              ],
-              "proposals":
-              [
-                {
-                  "email": String
-                  "title": String
-                }
-              ],
-              "participants":
-              [
-                {
-                  "email": String
-                }
-              ],
-              "room": int
-            }
-          ]
-     */
     getSections: function (conferenceId: number) {
         return request({
             method : "GET",
@@ -659,6 +295,6 @@ var conferenceService = {
         })
     },
 
-}
+};
 
 export default conferenceService;
