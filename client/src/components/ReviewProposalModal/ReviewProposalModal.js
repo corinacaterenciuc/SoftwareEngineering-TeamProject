@@ -1,5 +1,4 @@
-import React, {useEffect, useRef} from 'react';
-import PropTypes from 'prop-types';
+import React, {useEffect} from 'react';
 import './ReviewProposalModal.css';
 import {Modal, SIZE, ROLE, ModalHeader, ModalBody, ModalFooter, ModalButton} from "baseui/modal";
 import {FormControl} from "baseui/form-control";
@@ -8,32 +7,25 @@ import {Button, KIND} from "baseui/button";
 import {Select} from "baseui/select";
 
 const ReviewProposalModal = (props) => {
-    const [formValid, setFormValid] = React.useState(props != null);
-    const firstRender = useRef(true);
+    /**
+     * props.review object will only be present if this is an edit of a former Review
+     * props.review.grade is expected as an object with properties `label` and `id` per the Select item below.
+     * props.review.justification has a string value
+     */
 
-    const [grade, setGrade] = React.useState(props != null ? [props.grade] : []);
-    const [gradeValid, setGradeValid] = React.useState(props != null);
-    const [gradeInputVisited, setGradeInputVisited] = React.useState(false);
+    const [formValid, setFormValid] = React.useState(props.review != null);
 
-    const [justification, setJustification] = React.useState(props != null ? props.justification : '');
-    const [justificationValid, setJustificationValid] = React.useState(props != null);
-    const [justificationInputVisited, setJustificationInputVisited] = React.useState(false);
+    const [grade, setGrade] = React.useState(props.review != null ? [props.review.grade] : []);
+    const [gradeValid, setGradeValid] = React.useState(props.review != null);
+
+    const [justification, setJustification] = React.useState(props.review != null ? props.review.justification : '');
+    const [justificationValid, setJustificationValid] = React.useState(props.review != null);
 
     useEffect(() => {
-        if (firstRender.current)
-        {
-            // Else input fields will be marked as error from the start
-            // since useEffect is also called at update but also at render
-            firstRender.current = false;
-            return;
-        }
         setGradeValid(grade.length !== 0);
         setJustificationValid(justification !== '');
+        setFormValid(grade.length !== 0 && justification !== '')
     }, [grade, justification]);
-
-    useEffect(() => {
-        setFormValid(gradeValid && justificationValid);
-    }, [gradeValid, justificationValid]);
 
     return (
         <div className="ReviewProposalModal" data-testid="ReviewProposalModal">
@@ -56,7 +48,7 @@ const ReviewProposalModal = (props) => {
                         />
                     </FormControl>
 
-                    <form method="get" action={props.proposal_url}>
+                    <form method="get" action={props.proposal.proposal_url}>
                         <Button
                             type="submit"
                             kind={KIND.secondary}
@@ -79,20 +71,18 @@ const ReviewProposalModal = (props) => {
                                 { label: "Strong Accept (3)", id: 3 }
                             ]}
                             value={grade}
-                            error={gradeInputVisited && !gradeValid}
+                            error={!gradeValid}
                             placeholder="Grade the Proposal"
-                            required
-                            onChange={params => {setGradeInputVisited(true); setGrade(params.value)}}
+                            onChange={params => setGrade(params.value)}
                         />
                     </FormControl>
 
                     <FormControl label={() => "Justification"}>
                         <Textarea
                             value={justification}
-                            error={justificationInputVisited && !justificationValid}
+                            error={!justificationValid}
                             size={SIZE.default}
-                            required
-                            onChange={(e) => {setJustificationInputVisited(true); setJustification(e.target.value)}}
+                            onChange={(e) => setJustification(e.target.value)}
                         />
                     </FormControl>
 
@@ -106,20 +96,8 @@ const ReviewProposalModal = (props) => {
     );
 };
 
-ReviewProposalModal.propTypes = {
-    grade: PropTypes.exact({
-        label: PropTypes.string.isRequired,
-        id: PropTypes.number.isRequired
-    }),
-    justification: PropTypes.string,
-    proposal_url: PropTypes.string.isRequired,
-    isOpen: PropTypes.bool.isRequired,
-    setIsOpen: PropTypes.func.isRequired
-};
+ReviewProposalModal.propTypes = {};
 
-ReviewProposalModal.defaultProps = {
-    grade: null,
-    justification: null
-};
+ReviewProposalModal.defaultProps = {};
 
 export default ReviewProposalModal;
