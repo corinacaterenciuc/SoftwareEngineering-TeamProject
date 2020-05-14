@@ -6,16 +6,16 @@ import {Participant} from './serviceTypes';
 
 const conferenceService = {
 
-    addConference: function
-    (name: string,
-     description: string,
-     zeroDeadline: string,
-     abstractDeadline: string,
-     proposalDeadline: string,
-     biddingDeadline: string,
-     evaluationDeadline: string,
-     presentationDeadline: string)
-    {
+    addConference: function (
+        name: string,
+        description: string,
+        zeroDeadline: string,
+        abstractDeadline: string,
+        proposalDeadline: string,
+        biddingDeadline: string,
+        evaluationDeadline: string,
+        presentationDeadline: string
+    ) {
         return request({
             method: "POST",
             url: `${domain}/api/conferences/`,
@@ -251,12 +251,14 @@ const conferenceService = {
         })
     },
 
-    addSection: function (chair_email: string,
-                          topics: string[],
-                          proposals: Proposal[],
-                          participants: Participant[],
-                          room: number,
-                          conferenceId: number ) {
+    addSection: function (
+        chair_email: string,
+        topics: string[],
+        proposals: Proposal[],
+        participants: Participant[],
+        room: number,
+        conferenceId: number
+    ){
         return request({
             method: "POST",
             url: `${domain}/api/conferences/${conferenceId}/sections`,
