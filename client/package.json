@@ -42,6 +42,7 @@
     ]
   },
   "devDependencies": {
+    "@types/request-promise": "^4.1.46",
     "eslint-plugin-baseui": "^9.69.0"
   }
 }
