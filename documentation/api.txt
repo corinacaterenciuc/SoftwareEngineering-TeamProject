@@ -12,6 +12,12 @@ User stuff:
         }
       response:
         STATUS: 200 or 400
+        body:
+          {
+            "firstname": string,
+            "lastname": string,
+            "email": string
+          }
 
   remove a user
       /api/users/
@@ -22,6 +28,25 @@ User stuff:
         }
       response:
         STATUS: 200 or 400
+
+  update a user
+      /api/users/
+      PUT
+      body:
+        {
+          "firstname": string, // can be null, will remain the same if so
+          "lastname": string,  // can be null, will remain the same if so
+          "email": string,
+          "password": string   // can be null, will remain the same if so
+        }
+      response:
+        STATUS: 200 or 400
+        body:
+          {
+            "firstname": string,
+            "lastname": string,
+            "email": string
+          }
 
   get users
       /api/users/
@@ -68,14 +93,26 @@ Conferences stuff:
           "name": string,
           "description": string,
           "zeroDeadline": string,
-          "abstractDeadline": string,
-          "proposalDeadline": string,
-          "biddingDeadline": string,
-          "evaluationDeadline": string,
-          "presentationDeadline": string
+          "abstractDeadline": string,       // can be null
+          "proposalDeadline": string,       // can be null
+          "biddingDeadline": string,        // can be null
+          "evaluationDeadline": string,     // can be null
+          "presentationDeadline": string    // can be null
         }
       response:
         STATUS: 200 or 400
+        body:
+          {
+            "id": number,
+            "name": string,
+            "description": string,
+            "zeroDeadline": string,
+            "abstractDeadline": string,      // can be null
+            "proposalDeadline": string,      // can be null
+            "biddingDeadline": string,       // can be null
+            "evaluationDeadline": string,    // can be null
+            "presentationDeadline": string   // can be null
+          }
 
   remove Conferences
       /api/conferences/
@@ -86,6 +123,34 @@ Conferences stuff:
         }
       response:
         STATUS: 200 or 400
+
+  update Conference
+      /api/conferences/
+      PUT
+      body:
+        {
+          "name": string,
+          "description": string,
+          "zeroDeadline": string,
+          "abstractDeadline": string,      // can be null, will remain the same if so
+          "proposalDeadline": string,      // can be null, will remain the same if so
+          "biddingDeadline": string,       // can be null, will remain the same if so
+          "evaluationDeadline": string,    // can be null, will remain the same if so
+          "presentationDeadline": string   // can be null, will remain the same if so
+        }
+      response:
+        STATUS: 200 or 400
+        body:
+          {
+            "name": string,
+            "description": string,
+            "zeroDeadline": string,
+            "abstractDeadline": string,     // can be null
+            "proposalDeadline": string,     // can be null
+            "biddingDeadline": string,      // can be null
+            "evaluationDeadline": string,   // can be null
+            "presentationDeadline": string  // can be null
+          }
 
   get conferences
       /api/conferences/
@@ -99,11 +164,11 @@ Conferences stuff:
               "name": String,
               "description": String,
               "zeroDeadline": String,
-              "abstractDeadline": String,
-              "proposalDeadline": String,
-              "biddingDeadline": String,
-              "evaluationDeadline": String,
-              "presentationDeadline": String
+              "abstractDeadline": String,     // can be null
+              "proposalDeadline": String,     // can be null
+              "biddingDeadline": String,      // can be null
+              "evaluationDeadline": String,   // can be null
+              "presentationDeadline": String  // can be null
             }
           ]
 
@@ -187,7 +252,7 @@ Conferences stuff:
       response:
         STATUS: 200 or 400
 
-  get all scm
+  get all scm // scm + cscm + ccscm
       /api/conferences/{conferenceid}/scm/
       GET
       body: N/A
@@ -261,7 +326,7 @@ Conferences stuff:
       response:
         STATUS: 200 or 400
 
-  get all pcm
+  get all pcm // pcm + cpcm + ccpcm
       /api/conferences/{conferenceid}/pcm/
       GET
       body: N/A
@@ -312,20 +377,20 @@ Conferences stuff:
       POST
       body:
         {
-          "chair": "email",
+          "chair": "<emailu_userului>",
           "topics":
           [
             "unu",
             "doua"
           ],
-          "proposals":
+          "proposals": // this can be null
           [
             {
               "email": String
               "title": String
             }
           ],
-          "participants":
+          "participants": // this can be null
           [
             {
               "email": String
@@ -335,6 +400,29 @@ Conferences stuff:
         }
       response:
         STATUS: 200 or 400
+        body:
+          {
+              "chair": "<emailu_userului>",
+              "topics":
+              [
+                "unu",
+                "doua"
+              ],
+              "proposals": // this can be null
+              [
+                {
+                  "email": String
+                  "title": String
+                }
+              ],
+              "participants": // this can be null
+              [
+                {
+                  "email": String
+                }
+              ],
+              "room": int
+          }
 
   remove section
       /api/conferences/{conferenceid}/sections/{sectionid}
@@ -391,10 +479,10 @@ Proposals:
       POST
       body:
         {
-          "author": "email",
+          "author": "<emailu_userului>",
           "proposalName": String,
-          "filePath": String,
-          "abstractPath": String,
+          "filePath": String,           // can be null
+          "abstractDescription": String, // can be null
           "topics":
           [
             "unu",
@@ -405,24 +493,23 @@ Proposals:
             "unu",
             "doi"
           ],
-          "coAuthors":
+          "coAuthors": // this can be null
           [
             "email1",
             "email2"
           ],
-          "bidders":
+          "bidders": // this can be null
           [
             "email1",
             "email2"
           ],
-          "reviewers":
+          "reviewers": // this can be null
           [
             "email1",
             "email2"
           ],
-          "reviews":
+          "reviews": // this can be null
           [
-            //can be empty
             {
               "email": String,
               "proposal":
@@ -430,11 +517,58 @@ Proposals:
                 "proposalName": String,
                 "author": "email"
               }
+              "grade": number,
+              "justification": String
             }
           ]
         }
       response:
         STATUS: 200 or 400
+        body:
+         {
+           "author": "<emailu_userului>",
+           "proposalName": String,
+           "filePath": String,    // can be null
+           "abstractDescription": String, // can be null
+           "topics":
+           [
+             "unu",
+             "dou"
+           ],
+           "keywords":
+           [
+             "unu",
+             "doi"
+           ],
+           "coAuthors": // this can be null
+           [
+             "email1",
+             "email2"
+           ],
+           "bidders": // this can be null
+           [
+             "email1",
+             "email2"
+           ],
+           "reviewers": // this can be null
+           [
+             "email1",
+             "email2"
+           ],
+           "reviews": // this can be null
+           [
+             {
+               "email": String,
+               "proposal":
+               {
+                 "proposalName": String,
+                 "author": "email"
+               }
+               "grade": number,
+               "justification": String
+             }
+           ]
+         }
 
   remove proposal
       /api/conferences/{conferenceid}/proposals
@@ -468,31 +602,32 @@ Proposals:
               "unu",
               "doi"
             ],
-            "coAuthors":
+            "coAuthors": // can be null
             [
               "email1",
               "email2"
             ],
-            "bidders":
+            "bidders": // can be null
             [
               "email1",
               "email2"
             ],
-            "reviewers":
+            "reviewers": // can be null
             [
               "email1",
               "email2"
             ],
-            "reviews":
+            "reviews": // can be null
             [
-              //can be empty
               {
                 "email": String,
                 "proposal":
                 {
                   "proposalName": String,
                   "author": "email"
-                }
+                },
+                "grade": number,
+                "justification": String
               }
             ]
           }
@@ -508,7 +643,9 @@ Proposals:
           {
             "proposalName": String,
             "author": "email"
-          }
+          },
+          "grade": number,
+          "justification": String
         }
       response:
         STATUS: 200 or 400
@@ -526,7 +663,9 @@ Proposals:
               {
                 "proposalName": String,
                 "author": "email"
-              }
+              },
+              "grade": number,
+              "justification": String
             }
           ]
 
