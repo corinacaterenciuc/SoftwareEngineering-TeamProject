@@ -9,10 +9,8 @@ import javax.validation.constraints.NotNull;
 
 public class UserDTO
 {
-    @NotBlank
     private String firstName;
 
-    @NotBlank
     private String lastName;
 
     @NotBlank

@@ -11,6 +11,9 @@ import java.util.Date;
 
 public class ConferenceDTO
 {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long id;
+
     @NotBlank
     @JsonProperty
     private String name;
@@ -40,6 +43,25 @@ public class ConferenceDTO
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date presentationDeadline;
 
+
+    public ConferenceDTO(Long id,
+                         @NotBlank String name,
+                         @NotBlank String description,
+                         @NotNull Date zeroDeadline,
+                         Date abstractDeadline,
+                         Date proposalDeadline,
+                         Date biddingDeadline,
+                         Date presentationDeadline)
+    {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.zeroDeadline = zeroDeadline;
+        this.abstractDeadline = abstractDeadline;
+        this.proposalDeadline = proposalDeadline;
+        this.biddingDeadline = biddingDeadline;
+        this.presentationDeadline = presentationDeadline;
+    }
 
     public ConferenceDTO(
             @JsonProperty @NotBlank String name,
@@ -81,6 +103,14 @@ public class ConferenceDTO
 
     public Date getZeroDeadline() {
         return zeroDeadline;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setZeroDeadline(Date zeroDeadline) {
@@ -132,7 +162,8 @@ public class ConferenceDTO
 
     public static ConferenceDTO toDTO(final Conference conference)
     {
-        return new ConferenceDTO(conference.getName(),
+        return new ConferenceDTO(conference.getID(),
+                                 conference.getName(),
                                  conference.getDescription(),
                                  conference.getZeroDeadline(),
                                  conference.getAbstractDeadline(),

@@ -11,6 +11,7 @@ import theotherhalf.superconference.domain.User;
 import theotherhalf.superconference.domain.UserClaims;
 import theotherhalf.superconference.dto.UserClaimsDTO;
 import theotherhalf.superconference.dto.UserDTO;
+import theotherhalf.superconference.exceptions.ControllerException;
 import theotherhalf.superconference.services.ConferenceService;
 import theotherhalf.superconference.services.UserService;
 
@@ -33,18 +34,43 @@ public class UserController
     }
 
     @PostMapping
-    public void addNewUser(@RequestBody @Valid UserDTO userDTO)
+    public UserDTO addNewUser(@RequestBody @Valid UserDTO userDTO)
     {
         User user = UserDTO.toDomain(userDTO);
-        this.userService.addUser(user);
+        User savedUser = this.userService.addUser(user);
+        return UserDTO.toDTO(savedUser);
     }
 
     @DeleteMapping
-    public void deleteUser(@RequestBody String email)
+    public void deleteUser(@RequestBody String jsonBody)
     {
         JacksonJsonParser gson = new JacksonJsonParser();
-        String eml = gson.parseMap(email).get("email").toString();
+        String eml = gson.parseMap(jsonBody).get("email").toString();
         this.userService.deleteUser(eml);
+    }
+
+    @PutMapping
+    public UserDTO updateUser(@RequestBody @Valid UserDTO userDTO)
+    {
+        User user = UserDTO.toDomain(userDTO);
+        User updatedUser = this.userService.updateUser(user);
+        return UserDTO.toDTO(updatedUser);
+    }
+
+    @PutMapping(path="/admins")
+    public void makeAdmin(@RequestBody String jsonBody)
+    {
+        JacksonJsonParser gson = new JacksonJsonParser();
+        String eml = gson.parseMap(jsonBody).get("email").toString();
+        this.userService.addAdmin(eml);
+    }
+
+    @DeleteMapping(path="/admins")
+    public void deleteAdmin(@RequestBody String jsonBody)
+    {
+        JacksonJsonParser gson = new JacksonJsonParser();
+        String eml = gson.parseMap(jsonBody).get("email").toString();
+        this.userService.removeAdmin(eml);
     }
 
     @GetMapping
@@ -54,27 +80,13 @@ public class UserController
         return userList.stream().map(UserDTO::toDTO).collect(Collectors.toList());
     }
 
-    @PutMapping(path="/scm/user={useremail}&conf={cid}")
-    public void addSCM(@PathVariable("useremail") String userEmail, @PathVariable("cid") Long conferenceID)
-    {
-        User user = this.userService.findByEmail(userEmail).orElse(null);
-        Conference conference = this.conferenceService.findById(conferenceID).orElse(null);
-        if(null == user && null == conference)
-        {
-            // raise some error
-            ;
-        }
-        this.userService.addSCM(user, conference);
-    }
-
     @GetMapping(path="/user/{email}")
     public List<UserClaimsDTO> getAllRoles(@PathVariable("email") String userEmail)
     {
         User user = this.userService.findByEmail(userEmail).orElse(null);
         if (null == user)
         {
-            //raise
-            ;
+            throw new ControllerException("[ERROR] Null user given for roles search");
         }
         return this.userService.getAllRolesForUser(user).stream().map(UserClaimsDTO::toDTO).collect(Collectors.toList());
     }
