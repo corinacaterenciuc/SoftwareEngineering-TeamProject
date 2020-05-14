@@ -25,32 +25,14 @@ public class Conference extends BaseEntity
     @NotNull
     private Date zeroDeadline;
 
-    @NotNull
     private Date abstractDeadline;
 
-    public Conference(@NotBlank String name,
-                      @NotBlank String description,
-                      @NotNull Date zeroDeadline,
-                      @NotNull Date abstractDeadline,
-                      @NotNull Date proposalDeadline,
-                      @NotNull Date biddingDeadline,
-                      @NotNull Date presentationDeadline) {
-        this.name = name;
-        this.description = description;
-        this.zeroDeadline = zeroDeadline;
-        this.abstractDeadline = abstractDeadline;
-        this.proposalDeadline = proposalDeadline;
-        this.biddingDeadline = biddingDeadline;
-        this.presentationDeadline = presentationDeadline;
-    }
-
-    @NotNull
     private Date proposalDeadline;
 
-    @NotNull
     private Date biddingDeadline;
 
-    @NotNull
+    private Date evaluationDeadline;
+
     private Date presentationDeadline;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -59,15 +41,34 @@ public class Conference extends BaseEntity
     public Conference() {
     }
 
+    public Conference(@NotBlank String name,
+                      @NotBlank String description,
+                      @NotNull Date zeroDeadline,
+                      Date abstractDeadline,
+                      Date proposalDeadline,
+                      Date biddingDeadline,
+                      Date evaluationDeadline,
+                      Date presentationDeadline) {
+        this.name = name;
+        this.description = description;
+        this.zeroDeadline = zeroDeadline;
+        this.abstractDeadline = abstractDeadline;
+        this.proposalDeadline = proposalDeadline;
+        this.biddingDeadline = biddingDeadline;
+        this.evaluationDeadline = evaluationDeadline;
+        this.presentationDeadline = presentationDeadline;
+    }
+
 
     public Conference(
             @NotBlank String name,
             @NotBlank String description,
             @NotNull Date zeroDeadline,
-            @NotNull Date abstractDeadline,
-            @NotNull Date proposalDeadline,
-            @NotNull Date biddingDeadline,
-            @NotNull Date presentationDeadline,
+            Date abstractDeadline,
+            Date proposalDeadline,
+            Date biddingDeadline,
+            Date evaluationDeadline,
+            Date presentationDeadline,
             List<Section> sections) {
         this.name = name;
         this.description = description;
@@ -75,6 +76,7 @@ public class Conference extends BaseEntity
         this.abstractDeadline = abstractDeadline;
         this.proposalDeadline = proposalDeadline;
         this.biddingDeadline = biddingDeadline;
+        this.evaluationDeadline = evaluationDeadline;
         this.presentationDeadline = presentationDeadline;
         this.sections = sections;
     }
@@ -137,6 +139,14 @@ public class Conference extends BaseEntity
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public Date getEvaluationDeadline() {
+        return evaluationDeadline;
+    }
+
+    public void setEvaluationDeadline(Date evaluationDeadline) {
+        this.evaluationDeadline = evaluationDeadline;
     }
 
     public void setSections(List<Section> sections) {

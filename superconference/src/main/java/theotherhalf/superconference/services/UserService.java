@@ -17,6 +17,7 @@ import theotherhalf.superconference.validators.UserValidator;
 import javax.sql.rowset.serial.SerialException;
 import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -122,6 +123,42 @@ public class UserService
         return opUser.get();
     }
 
+    public List<User> getConferenceUsersByRole(Conference conference, ENUMERATION_ROLES role)
+    {
+        List<UserClaims> userClaimsPCM = this.roleRepository.findByConferenceAndRole(conference, role);
+        List<User> usersPCM = userClaimsPCM.stream().map(UserClaims::getUser).collect(Collectors.toList());
+        return usersPCM;
+    }
+
+    public List<User> getConferenceSCM(Conference conference)
+    {
+        List<User> allSCM = new ArrayList<>();
+
+        List<User> usersSCM = this.getConferenceUsersByRole(conference, ENUMERATION_ROLES.SCM);
+        List<User> usersCSCM = this.getConferenceUsersByRole(conference, ENUMERATION_ROLES.CHAIR_SCM);
+        List<User> usersCCSCM = this.getConferenceUsersByRole(conference, ENUMERATION_ROLES.CO_CHAIR_SCM);
+
+        allSCM.addAll(usersSCM);
+        allSCM.addAll(usersCSCM);
+        allSCM.addAll(usersCCSCM);
+
+        return allSCM;
+    }
+
+    public List<User> getConferencePCM(Conference conference)
+    {
+        List<User> allPCM = new ArrayList<>();
+
+        List<User> usersPCM = this.getConferenceUsersByRole(conference, ENUMERATION_ROLES.PCM);
+        List<User> usersCPCM = this.getConferenceUsersByRole(conference, ENUMERATION_ROLES.CHAIR_PCM);
+        List<User> usersCCPCM = this.getConferenceUsersByRole(conference, ENUMERATION_ROLES.CO_CHAIR_PCM);
+
+        allPCM.addAll(usersPCM);
+        allPCM.addAll(usersCPCM);
+        allPCM.addAll(usersCCPCM);
+
+        return allPCM;
+    }
     // START OF CLAIMS SECTION
 
     public void addRoleToUser(User user, Conference conference, ENUMERATION_ROLES role)

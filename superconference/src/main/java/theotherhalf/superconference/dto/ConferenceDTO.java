@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class ConferenceDTO
 {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty
     private Long id;
 
     @NotBlank
@@ -41,6 +41,10 @@ public class ConferenceDTO
 
     @JsonProperty
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private Date evaluationDeadline;
+
+    @JsonProperty
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date presentationDeadline;
 
 
@@ -51,6 +55,7 @@ public class ConferenceDTO
                          Date abstractDeadline,
                          Date proposalDeadline,
                          Date biddingDeadline,
+                         Date evaluationDeadline,
                          Date presentationDeadline)
     {
         this.id = id;
@@ -60,6 +65,7 @@ public class ConferenceDTO
         this.abstractDeadline = abstractDeadline;
         this.proposalDeadline = proposalDeadline;
         this.biddingDeadline = biddingDeadline;
+        this.evaluationDeadline = evaluationDeadline;
         this.presentationDeadline = presentationDeadline;
     }
 
@@ -70,6 +76,7 @@ public class ConferenceDTO
             @JsonProperty  Date abstractDeadline,
             @JsonProperty  Date proposalDeadline,
             @JsonProperty  Date biddingDeadline,
+            @JsonProperty  Date evaluationDeadline,
             @JsonProperty  Date presentationDeadline) {
         this.name = name;
         this.description = description;
@@ -77,6 +84,7 @@ public class ConferenceDTO
         this.abstractDeadline = abstractDeadline;
         this.proposalDeadline = proposalDeadline;
         this.biddingDeadline = biddingDeadline;
+        this.evaluationDeadline = evaluationDeadline;
         this.presentationDeadline = presentationDeadline;
     }
 
@@ -149,6 +157,14 @@ public class ConferenceDTO
         this.presentationDeadline = presentationDeadline;
     }
 
+    public Date getEvaluationDeadline() {
+        return evaluationDeadline;
+    }
+
+    public void setEvaluationDeadline(Date evaluationDeadline) {
+        this.evaluationDeadline = evaluationDeadline;
+    }
+
     public static Conference toDomain(ConferenceDTO dto)
     {
         return new Conference(dto.getName(),
@@ -157,6 +173,7 @@ public class ConferenceDTO
                               dto.getAbstractDeadline(),
                               dto.getProposalDeadline(),
                               dto.getBiddingDeadline(),
+                              dto.getEvaluationDeadline(),
                               dto.getPresentationDeadline());
     }
 
@@ -169,6 +186,7 @@ public class ConferenceDTO
                                  conference.getAbstractDeadline(),
                                  conference.getProposalDeadline(),
                                  conference.getBiddingDeadline(),
+                                 conference.getEvaluationDeadline(),
                                  conference.getPresentationDeadline());
     }
 }
