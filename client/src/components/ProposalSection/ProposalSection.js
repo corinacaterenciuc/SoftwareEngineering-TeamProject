@@ -1,16 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import './ProposalSection.css';
 
-const ProposalSection = () => (
-  <div className="ProposalSection" data-testid="ProposalSection">
-    <div className={"ProposalSectionNavigation"}></div>
-    <div className={"ProposalSectionContent"}></div>
-  </div>
+import {MyProposalsPage} from "../MyProposalsPage/MyProposalsPage";
+import {AllProposalsPage} from "../AllProposalsPage/AllProposalsPage";
+import ProposalSectionNavigation from "../ProposalSectionNavigation/ProposalSectionNavigation";
+
+export default () => (
+    <div className={"ProposalSection"}>
+        <ProposalSectionNavigation/>
+        <Router>
+            <Switch>
+                <Route exact path="/my-proposals" component={MyProposalsPage} />
+                <Route path="/all-proposals" component={AllProposalsPage} />
+            </Switch>
+        </Router>
+    </div>
 );
-
-ProposalSection.propTypes = {};
-
-ProposalSection.defaultProps = {};
-
-export default ProposalSection;
