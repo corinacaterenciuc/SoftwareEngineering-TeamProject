@@ -2,11 +2,11 @@ import React, {useState} from 'react';
 import {Navigation} from 'baseui/side-navigation';
 
 export default () => {
-    const [location, setLocation] = useState('my-proposals');
+    const [location, setLocation] = useState('my-proposal');
 
     const navigationItems = [
-        { title: 'My Proposals', itemId: 'my-proposals', },
-        { title: 'All Proposals', itemId: 'all-proposals', },
+        {title: 'My Proposals', itemId: 'my-proposal',},
+        {title: 'All Proposals', itemId: 'all-proposal',},
     ];
 
     return (
