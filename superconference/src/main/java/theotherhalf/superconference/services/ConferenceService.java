@@ -2,9 +2,7 @@ package theotherhalf.superconference.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import theotherhalf.superconference.domain.Conference;
-import theotherhalf.superconference.domain.ENUMERATION_ROLES;
-import theotherhalf.superconference.domain.User;
+import theotherhalf.superconference.domain.*;
 import theotherhalf.superconference.exceptions.ServiceException;
 import theotherhalf.superconference.repository.ConferenceRepository;
 import theotherhalf.superconference.repository.RoleRepository;
@@ -12,9 +10,11 @@ import theotherhalf.superconference.validators.ConferenceValidator;
 
 import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class ConferenceService
@@ -222,5 +222,42 @@ public class ConferenceService
     public void removeSectionChair(String userEmail, Long conferenceID)
     {
         this.userService.removeSectionChair(userEmail, this.getConferenceAfterValidation(conferenceID));
+    }
+
+    public List<Proposal> getConferenceProposals(Long confId)
+    {
+        if(this.repository.findById(confId).isEmpty())
+        {
+            throw new ServiceException("[ERROR] Conference doesn't exists!");
+        }
+        Conference conference = this.repository.findById(confId).get();
+        List<Section> sections = conference.getSections();
+        ArrayList<Proposal> allProposals = new ArrayList<>();
+        sections.forEach( x -> allProposals.addAll(x.getProposals()));
+        return allProposals;
+    }
+
+    public List<Proposal> getProposalsByKeys(Conference conference, List<ProposalKey> keys)
+    {
+        List<Proposal> allProposals = this.getConferenceProposals(conference.getID());
+        return allProposals.stream().filter(x -> keys.stream().anyMatch(k -> k.getEmail().equals(x.getAuthor().getEmail()) && k.getTitle().equals(x.getProposalName()))).collect(Collectors.toList());
+    }
+
+    public void addSection(Long confId, String chair, List<String> topics, List<ProposalKey> proposalKeys, List<String> emailParticipants, Integer room)
+    {
+        if(this.repository.findById(confId).isEmpty())
+        {
+            throw new ServiceException("[ERROR] Conference doesn't exists!");
+        }
+        Conference conference = this.repository.findById(confId).get();
+        List<Proposal> proposals = this.getProposalsByKeys(conference, proposalKeys);
+        if (this.userService.findByEmail(chair).isEmpty())
+        {
+            throw new ServiceException("[ERROR] User doesn't exist");
+        }
+        User userChair = this.userService.findByEmail(chair).get();
+        List<User> participants = this.userService.getUsersInEmailList(emailParticipants);
+        Section section = new Section(userChair, topics, proposals, participants, room);
+        conference.addSection(section);
     }
 }

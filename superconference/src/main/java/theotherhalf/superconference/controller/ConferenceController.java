@@ -4,15 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.Conference;
+import theotherhalf.superconference.domain.ProposalKey;
+import theotherhalf.superconference.domain.Section;
 import theotherhalf.superconference.domain.User;
 import theotherhalf.superconference.dto.ConferenceDTO;
+import theotherhalf.superconference.dto.SectionDTO;
 import theotherhalf.superconference.dto.UserDTO;
 import theotherhalf.superconference.exceptions.ControllerException;
 import theotherhalf.superconference.services.ConferenceService;
 import theotherhalf.superconference.services.UserService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -79,7 +84,7 @@ public class ConferenceController
         return conferenceList.stream().map(ConferenceDTO::toDTO).collect(Collectors.toList());
     }
 
-
+    // ------------ USERS -----------
     @GetMapping(path = "{confId}/pcm")
     public List<UserDTO> getAllPCM(@PathVariable("confId") Long confId)
     {
@@ -178,4 +183,21 @@ public class ConferenceController
         this.conferenceService.removeCCPCM(userEmail, confId);
     }
 
+    // ------ SECTIONS --------
+    @PostMapping(path = "{confId}/sections")
+    public SectionDTO addSection(@PathVariable("confId") Long confId, @RequestBody SectionDTO sectionDTO)
+    {
+        List<ProposalKey> proposalKeys = new ArrayList<>();
+        List<String> participantsEmail = new ArrayList<>();
+        if(sectionDTO.getProposals() != null)
+        {
+            sectionDTO.getProposals().forEach(x -> proposalKeys.add(new ProposalKey(x.getEmail(), x.getTitle(), confId)));
+        }
+        if(sectionDTO.getParticipants() != null)
+        {
+            sectionDTO.getParticipants().forEach(x -> participantsEmail.add(x.getEmail()));
+        }
+        this.conferenceService.addSection(confId, sectionDTO.getChair(), sectionDTO.getTopics(), proposalKeys, participantsEmail, sectionDTO.getRoom());
+        return sectionDTO;
+    }
 }

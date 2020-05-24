@@ -2,10 +2,7 @@ package theotherhalf.superconference.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import theotherhalf.superconference.domain.Conference;
-import theotherhalf.superconference.domain.ENUMERATION_ROLES;
-import theotherhalf.superconference.domain.User;
-import theotherhalf.superconference.domain.UserClaims;
+import theotherhalf.superconference.domain.*;
 import theotherhalf.superconference.exceptions.ConferenceManagementSystemException;
 import theotherhalf.superconference.exceptions.ServiceException;
 import theotherhalf.superconference.exceptions.ValidationException;
@@ -272,5 +269,11 @@ public class UserService
         }
         List<UserClaims> claimsList = this.roleRepository.findAll().stream().filter( x-> x.getUser().getEmail().equals(user.getEmail())).collect(Collectors.toList());
         return claimsList;
+    }
+
+    public List<User> getUsersInEmailList(List<String> emails)
+    {
+        List<User> users = this.repository.findAll();
+        return users.stream().filter(x -> emails.stream().anyMatch(k -> k.equals(x.getEmail()))).collect(Collectors.toList());
     }
 }

@@ -1,0 +1,74 @@
+package theotherhalf.superconference.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import theotherhalf.superconference.domain.Proposal;
+import theotherhalf.superconference.domain.User;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class SectionDTO
+{
+    private String chair;
+
+    private List<String> topics;
+
+    private List<ProposalDTO> proposals;
+
+    private List<JsonEmailDTO> participants;
+
+    private Integer room;
+
+    public SectionDTO(String chair, List<String> topics, List<ProposalDTO> proposals, List<JsonEmailDTO> participants, Integer room) {
+        this.chair = chair;
+        this.topics = topics;
+        this.proposals = proposals;
+        this.participants = participants;
+        this.room = room;
+    }
+
+    public SectionDTO()
+    {
+    }
+
+    public String getChair() {
+        return chair;
+    }
+
+    public void setChair(String chair) {
+        this.chair = chair;
+    }
+
+    public List<String> getTopics() {
+        return topics;
+    }
+
+    public void setTopics(List<String> topics) {
+        this.topics = topics;
+    }
+
+    public List<ProposalDTO> getProposals() {
+        return proposals;
+    }
+
+    public void setProposals(List<ProposalDTO> proposals) {
+        this.proposals = proposals;
+    }
+
+    public List<JsonEmailDTO> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<JsonEmailDTO> participants) {
+        this.participants = participants;
+    }
+
+    public Integer getRoom() {
+        return room;
+    }
+
+    public void setRoom(Integer room) {
+        this.room = room;
+    }
+}

@@ -153,4 +153,8 @@ public class Conference extends BaseEntity
         this.sections = sections;
     }
 
+    public void addSection(Section section)
+    {
+        this.sections.add(section);
+    }
 }

@@ -1,5 +1,6 @@
 package theotherhalf.superconference.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sun.istack.NotNull;
 import theotherhalf.superconference.domain.Conference;
 import theotherhalf.superconference.domain.ENUMERATION_ROLES;
@@ -9,6 +10,7 @@ import theotherhalf.superconference.domain.UserClaims;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserClaimsDTO
 {
     @ManyToOne(fetch = FetchType.LAZY)

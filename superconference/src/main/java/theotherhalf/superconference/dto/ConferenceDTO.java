@@ -1,6 +1,7 @@
 package theotherhalf.superconference.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import theotherhalf.superconference.domain.Conference;
 import theotherhalf.superconference.domain.User;
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ConferenceDTO
 {
     @JsonProperty
