@@ -11,15 +11,13 @@ export type Proposal = {
     conference: ID | null,
     proposalName: string,
     filePath: string | null,
-    file: string | null,
     abstract: string,
     topics: string[],
     keywords: string[] | null,
     author: string,
     coAuthors: Email[] | null,
     bidders: Email[] | null,
-    reviewers: Email[] | null,
-    reviews: Review[]
+    reviews: ID[] | null
 }
 
 export type User = {

@@ -1,0 +1,409 @@
+USERS
+  add a user:
+      /api/users/
+      POST
+      body:
+        {
+          "firstname": string,
+          "lastname": string,
+          "email": string,
+          "password": string
+        }
+      response:
+      {
+        status: 200 or 400
+        body:
+          {
+            "firstname": string,
+            "lastname": string,
+            "email": string
+          }
+      }
+
+  remove a user
+      /api/users?email={email}
+      DELETE
+      body: null
+      response:
+        {
+          status: 204
+        }
+
+  update a user
+      /api/users/
+      PUT
+      body:
+        {
+          "firstname": string, // can be null, will remain the same if so
+          "lastname": string,  // can be null, will remain the same if so
+          "email": string,
+          "password": string   // can be null, will remain the same if so
+        }
+      response:
+        status: 204
+
+  get users
+      /api/users/
+      GET
+      body: N/A
+      response:
+        body:
+          [
+            {
+              "firstname": string,
+              "lastname": string,
+              "email": string,
+            }
+          ]
+
+
+CONFERENCES
+  add Conferences
+      /api/conferences/
+      POST
+      body:
+        {
+          description: string,
+          zeroDeadline: Date,
+          abstractDeadline: Date | null,
+          proposalDeadline: Date,
+          biddingDeadline: Date,
+          evaluationDeadline: Date,
+          presentationDeadline: Date,
+          participants: Email[] | null,
+          scms: Email[] | null,
+          cscm: Email | null,
+          ccscm: Email | null,
+          pcms: Email[] | null,
+          cpcm: Email | null,
+          ccpcm: Email | null,
+        }
+      response:
+        status: 200 or 400
+        body:
+          {
+            id: ID
+            description: string,
+            zeroDeadline: Date,
+            abstractDeadline: Date | null,
+            proposalDeadline: Date,
+            biddingDeadline: Date,
+            evaluationDeadline: Date,
+            presentationDeadline: Date,
+            participants: Email[] | null,
+            scms: Email[] | null,
+            cscm: Email | null,
+            ccscm: Email | null,
+            pcms: Email[] | null,
+            cpcm: Email | null,
+            ccpcm: Email | null,
+            sections: Section[] | null
+          }
+
+  remove Conferences
+      /api/conferences?id={id}
+      DELETE
+      body: null
+      response: 204
+
+  update Conference
+      /api/conferences/
+      PUT
+      body:
+        {
+            id: ID
+            description: string,
+            zeroDeadline: Date,
+            abstractDeadline: Date | null,
+            proposalDeadline: Date,
+            biddingDeadline: Date,
+            evaluationDeadline: Date,
+            presentationDeadline: Date,
+            participants: Email[] | null,
+            scms: Email[] | null,
+            cscm: Email | null,
+            ccscm: Email | null,
+            pcms: Email[] | null,
+            cpcm: Email | null,
+            ccpcm: Email | null,
+        }
+      response:
+        status: 200 or 400
+        body:
+          {
+            id: ID
+            description: string,
+            zeroDeadline: Date,
+            abstractDeadline: Date | null,
+            proposalDeadline: Date,
+            biddingDeadline: Date,
+            evaluationDeadline: Date,
+            presentationDeadline: Date,
+            participants: Email[] | null,
+            scms: Email[] | null,
+            cscm: Email | null,
+            ccscm: Email | null,
+            pcms: Email[] | null,
+            cpcm: Email | null,
+            ccpcm: Email | null,
+            sections: Section[] | null
+          }
+
+  get conferences
+      /api/conferences/
+      GET
+      body: N/A
+      response:
+        body:
+          [
+            {
+              id: ID
+              description: string,
+              zeroDeadline: Date,
+              abstractDeadline: Date | null,
+              proposalDeadline: Date,
+              biddingDeadline: Date,
+              evaluationDeadline: Date,
+              presentationDeadline: Date,
+              participants: Email[] | null,
+              scms: Email[] | null,
+              cscm: Email | null,
+              ccscm: Email | null,
+              pcms: Email[] | null,
+              cpcm: Email | null,
+              ccpcm: Email | null,
+              sections: Section[] | null
+            }
+          ]
+
+  add participants on conference
+      /api/conferences/{conferenceid}/participants/
+      PUT
+      body:
+        {
+          "email": String
+        }
+      response:
+        status: 204
+
+  remove participants on conference
+      /api/conferences/{conferenceid}/participants?email={email}
+      DELETE
+      response:
+        status: 204
+
+  add section
+      /api/conferences/{conferenceid}/sections
+      POST
+      body:
+        {
+          name: string,
+          topics: string[],
+          proposals: ID[] | null,
+          participants: Email[] | null,
+          chair: Email,
+          room: number
+        }
+      response:
+        status: 200 or 400
+        body:
+          {
+            id: ID,
+            name: string,
+            topics: string[],
+            proposals: ID[] | null,
+            participants: Email[] | null,
+            chair: Email,
+            room: number
+          }
+    
+  update section
+      /api/conferences/{conferenceId}/sections
+      PUT
+      body:
+        {
+          id: ID,
+          name: string,
+          topics: string[],
+          proposals: ID[] | null,
+          participants: Email[] | null,
+          chair: Email,
+          room: number
+        }
+
+  remove section
+      /api/conferences/{conferenceid}/sections?id={sectionid}
+      DELETE
+      body: N/A
+      response:
+        status: 204
+
+  add participant to section
+      /api/conferences/{conferenceid}/sections/{sectionid}/participants
+      PUT
+      body:
+        {
+          "email": String
+        }
+      response:
+        status: 204
+
+  remove participant to section
+      /api/conferences/{conferenceid}/sections/{sectionid}/participants?email={email}
+      DELETE
+      response:
+        status: 204
+
+
+PROPOSALS
+  add proposal
+      /api/conferences/{conferenceid}/proposals
+      POST
+      body:
+        {
+          conference: ID | null,
+          proposalName: string,
+          file: string | null,  // a hexadecimal representation of the file; must be decoded and saved locally on the server
+          abstract: string,     // abstract will be a plain old string
+          topics: string[],
+          keywords: string[] | null,
+          author: string,
+          coAuthors: Email[] | null,
+        }
+      response:
+        status: 200 or 400
+        body:
+         {
+            id: ID,
+            conference: ID | null,
+            proposalName: string,
+            filePath: string | null,
+            abstract: string,
+            topics: string[],
+            keywords: string[] | null,
+            author: string,
+            coAuthors: Email[] | null,
+            bidders: Email[] | null,
+            reviews: ID[] | null,
+         }
+
+  remove proposal
+      /api/conferences/{conferenceid}/proposals?id={proposalId}
+      DELETE
+      body:
+      response:
+        status: 204
+
+  get proposals
+      /api/conferences/{conferenceid}/proposals
+      GET
+      body: N/A
+      response:
+        status: 200 or 400
+        [
+          id: ID,
+          conference: ID | null,
+          proposalName: string,
+          filePath: string | null,
+          abstract: string,
+          topics: string[],
+          keywords: string[] | null,
+          author: string,
+          coAuthors: Email[] | null,
+          bidders: Email[] | null,
+          reviews: ID[] | null,
+        ]
+
+  add review
+      /api/conferences/{conferenceid}/proposals/{proposalid}/reviews
+      POST
+      body:
+        {
+          proposal: ID,
+          reviewer: Email,
+          grade: number,
+          justification: string
+        }
+      response:
+        status: 200 or 400
+        body:
+        {
+          id: ID,
+          proposal: ID,
+          reviewer: Email,
+          grade: number,
+          justification: string
+        }
+
+  get reviews
+      /api/conferences/{conferenceid}/proposals/{proposalid}/reviews
+      GET
+      body: N/A
+      response:
+        status: 200 or 400
+        body:
+          [
+            {
+              id: ID,
+              proposal: ID,
+              reviewer: Email,
+              grade: number,
+              justification: string
+            }
+          ]
+
+  bid
+      /api/conferences/{conferenceid}/proposals/{proposalid}/bid
+      PUT
+      body:
+        {
+          "email": String
+        }
+      response:
+        status: 204 or 400
+
+
+NOTIFICATIONS:
+  get notifications
+      /api/notifications
+      GET
+      response:
+        status: 200 or 400
+        body:
+          {
+            id: ID | null,
+            text: string,
+            href: string
+            read: boolean
+          }
+
+  mark notification as read
+      /api/notifications/{notificationId}
+      PATCH
+      response:
+        status: 204
+
+
+AUTHENTICATION
+  login
+      /api/login
+      POST
+      response:
+        status: 200 or 400
+        body:
+          {
+            token: JWT
+          }
+
+  register
+      /api/register
+      POST
+      response:
+        status: 200 or 400
+        body:
+          {
+            firstname: response.firstname,
+            lastname: response.lastname,
+            email: response.email,
+            token: response.token
+          }

@@ -6,8 +6,6 @@ import {RootStateGetter} from "../index";
 
 export const notificationService =
 {
-        // TODO: We require additional pylons
-
         getNotifications: () => (dispatch: Dispatch, getState: RootStateGetter) => request.default({
             method: 'GET',
             url: `${domain}/api/notifications`,

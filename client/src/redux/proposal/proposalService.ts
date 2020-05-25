@@ -1,10 +1,9 @@
 import * as request from 'request-promise';
-import domain, {buildAuthHeader, Email, logRequestError, Proposal, Review} from '../serviceConstants';
+import domain, {buildAuthHeader, logRequestError, Proposal, Review} from '../serviceConstants';
 import {
     ADD_BID,
     ADD_PROPOSAL,
     ADD_REVIEW,
-    FETCH_BIDDERS,
     FETCH_REVIEWS,
     GET_PROPOSALS,
     REMOVE_PROPOSAL
@@ -14,10 +13,8 @@ import {Dispatch} from "redux";
 
 const proposalService =
     {
-        // TODO: Changes required
-        // TODO: Abstract is a string
         // TODO: Expect file as hexadecimal string
-        addProposal: (conferenceId: number, proposal: Proposal) =>
+        addProposal: (conferenceId: number, proposal: Proposal, proposalFile: string) =>
             (dispatch: Dispatch, getState: RootStateGetter) => request.default({
                 method: "POST",
                 url: `${domain}/api/conferences/${conferenceId}/proposals/`,
@@ -26,15 +23,11 @@ const proposalService =
                 body: {
                     author: proposal.author,
                     proposalName: proposal.proposalName,
-                    // filePath: filePath, // TODO: We are sending actual file, not fP; fP will be received after
-                    file: proposal.file,
-                    // abstractPath: abstractPath, TODO: Rename this into abstract
+                    file: proposalFile,
+                    abstract: proposal.abstract,
                     topics: proposal.topics,
                     keywords: proposal.keywords,
                     coAuthors: proposal.coAuthors,
-                    bidders: proposal.bidders,
-                    reviewers: proposal.reviewers,
-                    reviews: proposal.reviews
             }
         })
             .then((response: Proposal) => dispatch({
@@ -44,8 +37,6 @@ const proposalService =
             .catch(logRequestError)
         ,
 
-        // TODO Send as query parameter
-        // TODO: 204 is syntactically preferred
         removeProposal: (conferenceId: number, proposalId: number) =>
             (dispatch: Dispatch, getState: RootStateGetter) => request.default({
                 method: "DELETE",
@@ -113,20 +104,6 @@ const proposalService =
                 payload: {proposalId: proposalId, bidder: email}
             }))
             .catch(logRequestError)
-        ,
-
-        // TODO: return only email addresses
-        // TODO: Do we need this?
-        getBidders: (conferenceId: number, proposalId: number) =>
-            (dispatch: Dispatch, getState: RootStateGetter) => request.default({
-            method: "GET",
-            headers: buildAuthHeader(getState()),
-            url: `${domain}/api/conferences/${conferenceId}/proposals/${proposalId}/bid`
-        })
-            .then((response: Email[]) => dispatch({
-                type: FETCH_BIDDERS,
-                payload: {bidders: response, proposalId: proposalId}
-            }))
         ,
     };
 

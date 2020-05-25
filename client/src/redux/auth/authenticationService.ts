@@ -3,9 +3,10 @@ import domain, {JWT, logRequestError} from "../serviceConstants";
 import {LOGIN, REGISTER} from "./authenticationActions";
 import {Dispatch} from "redux";
 
+type AuthResponse = { firstname: string, lastname: string, email: string, token: string }
+
 const authenticationService =
     {
-        // TODO: We need this
         register: (firstname: string, lastname: string, email: string, password: string) =>
             (dispatch: Dispatch) => request.default({
                 method: "POST",
@@ -18,13 +19,13 @@ const authenticationService =
                     password: password
                 }
             })
-                .then((response: JWT) => dispatch({
+                .then((response: { token: JWT }) => dispatch({
                     type: REGISTER,
                     payload: {
                         firstname: firstname,
                         lastname: lastname,
                         email: email,
-                        token: response
+                        token: response.token
                     }
                 }))
                 .catch(logRequestError)
@@ -36,12 +37,12 @@ const authenticationService =
             json: true,
             body: {email: email, password: password}
         })
-            .then((response: { firstname: string, lastname: string, token: string }) => dispatch({
+            .then((response: AuthResponse) => dispatch({
                 type: LOGIN,
                 payload: {
                     firstname: response.firstname,
                     lastname: response.lastname,
-                    email: email,
+                    email: response.email,
                     token: response.token
                 }
             }))

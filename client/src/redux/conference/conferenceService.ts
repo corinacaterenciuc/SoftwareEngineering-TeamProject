@@ -30,7 +30,6 @@ const conferenceService = {
         .catch(logRequestError)
     ,
 
-    // TODO: Should be query parameter
     removeConference: (id: number) => (dispatch: Dispatch, getState: RootStateGetter) => request.default({
         method: "DELETE",
         url: `${domain}/api/conferences?id=${id}`,
@@ -43,7 +42,6 @@ const conferenceService = {
         .catch(logRequestError)
     ,
 
-    // TODO: 204
     updateConference: (conference: Conference) => (dispatch: Dispatch, getState: RootStateGetter) => request.default({
         method: 'PUT',
         url: `${domain}/api/conferences`,
@@ -89,10 +87,8 @@ const conferenceService = {
     removeParticipantFromConference: (email: string, conferenceId: number) =>
         (dispatch: Dispatch, getState: RootStateGetter) => request.default({
             method: "DELETE",
-            url: `${domain}/api/conferences/${conferenceId}/participants/`,
+            url: `${domain}/api/conferences/${conferenceId}/participants?email=${email}`,
             headers: buildAuthHeader(getState()),
-            json: true,
-            body: {email: email}
     })
         .then(_ => dispatch({
             type: REMOVE_PARTICIPANT_CONFERENCE,
@@ -131,11 +127,10 @@ const conferenceService = {
         .catch(logRequestError)
     ,
 
-    // TODO: query param
     removeSection: (conferenceId: number, sectionId: number) =>
         (dispatch: Dispatch, getState: RootStateGetter) => request.default({
             method: "DELETE",
-            url: `${domain}/api/conferences/${conferenceId}/sections/?id=${sectionId}`,
+            url: `${domain}/api/conferences/${conferenceId}/sections?id=${sectionId}`,
             headers: buildAuthHeader(getState()),
     })
         .then(_ => dispatch({
