@@ -1,12 +1,14 @@
 import domain, {buildAuthHeader, logRequestError} from "../serviceConstants";
 import * as request from 'request-promise'
 import {GET_NOTIFICATIONS, READ_NOTIFICATION} from "./notificationActions";
+import {Dispatch} from "redux";
+import {RootStateGetter} from "../index";
 
 export const notificationService =
-    {
+{
         // TODO: We require additional pylons
 
-        getNotifications: () => (dispatch, getState) => request({
+        getNotifications: () => (dispatch: Dispatch, getState: RootStateGetter) => request.default({
             method: 'GET',
             url: `${domain}/api/notifications`,
             headers: buildAuthHeader(getState())
@@ -18,14 +20,15 @@ export const notificationService =
             .catch(logRequestError)
         ,
 
-        readNotification: (notificationId: number) => (dispatch, getState) => request({
-            method: 'PATCH',
-            url: `${domain}/api/notifications/${notificationId}`,
-            headers: buildAuthHeader(getState())
+        readNotification: (notificationId: number) =>
+            (dispatch: Dispatch, getState: RootStateGetter) => request.default({
+                method: 'PATCH',
+                url: `${domain}/api/notifications/${notificationId}`,
+                headers: buildAuthHeader(getState())
         })
             .then(_ => dispatch({
                 type: READ_NOTIFICATION,
                 notificationId: notificationId
             }))
             .catch(logRequestError)
-    };
+};

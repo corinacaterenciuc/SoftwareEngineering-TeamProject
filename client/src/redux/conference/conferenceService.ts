@@ -11,10 +11,12 @@ import {
     UPDATE_CONFERENCE,
     UPDATE_SECTION
 } from "./conferenceActions";
+import {Dispatch} from "redux";
+import {RootStateGetter} from "../index";
 
 const conferenceService = {
 
-    addConference: (conference: Conference) => (dispatch, getState) => request({
+    addConference: (conference: Conference) => (dispatch: Dispatch, getState: RootStateGetter) => request.default({
         method: "POST",
         url: `${domain}/api/conferences/`,
         json: true,
@@ -29,7 +31,7 @@ const conferenceService = {
     ,
 
     // TODO: Should be query parameter
-    removeConference: (id: number) => (dispatch, getState) => request({
+    removeConference: (id: number) => (dispatch: Dispatch, getState: RootStateGetter) => request.default({
         method: "DELETE",
         url: `${domain}/api/conferences?id=${id}`,
         headers: buildAuthHeader(getState()),
@@ -42,7 +44,7 @@ const conferenceService = {
     ,
 
     // TODO: 204
-    updateConference: (conference: Conference) => (dispatch, getState) => request({
+    updateConference: (conference: Conference) => (dispatch: Dispatch, getState: RootStateGetter) => request.default({
         method: 'PUT',
         url: `${domain}/api/conferences`,
         headers: buildAuthHeader(getState()),
@@ -57,7 +59,7 @@ const conferenceService = {
     ,
 
     // TODO: Allow more detailed POST body
-    getConferences: () => (dispatch, getState) => request({
+    getConferences: () => (dispatch: Dispatch, getState: RootStateGetter) => request.default({
         method: "GET",
         url: `${domain}/api/conferences/`,
         headers: buildAuthHeader(getState()),
@@ -69,12 +71,13 @@ const conferenceService = {
         .catch(logRequestError)
     ,
 
-    addParticipantToConference: (email: string, conferenceId: number) => (dispatch, getState) => request({
-        method: "PUT",
-        url: `${domain}/api/conferences/${conferenceId}/participants/`,
-        headers: buildAuthHeader(getState()),
-        json: true,
-        body: {email: email}
+    addParticipantToConference: (email: string, conferenceId: number) =>
+        (dispatch: Dispatch, getState: RootStateGetter) => request.default({
+            method: "PUT",
+            url: `${domain}/api/conferences/${conferenceId}/participants/`,
+            headers: buildAuthHeader(getState()),
+            json: true,
+            body: {email: email}
     })
         .then(_ => dispatch({
             type: ADD_PARTICIPANT_CONFERENCE,
@@ -83,12 +86,13 @@ const conferenceService = {
         .catch(logRequestError)
     ,
 
-    removeParticipantFromConference: (email: string, conferenceId: number) => (dispatch, getState) => request({
-        method: "DELETE",
-        url: `${domain}/api/conferences/${conferenceId}/participants/`,
-        headers: buildAuthHeader(getState()),
-        json: true,
-        body: {email: email}
+    removeParticipantFromConference: (email: string, conferenceId: number) =>
+        (dispatch: Dispatch, getState: RootStateGetter) => request.default({
+            method: "DELETE",
+            url: `${domain}/api/conferences/${conferenceId}/participants/`,
+            headers: buildAuthHeader(getState()),
+            json: true,
+            body: {email: email}
     })
         .then(_ => dispatch({
             type: REMOVE_PARTICIPANT_CONFERENCE,
@@ -97,12 +101,13 @@ const conferenceService = {
         .catch(logRequestError)
     ,
 
-    addSection: (section: Section, conferenceId: number) => (dispatch, getState) => request({
-        method: "POST",
-        url: `${domain}/api/conferences/${conferenceId}/sections`,
-        headers: buildAuthHeader(getState()),
-        json: true,
-        body: {...section}
+    addSection: (section: Section, conferenceId: number) =>
+        (dispatch: Dispatch, getState: RootStateGetter) => request.default({
+            method: "POST",
+            url: `${domain}/api/conferences/${conferenceId}/sections`,
+            headers: buildAuthHeader(getState()),
+            json: true,
+            body: {...section}
     })
         .then((response: Section) => dispatch({
             type: ADD_SECTION,
@@ -111,12 +116,13 @@ const conferenceService = {
         .catch(logRequestError)
     ,
 
-    updateSection: (section: Section, conferenceId: number) => (dispatch, getState) => request({
-        method: "PUT",
-        url: `${domain}/api/conferences/${conferenceId}/sections`,
-        json: true,
-        headers: buildAuthHeader(getState()),
-        body: {...section}
+    updateSection: (section: Section, conferenceId: number) =>
+        (dispatch: Dispatch, getState: RootStateGetter) => request.default({
+            method: "PUT",
+            url: `${domain}/api/conferences/${conferenceId}/sections`,
+            json: true,
+            headers: buildAuthHeader(getState()),
+            body: {...section}
     })
         .then(_ => dispatch({
             type: UPDATE_SECTION,
@@ -126,10 +132,11 @@ const conferenceService = {
     ,
 
     // TODO: query param
-    removeSection: (conferenceId: number, sectionId: number) => (dispatch, getState) => request({
-        method: "DELETE",
-        url: `${domain}/api/conferences/${conferenceId}/sections/?id=${sectionId}`,
-        headers: buildAuthHeader(getState()),
+    removeSection: (conferenceId: number, sectionId: number) =>
+        (dispatch: Dispatch, getState: RootStateGetter) => request.default({
+            method: "DELETE",
+            url: `${domain}/api/conferences/${conferenceId}/sections/?id=${sectionId}`,
+            headers: buildAuthHeader(getState()),
     })
         .then(_ => dispatch({
             type: REMOVE_SECTION,
@@ -139,7 +146,7 @@ const conferenceService = {
     ,
 
     addParticipantToSection: (email: string, conferenceId: number, sectionId: number) =>
-        (dispatch, getState) => request({
+        (dispatch: Dispatch, getState: RootStateGetter) => request.default({
             method: "PUT",
             url: `${domain}/api/conferences/${conferenceId}/sections/${sectionId}/participants`,
             headers: buildAuthHeader(getState()),
@@ -153,7 +160,7 @@ const conferenceService = {
     ,
 
     removeParticipantFromSection: (email: string, conferenceId: number, sectionId: number) =>
-        (dispatch, getState) => request({
+        (dispatch: Dispatch, getState: RootStateGetter) => request.default({
             method: "DELETE",
             url: `${domain}/api/conferences/${conferenceId}/sections/${sectionId}/participants?email=${email}`,
             headers: buildAuthHeader(getState()),

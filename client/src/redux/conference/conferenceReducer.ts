@@ -15,7 +15,7 @@ import {
 import {Conference, Section} from "../serviceConstants";
 
 
-type ConferenceState = { conferences: Conference[] };
+export type ConferenceState = { conferences: Conference[] };
 type Action = { type: string, payload: object }
 
 function getConference(state: ConferenceState, id: number): Conference {

@@ -1,12 +1,13 @@
 import * as request from "request-promise";
 import domain, {JWT, logRequestError} from "../serviceConstants";
 import {LOGIN, REGISTER} from "./authenticationActions";
+import {Dispatch} from "redux";
 
 const authenticationService =
     {
         // TODO: We need this
         register: (firstname: string, lastname: string, email: string, password: string) =>
-            dispatch => request({
+            (dispatch: Dispatch) => request.default({
                 method: "POST",
                 url: `${domain}/api/register/`,
                 json: true,
@@ -29,7 +30,7 @@ const authenticationService =
                 .catch(logRequestError)
         ,
 
-        login: (email: string, password: string) => dispatch => request({
+        login: (email: string, password: string) => (dispatch: Dispatch) => request.default({
             method: 'POST',
             url: `${domain}/api/login`,
             json: true,
