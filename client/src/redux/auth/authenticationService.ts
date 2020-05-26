@@ -1,14 +1,14 @@
-import * as request from "request-promise";
 import domain, {JWT, logRequestError} from "../serviceConstants";
-import {LOGIN, REGISTER} from "./authenticationActions";
+import {LOGIN, LOGOUT, REGISTER} from "./authenticationActions";
 import {Dispatch} from "redux";
 
 type AuthResponse = { firstname: string, lastname: string, email: string, token: string }
+const request = require('request-promise-native');
 
 const authenticationService =
     {
         register: (firstname: string, lastname: string, email: string, password: string) =>
-            (dispatch: Dispatch) => request.default({
+            (dispatch: Dispatch) => request({
                 method: "POST",
                 url: `${domain}/api/register/`,
                 json: true,
@@ -31,7 +31,7 @@ const authenticationService =
                 .catch(logRequestError)
         ,
 
-        login: (email: string, password: string) => (dispatch: Dispatch) => request.default({
+        login: (email: string, password: string) => (dispatch: Dispatch) => request({
             method: 'POST',
             url: `${domain}/api/login`,
             json: true,
@@ -47,6 +47,11 @@ const authenticationService =
                 }
             }))
             .catch(logRequestError)
+        ,
+
+        logout: () => (dispatch: Dispatch) => {
+            dispatch({type: LOGOUT})
+        }
     };
 
 export default authenticationService;

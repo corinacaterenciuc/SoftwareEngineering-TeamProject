@@ -4,16 +4,13 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import {Client as Styletron} from 'styletron-engine-atomic';
 import {Provider as StyletronProvider} from 'styletron-react';
-import {LightTheme, BaseProvider, styled } from 'baseui';
-import LoginRegister from "./components/LoginRegister/LoginRegister";
+import {BaseProvider, LightTheme} from 'baseui';
+import {BrowserRouter} from "react-router-dom";
+import store from "./store";
+import {Provider} from "react-redux";
+import RootNavigation from "./components/navigation/RootNavigation/RootNavigation";
 
 const engine = new Styletron();
-const Centered = styled('div', {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  height: '100%',
-});
 // const colorScale = {
 //     '-3': '#ff0000',
 //     '-2': '#fb5600',
@@ -25,16 +22,15 @@ const Centered = styled('div', {
 // };
 
 ReactDOM.render(
-    <React.StrictMode>
-      <StyletronProvider value={engine}>
-        <BaseProvider theme={LightTheme}>
-          <Centered>
-              {/*  Application entry point */}
-              <LoginRegister/>
-          </Centered>
-        </BaseProvider>
-      </StyletronProvider>
-    </React.StrictMode>,
+    <Provider store={store}>
+        <StyletronProvider value={engine}>
+            <BaseProvider theme={LightTheme}>
+                <BrowserRouter>
+                    <RootNavigation/>
+                </BrowserRouter>
+            </BaseProvider>
+        </StyletronProvider>
+    </Provider>,
     document.getElementById('root')
 );
 
