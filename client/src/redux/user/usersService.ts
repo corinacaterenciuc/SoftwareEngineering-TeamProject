@@ -1,11 +1,12 @@
-import * as request from 'request-promise';
 import domain, {buildAuthHeader, logRequestError, User} from '../serviceConstants';
 import {GET_USERS, REMOVE_USER, UPDATE_USER} from "./userActions";
 import {Dispatch} from "redux";
 import {RootStateGetter} from "../index";
 
+const request = require('request-promise-native');
+
 const userService = {
-    removeUser: (email: string) => (dispatch: Dispatch, getState: RootStateGetter) => request.default({
+    removeUser: (email: string) => (dispatch: Dispatch, getState: RootStateGetter) => request({
         method: "DELETE",
         url: `${domain}/api/users?email=${email}`,
         headers: buildAuthHeader(getState())
@@ -17,7 +18,7 @@ const userService = {
         .catch(logRequestError)
     ,
 
-    getUsers: () => (dispatch: Dispatch, getState: RootStateGetter) => request.default({
+    getUsers: () => (dispatch: Dispatch, getState: RootStateGetter) => request({
         method: "GET",
         url: `${domain}/api/users/`,
         headers: buildAuthHeader(getState())
@@ -29,7 +30,7 @@ const userService = {
         .catch(logRequestError)
     ,
 
-    updateUser: (updatedUser: User) => (dispatch: Dispatch, getState: RootStateGetter) => request.default({
+    updateUser: (updatedUser: User) => (dispatch: Dispatch, getState: RootStateGetter) => request({
         method: 'PUT',
         url: `${domain}/api/users`,
         json: true,
