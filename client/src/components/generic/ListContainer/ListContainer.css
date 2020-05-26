@@ -1,0 +1,12 @@
+.ProposalList {
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+}
+
+.ProposalList > * {
+    margin-top: 1em;
+}

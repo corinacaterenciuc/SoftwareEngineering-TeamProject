@@ -73,6 +73,4 @@ export type Notification = {
 
 // @ts-ignore
 export const buildAuthHeader = (state: object): object => ({Authorization: `Bearer ${state.auth.token}`});
-export const logRequestError = (error) => {
-    console.log(error)
-};
+export const logRequestError = (error) => {console.log(error)};

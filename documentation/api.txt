@@ -361,6 +361,16 @@ PROPOSALS
         }
       response:
         status: 204 or 400
+  
+  unbid
+      /api/conferences/{conferenceid}/proposals/{proposalid}/unbid
+      PUT
+      body:
+        {
+          "email": String
+        }
+      response:
+        status: 204 or 400
 
 
 NOTIFICATIONS:
