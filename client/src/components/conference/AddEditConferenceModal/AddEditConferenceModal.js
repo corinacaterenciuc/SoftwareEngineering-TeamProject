@@ -115,7 +115,7 @@ const AddEditConferenceModal = (props) => {
     return (
         <div className="ConferenceModal" data-testid="AddEditConferenceModal">
             <Modal
-                onClose={() => props.setIsOpen(false)}
+                onClose={() => props.setModalOpen(false)}
                 closeable
                 isOpen={props.isOpen}
                 animate
@@ -174,10 +174,10 @@ const AddEditConferenceModal = (props) => {
                             size={SIZE.compact}/>
                     </FormControl>
 
-                    <FormControl label={() => "Evaluation Deadline"}>
+                    <FormControl label={() => "EvaluationCard Deadline"}>
                         <Datepicker
                             value={evaluationDeadline}
-                            onChange={({ date }) => setEvaluationDeadline(date)}
+                            onChange={({date}) => setEvaluationDeadline(date)}
                             error={!evaluationDeadlineValid}
                             size={SIZE.compact}/>
                     </FormControl>
@@ -214,8 +214,10 @@ const AddEditConferenceModal = (props) => {
                 </ModalBody>
 
                 <ModalFooter>
-                    <ModalButton kind={KIND.secondary} onClick={() => props.setIsOpen(false)} size={SIZE.compact}>Cancel</ModalButton>
-                    <ModalButton size={SIZE.compact} disabled={!formValid} onClick={() => alert('Much action, wow..')}>Submit</ModalButton>
+                    <ModalButton kind={KIND.secondary} onClick={() => props.setModalOpen(false)}
+                                 size={SIZE.compact}>Cancel</ModalButton>
+                    <ModalButton size={SIZE.compact} disabled={!formValid}
+                                 onClick={() => alert('Much action, wow..')}>Submit</ModalButton>
                 </ModalFooter>
             </Modal>
         </div>
@@ -226,7 +228,7 @@ const userType = PropTypes.exact({label: PropTypes.string.isRequired, id: PropTy
 
 AddEditConferenceModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
-    setIsOpen: PropTypes.func.isRequired,
+    setModalOpen: PropTypes.func.isRequired,
     conference: PropTypes.exact({
         name: PropTypes.string.isRequired,
         description: PropTypes.string.isRequired,

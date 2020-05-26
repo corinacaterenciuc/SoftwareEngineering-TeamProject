@@ -2,7 +2,7 @@ import React from 'react';
 import './RootNavigation.css';
 import {UnprotectedRoute} from "../UnprotectedRoute/UnprotectedRoute";
 import AuthForm from "../../auth/AuthForm/AuthForm";
-import Dashboard from "../../Dashboard/Dashboard";
+import Dashboard from "../../generic/Dashboard/Dashboard";
 import {Redirect, Route, Switch} from "react-router-dom";
 import Logout from "../../auth/Logout/Logout";
 import NotFound from "../NotFound/NotFound";

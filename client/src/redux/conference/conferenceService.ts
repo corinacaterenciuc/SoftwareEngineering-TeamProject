@@ -1,4 +1,4 @@
-import domain, {buildAuthHeader, Conference, logRequestError, Section} from '../serviceConstants';
+import domain, {buildAuthHeader, Conference, logRequestError, Section} from '../entities';
 import {
     ADD_PARTICIPANT_CONFERENCE,
     ADD_PARTICIPANT_SECTION,

@@ -12,7 +12,7 @@ import {
     UPDATE_CONFERENCE,
     UPDATE_SECTION
 } from "./conferenceActions";
-import {Conference, Section} from "../serviceConstants";
+import {Conference, Section} from "../entities";
 
 
 export type ConferenceState = { conferences: Conference[] };
@@ -39,21 +39,27 @@ function updateSection(state: ConferenceState, conferenceId: number, section: Se
     return updateConference(state, conference);
 }
 
-export default function (state = {conferences: [],}, action: Action) {
-    let newState: ConferenceState = {conferences: []};
+const initialState: ConferenceState = {
+    conferences: [{
+        id: 0,
+        title: 'My cool conference',
+        description: 'Long ass description'
+    }]
+};
+
+export default function (state = initialState, action: Action) {
+    let newState: ConferenceState = {...state};
     let {type, payload} = action;
     let conferenceU: Conference = null;
     let sectionU: Section = null;
     switch (type) {
         case FETCH_CONFERENCES:
-            newState = {...state, conferences: payload.conferences};
+            newState.conferences = payload.conferences;
             break;
         case NEW_CONFERENCE:
-            newState = {...state};
             newState.conferences.push(payload.conference);
             break;
         case DELETE_CONFERENCE:
-            newState = {...state};
             newState.conferences = newState.conferences.filter(c => c.id !== payload.conferenceId);
             break;
         case UPDATE_CONFERENCE:

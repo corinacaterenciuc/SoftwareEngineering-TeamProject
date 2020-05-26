@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './Evaluation.css';
-import {Card} from "baseui/card";
-import {StyledBody} from "baseui/card";
+import './EvaluationCard.css';
+import {Card, StyledBody} from "baseui/card";
 import {Checkbox} from "baseui/checkbox";
 
-const Evaluation = (props) => {
+const EvaluationCard = (props) => {
     const [checked, setChecked] = React.useState(false);
     const gradeStyle = {
         color: props.colorScale[props.grade.gradeValue.toString()],
@@ -15,14 +14,14 @@ const Evaluation = (props) => {
     };
 
     return (
-        <Card className={"Evaluation " + (checked && "fade")} data-testid="Evaluation">
+        <Card className={"EvaluationCard " + (checked && "fade")} data-testid="EvaluationCard">
             <StyledBody style={{display: "flex"}}>
                 <div style={{width: "90%"}}>
                     <p>{props.justification}</p>
                     <div style={{display: "flex"}}>
                         <small style={gradeStyle}>{props.grade.gradeText}</small>
                         {props.authorName
-                            &&
+                        &&
                         <small style={{fontWeight: "bold"}}>{props.authorName}</small>
                         }
                     </div>
@@ -35,7 +34,7 @@ const Evaluation = (props) => {
     )
 };
 
-Evaluation.propTypes = {
+EvaluationCard.propTypes = {
     justification: PropTypes.string.isRequired,
     grade: PropTypes.exact({
         gradeText: PropTypes.string.isRequired,
@@ -60,8 +59,8 @@ Evaluation.propTypes = {
     authorName: PropTypes.string
 };
 
-Evaluation.defaultProps = {
+EvaluationCard.defaultProps = {
     displayCheckbox: false
 };
 
-export default Evaluation;
+export default EvaluationCard;

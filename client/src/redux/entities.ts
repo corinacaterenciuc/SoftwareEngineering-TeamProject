@@ -7,17 +7,17 @@ export type ID = number;
 export type JWT = string;
 
 export type Proposal = {
-    id: ID | null,
-    conference: ID | null,
+    id: ID,
+    conferenceId: ID,
     proposalName: string,
-    filePath: string | null,
+    filePath: string,
     abstract: string,
     topics: string[],
-    keywords: string[] | null,
+    keywords: string[],
     author: string,
-    coAuthors: Email[] | null,
-    bidders: Email[] | null,
-    reviews: ID[] | null
+    coAuthors: Email[],
+    bidders: Email[],
+    reviews: ID[]
 }
 
 export type User = {
@@ -38,7 +38,7 @@ export type Section = {
 
 export type Review = {
     id: ID | null,
-    proposal: ID,
+    proposalId: ID,
     reviewer: Email,
     grade: number,
     justification: string
@@ -46,6 +46,7 @@ export type Review = {
 
 export type Conference = {
     id: ID | null,
+    title: string,
     description: string,
     zeroDeadline: Date,
     abstractDeadline: Date,

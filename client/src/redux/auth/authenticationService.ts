@@ -1,4 +1,4 @@
-import domain, {JWT, logRequestError} from "../serviceConstants";
+import domain, {JWT, logRequestError} from "../entities";
 import {LOGIN, LOGOUT, REGISTER} from "./authenticationActions";
 import {Dispatch} from "redux";
 

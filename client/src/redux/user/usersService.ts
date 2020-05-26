@@ -1,4 +1,4 @@
-import domain, {buildAuthHeader, logRequestError, User} from '../serviceConstants';
+import domain, {buildAuthHeader, logRequestError, User} from '../entities';
 import {GET_USERS, REMOVE_USER, UPDATE_USER} from "./userActions";
 import {Dispatch} from "redux";
 import {RootStateGetter} from "../index";

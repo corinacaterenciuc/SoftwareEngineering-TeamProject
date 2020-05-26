@@ -1,5 +1,13 @@
-import domain, {buildAuthHeader, logRequestError, Proposal, Review} from '../serviceConstants';
-import {ADD_BID, ADD_PROPOSAL, ADD_REVIEW, FETCH_REVIEWS, GET_PROPOSALS, REMOVE_PROPOSAL} from "./proposalActions";
+import domain, {buildAuthHeader, logRequestError, Proposal, Review} from '../entities';
+import {
+    ADD_BID,
+    ADD_PROPOSAL,
+    ADD_REVIEW,
+    FETCH_REVIEWS,
+    GET_PROPOSALS,
+    REMOVE_BID,
+    REMOVE_PROPOSAL
+} from "./proposalActions";
 import {RootStateGetter} from "../index";
 import {Dispatch} from "redux";
 
@@ -95,6 +103,21 @@ const proposalService =
             })
                 .then(_ => dispatch({
                     type: ADD_BID,
+                    payload: {proposalId: proposalId, bidder: email}
+                }))
+                .catch(logRequestError)
+        ,
+
+        unbid: (conferenceId: number, proposalId: number, email: string) =>
+            (dispatch: Dispatch, getState: RootStateGetter) => request({
+                method: "PUT",
+                url: `${domain}/api/conferences/${conferenceId}/proposals/${proposalId}/unbid`,
+                headers: buildAuthHeader(getState()),
+                json: true,
+                body: {email: email}
+            })
+                .then(_ => dispatch({
+                    type: REMOVE_BID,
                     payload: {proposalId: proposalId, bidder: email}
                 }))
                 .catch(logRequestError)

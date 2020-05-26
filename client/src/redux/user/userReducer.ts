@@ -1,5 +1,5 @@
 // @ts-nocheck
-import {User} from "../serviceConstants";
+import {User} from "../entities";
 import {GET_USERS, REMOVE_USER, UPDATE_USER} from './userActions'
 
 type UserState = { users: User[] };

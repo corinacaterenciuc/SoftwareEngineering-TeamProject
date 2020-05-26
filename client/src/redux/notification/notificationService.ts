@@ -1,4 +1,4 @@
-import domain, {buildAuthHeader, logRequestError} from "../serviceConstants";
+import domain, {buildAuthHeader, logRequestError} from "../entities";
 import {GET_NOTIFICATIONS, READ_NOTIFICATION} from "./notificationActions";
 import {Dispatch} from "redux";
 import {RootStateGetter} from "../index";

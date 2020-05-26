@@ -1,5 +1,5 @@
 // @ts-nocheck
-import {Notification} from "../serviceConstants";
+import {Notification} from "../entities";
 import {GET_NOTIFICATIONS, READ_NOTIFICATION} from "./notificationActions";
 
 type NotificationState = { notifications: Notification[] };

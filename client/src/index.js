@@ -6,7 +6,7 @@ import {Client as Styletron} from 'styletron-engine-atomic';
 import {Provider as StyletronProvider} from 'styletron-react';
 import {BaseProvider, LightTheme} from 'baseui';
 import {BrowserRouter} from "react-router-dom";
-import store from "./store";
+import store from "./redux/store";
 import {Provider} from "react-redux";
 import RootNavigation from "./components/navigation/RootNavigation/RootNavigation";
 

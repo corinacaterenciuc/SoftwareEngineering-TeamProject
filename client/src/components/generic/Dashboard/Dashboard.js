@@ -1,11 +1,11 @@
 import React from 'react';
 import './Dashboard.css';
-import Navbar from "../navigation/Navbar/Navbar";
+import Navbar from "../../navigation/Navbar/Navbar";
 import {Route, Switch} from "react-router-dom";
-import NotificationSection from "../notification/NotificationSection/NotificationSection";
-import ProposalSection from "../proposal/ProposalSection/ProposalSection";
-import ConferenceSection from "../conference/ConferenceSection/ConferenceSection";
-import NotFound from "../navigation/NotFound/NotFound";
+import NotificationSection from "../../notification/NotificationSection/NotificationSection";
+import ProposalSection from "../../proposal/ProposalSection/ProposalSection";
+import ConferenceSection from "../../conference/ConferenceSection/ConferenceSection";
+import NotFound from "../../navigation/NotFound/NotFound";
 
 const Dashboard = () => {
     return (

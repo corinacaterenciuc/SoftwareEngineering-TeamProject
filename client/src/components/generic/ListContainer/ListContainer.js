@@ -1,11 +1,9 @@
 import React from 'react';
-import './ProposalList.css';
-import ProposalCard from "../ProposalCard/ProposalCard";
+import './ListContainer.css';
 import {Heading, HeadingLevel} from "baseui/heading";
 
-const ProposalList = (props) =>
-{
-    const { match } = props;
+const ListContainer = (props) => {
+    const {match} = props;
     const subsection = match.params.subsection;
     const toTitle = (subsectionName) => subsectionName
         .split('-')
@@ -13,7 +11,7 @@ const ProposalList = (props) =>
         .join(' ');
 
     return (
-        <div className="ProposalList">
+        <div className="ListContainer">
             <HeadingLevel>
                 <Heading>{toTitle(subsection)}</Heading>
                 {props.children}
@@ -22,8 +20,8 @@ const ProposalList = (props) =>
     );
 };
 
-ProposalList.propTypes = {};
+ListContainer.propTypes = {};
 
-ProposalList.defaultProps = {};
+ListContainer.defaultProps = {};
 
-export default ProposalList;
+export default ListContainer;

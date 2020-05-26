@@ -1,5 +1,4 @@
-// @ts-nocheck
-import {Proposal, Review} from "../serviceConstants";
+import {Email, Proposal, Review} from "../entities";
 import {
     ADD_BID,
     ADD_PROPOSAL,
@@ -13,7 +12,18 @@ import {
 
 type ProposalState = { proposals: Proposal[], reviews: Review[] };
 
-function getProposal(oldState: ProposalState, proposalId: number): Proposal {
+const initialState: ProposalState = {
+    proposals: [],
+    reviews: [{
+        id: 0,
+        proposalId: 0,
+        reviewer: "bratuandrei0@gmail.com",
+        justification: 'Foarte nice how how',
+        grade: 2
+    }]
+};
+
+function getProposal(oldState: ProposalState, proposalId: number) {
     return {...oldState.proposals.find(p => p.id === proposalId)};
 }
 
@@ -23,49 +33,72 @@ function updateProposal(oldState: ProposalState, proposal: Proposal): ProposalSt
     return newState
 }
 
-export default (state: ProposalState = {proposals: [], reviews: []}, action: Action) => {
-    let newState: ProposalState = {proposals: [], reviews: []};
+type Action = {
+    type: string,
+    payload: {
+        proposal: Proposal | null,
+        proposals: Proposal[] | null,
+        review: Review | null,
+        proposalId: number | null,
+        bidder: Email | null,
+        bidders: Email[] | null,
+        reviews: Review[]
+    }
+}
+
+export default (state: ProposalState = initialState, action: Action) => {
+    let newState: ProposalState = {...state};
     let {type, payload} = action;
+    console.log('PR', action);
     switch (type) {
         case ADD_PROPOSAL: {
-            newState = {...state};
+            // @ts-ignore
             newState.proposals.push(payload.proposal);
             break;
         }
         case REMOVE_PROPOSAL: {
-            newState = {...state};
-            newState.proposals = newState.proposals.filter(p => p.id !== proposalId);
+            newState.proposals = newState.proposals.filter(p => p.id !== payload.proposalId);
             break;
         }
         case GET_PROPOSALS: {
-            newState = {...state};
+            // @ts-ignore
             newState.proposals = proposals;
             break;
         }
         case ADD_REVIEW: {
-            const proposal: Proposal = getProposal(state, proposalId);
-            proposal.reviews.push(review);
+            // @ts-ignore
+            const proposal: Proposal = getProposal(state, payload.proposalId);
+            // @ts-ignore
+            proposal.reviews.push(payload.review);
             newState = updateProposal(state, proposal);
             break;
         }
         case FETCH_REVIEWS: {
-            const proposal: Proposal = getProposal(state, proposalId);
-            proposal.reviews = reviews;
+            // @ts-ignore
+            const proposal: Proposal = getProposal(state, payload.proposalId);
+            // @ts-ignore
+            proposal.reviews = payload.reviews;
             newState = updateProposal(state, proposal);
             break;
         }
         case ADD_BID: {
-            const proposal: Proposal = getProposal(state, proposalId);
-            proposal.bidders.push(bidder);
+            // @ts-ignore
+            const proposal: Proposal = getProposal(state, payload.proposalId);
+            // @ts-ignore
+            proposal.bidders.push(payload.bidder);
             newState = updateProposal(state, proposal);
             break;
         }
         case FETCH_BIDDERS: {
-            const proposal: Proposal = getProposal(state, proposalId);
-            proposal.bidders = bidders;
+            // @ts-ignore
+            const proposal: Proposal = getProposal(state, payload.proposalId);
+            // @ts-ignore
+            proposal.bidders = payload.bidders;
             newState = updateProposal(state, proposal);
             break;
         }
+        default:
+            break;
     }
     return newState;
 }

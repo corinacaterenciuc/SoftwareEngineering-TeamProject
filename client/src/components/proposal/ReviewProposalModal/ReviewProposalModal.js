@@ -1,10 +1,11 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import './ReviewProposalModal.css';
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE, SIZE} from "baseui/modal";
 import {FormControl} from "baseui/form-control";
 import {Textarea} from "baseui/textarea";
-import {Button, KIND} from "baseui/button";
+import {KIND} from "baseui/button";
 import {Select} from "baseui/select";
+import {useSelector} from "react-redux";
 
 const ReviewProposalModal = (props) => {
     /**
@@ -12,83 +13,87 @@ const ReviewProposalModal = (props) => {
      * props.review.grade is expected as an object with properties `label` and `id` per the Select item below.
      * props.review.justification has a string value
      */
+    const proposal = useSelector(state => state.context.currentProposal);
+    const review = useSelector(state => state.context.currentReview);
+    let stateReceived = useRef(false);
 
-    const [formValid, setFormValid] = React.useState(props.review != null);
+    const options = [
+        {label: "Strong Reject (-3)", id: -3},
+        {label: "Reject (-2)", id: -2},
+        {label: "Weak Reject (-1)", id: -1},
+        {label: "Borderline (0)", id: 0},
+        {label: "Weak Accept (1)", id: 1},
+        {label: "Accept (2)", id: 2},
+        {label: "Strong Accept (3)", id: 3}
+    ];
 
-    const [grade, setGrade] = React.useState(props.review != null ? [props.review.grade] : []);
-    const [gradeValid, setGradeValid] = React.useState(props.review != null);
+    let [formValid, setFormValid] = React.useState(review != null);
 
-    const [justification, setJustification] = React.useState(props.review != null ? props.review.justification : '');
-    const [justificationValid, setJustificationValid] = React.useState(props.review != null);
+    let [grade, setGrade] = React.useState(review != null ? review.grade : null);
+    let [gradeValid, setGradeValid] = React.useState(review != null);
+
+    let [justification, setJustification] = React.useState(review !== null ? review.justification : '');
+    let [justificationValid, setJustificationValid] = React.useState(review != null);
 
     useEffect(() => {
-        setGradeValid(grade.length !== 0);
+        if (!stateReceived.current && review != null) {
+            setGrade(review.grade);
+            setJustification(review.justification);
+            stateReceived.current = true;
+        }
+    }, [review, options]);
+
+    useEffect(() => {
+        setGradeValid(grade != null);
         setJustificationValid(justification !== '');
-        setFormValid(grade.length !== 0 && justification !== '')
-    }, [grade, justification]);
+        setFormValid([gradeValid, justificationValid].every(v => v))
+    }, [gradeValid, justificationValid, grade, justification]);
 
     return (
         <div className="ReviewProposalModal" data-testid="ReviewProposalModal">
             <Modal
-                onClose={() => props.setIsOpen(false)}
+                onClose={() => props.setModalOpen(false)}
                 closeable
-                isOpen={props.isOpen}
+                isOpen={props.modalOpen}
                 animate
                 autoFocus
                 size={SIZE.default}
                 role={ROLE.default}
             >
-                <ModalHeader>{props.proposal.title}</ModalHeader>
+                <ModalHeader>{proposal != null ? proposal.proposalName : ''}</ModalHeader>
                 <ModalBody>
-                    <FormControl label={() => "Abstract"}>
-                        <Textarea
-                            value={props.proposal.abstract}
-                            disabled
-                            size={SIZE.default}
-                        />
-                    </FormControl>
-
-                    <form method="get" action={props.proposal.proposal_url}>
-                        <Button
-                            type="submit"
-                            kind={KIND.secondary}
-                            size={SIZE.compact}>
-                            Download Proposal
-                        </Button>
-                    </form>
-
                     <FormControl label={() => "Grade"}>
                         <Select
                             backspaceRemoves={false}
                             clearable={false}
-                            options={[
-                                { label: "Strong Reject (-3)", id: -3 },
-                                { label: "Reject (-2)", id: -2 },
-                                { label: "Weak Reject (-1)", id: -1 },
-                                { label: "Borderline (0)", id: 0 },
-                                { label: "Weak Accept (1)", id: 1 },
-                                { label: "Accept (2)", id: 2 },
-                                { label: "Strong Accept (3)", id: 3 }
-                            ]}
-                            value={grade}
+                            options={options}
+                            value={grade != null ? [options.find(o => o.id === grade)] : []}
                             error={!gradeValid}
                             placeholder="Grade the Proposal"
-                            onChange={params => setGrade(params.value)}
-                        />
+                            onChange={params => setGrade(params.value[0].id)}/>
                     </FormControl>
 
                     <FormControl label={() => "Justification"}>
                         <Textarea
-                            value={justification}
+                            value={review != null ? justification : ''}
                             error={!justificationValid}
                             size={SIZE.default}
-                            onChange={(e) => setJustification(e.target.value)}
-                        />
+                            onChange={(e) => setJustification(e.target.value)}/>
                     </FormControl>
 
                     <ModalFooter>
-                        <ModalButton kind={KIND.secondary} onClick={() => props.setIsOpen(false)} size={SIZE.default}>Cancel</ModalButton>
-                        <ModalButton size={SIZE.compact} disabled={!formValid} onClick={() => alert('Much action, wow..')}>Submit</ModalButton>
+                        <ModalButton
+                            kind={KIND.secondary}
+                            onClick={() => props.setModalOpen(false)}
+                            size={SIZE.default}>
+                            Cancel
+                        </ModalButton>
+                        <ModalButton
+                            size={SIZE.compact}
+                            disabled={!formValid}
+                            onClick={() => console.log(grade, justification)}>
+                            {review != null ? 'Update' : 'Submit'}
+                        </ModalButton>
                     </ModalFooter>
                 </ModalBody>
             </Modal>

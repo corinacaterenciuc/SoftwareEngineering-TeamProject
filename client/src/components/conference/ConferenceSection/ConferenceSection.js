@@ -1,10 +1,10 @@
 import React from 'react';
 import './ConferenceSection.css';
 import SectionNavigation from "../../navigation/SectionNavigation/SectionNavigation";
-import MyConferencesPage from "../MyConferencesPage/MyConferencesPage";
-import AllConferencesPage from "../AllConferencesPage/AllConferencesPage";
 import NotFound from "../../navigation/NotFound/NotFound";
 import {Route, Switch} from "react-router-dom";
+import ListContainer from "../../generic/ListContainer/ListContainer";
+import ProposalCard from "../../proposal/ProposalCard/ProposalCard";
 
 const ConferenceSection = () => {
     const locations = [
@@ -14,11 +14,21 @@ const ConferenceSection = () => {
 
     return (
         <div className={"ConferenceSection"}>
-            <SectionNavigation locations={locations}/>
             <Switch>
-                <Route exact path={'/dashboard/conferences/my-conferences'} component={MyConferencesPage}/>
-
-                <Route exact path={'/dashboard/conferences/all-conferences'} component={AllConferencesPage}/>
+                <Route
+                    exact
+                    path={'/dashboard/conferences/:subsection(all-conferences|my-conferences)'}
+                    render={(props) =>
+                        <>
+                            <SectionNavigation locations={locations}/>
+                            <ListContainer {...props}>
+                                {
+                                    [1, 2, 3, 4].map(i => <ProposalCard key={i}/>)
+                                }
+                            </ListContainer>
+                        </>
+                    }
+                />
 
                 <Route path={'*'} component={NotFound}/>
             </Switch>

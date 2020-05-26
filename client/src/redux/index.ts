@@ -4,7 +4,8 @@ import proposalReducer from "./proposal/proposalReducer";
 import userReducer from "./user/userReducer";
 import authenticationReducer from "./auth/authenticationReducer";
 import notificationReducer from "./notification/notificationReducer";
-import {Conference, JWT, Proposal, Review, User} from "./serviceConstants";
+import {Conference, JWT, Proposal, Review, User} from "./entities";
+import contextReducer from "./context/contextReducer";
 
 // Manually define it in order to avoid circular imports
 export type RootState = {
@@ -17,6 +18,9 @@ export type RootState = {
         lastname: string,
         email: string,
         token: JWT
+    },
+    context: {
+        currentProposal: Proposal | null
     }
 }
 
@@ -27,5 +31,6 @@ export default combineReducers({
     proposal: proposalReducer,
     notification: notificationReducer,
     user: userReducer,
-    auth: authenticationReducer
+    auth: authenticationReducer,
+    context: contextReducer
 });
