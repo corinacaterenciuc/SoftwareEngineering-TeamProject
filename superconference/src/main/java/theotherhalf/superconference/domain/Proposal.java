@@ -37,7 +37,7 @@ public class Proposal extends BaseEntity
     @JoinColumn(name="cmsuser__id")
     private List<User> reviewers;
 
-    @OneToMany(mappedBy = "proposal", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "proposal", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
     public Proposal(@NotNull String proposalName, String filePath, String abstractDescription, List<String> topics, List<String> keywords, User author, List<User> coAuthors, List<User> biddingPeople, List<User> reviewers, List<Review> reviews) {

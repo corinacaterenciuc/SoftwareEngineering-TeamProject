@@ -5,19 +5,17 @@ import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.Conference;
 import theotherhalf.superconference.domain.ProposalKey;
-import theotherhalf.superconference.domain.Section;
 import theotherhalf.superconference.domain.User;
 import theotherhalf.superconference.dto.ConferenceDTO;
 import theotherhalf.superconference.dto.SectionDTO;
 import theotherhalf.superconference.dto.UserDTO;
 import theotherhalf.superconference.exceptions.ControllerException;
 import theotherhalf.superconference.services.ConferenceService;
-import theotherhalf.superconference.services.UserService;
+import theotherhalf.superconference.services.SectionService;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,29 +26,16 @@ public class ConferenceController
     private final ConferenceService conferenceService;
 
     @Autowired
-    public ConferenceController(ConferenceService conferenceService)
+    private final SectionService sectionService;
+
+    @Autowired
+    public ConferenceController(ConferenceService conferenceService, SectionService sectionService)
     {
         this.conferenceService = conferenceService;
+        this.sectionService = sectionService;
     }
 
-    public String getEmailFromJsonString(String jsonBody)
-    {
-        JacksonJsonParser gson = new JacksonJsonParser();
-        String email;
-        try
-        {
-            email = gson.parseMap(jsonBody).get("email").toString();
-        }
-        catch (Exception ex)
-        {
-            throw new ControllerException("[ERROR] Invalid request body email");
-        }
-        if(null == email || email.strip().equals(""))
-        {
-            throw new ControllerException("[ERROR] Invalid email");
-        }
-        return email;
-    }
+
 
     @PostMapping
     public ConferenceDTO addConference(@RequestBody @Valid ConferenceDTO conferenceDTO)
@@ -184,20 +169,20 @@ public class ConferenceController
     }
 
     // ------ SECTIONS --------
-    @PostMapping(path = "{confId}/sections")
-    public SectionDTO addSection(@PathVariable("confId") Long confId, @RequestBody SectionDTO sectionDTO)
+
+
+    @PutMapping(path = "{confId}/participants/")
+    public void addParticipantToConference(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
     {
-        List<ProposalKey> proposalKeys = new ArrayList<>();
-        List<String> participantsEmail = new ArrayList<>();
-        if(sectionDTO.getProposals() != null)
-        {
-            sectionDTO.getProposals().forEach(x -> proposalKeys.add(new ProposalKey(x.getEmail(), x.getTitle(), confId)));
-        }
-        if(sectionDTO.getParticipants() != null)
-        {
-            sectionDTO.getParticipants().forEach(x -> participantsEmail.add(x.getEmail()));
-        }
-        this.conferenceService.addSection(confId, sectionDTO.getChair(), sectionDTO.getTopics(), proposalKeys, participantsEmail, sectionDTO.getRoom());
-        return sectionDTO;
+        String userEmail = this.getEmailFromJsonString(jsonBody);
+        this.conferenceService.addParticipantToConference(confId, userEmail);
     }
+
+    @DeleteMapping(path = "{confId}/participants")
+    public void removeParticipantFromConference(@PathVariable("confId") Long confId, @RequestParam("email") String email)
+    {
+        this.conferenceService.removeParticipantFromConference(confId, email);
+    }
+
+
 }

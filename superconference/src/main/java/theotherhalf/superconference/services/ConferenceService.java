@@ -1,6 +1,7 @@
 package theotherhalf.superconference.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.server.csrf.ServerCsrfTokenRepository;
 import org.springframework.stereotype.Service;
 import theotherhalf.superconference.domain.*;
 import theotherhalf.superconference.exceptions.ServiceException;
@@ -237,27 +238,27 @@ public class ConferenceService
         return allProposals;
     }
 
-    public List<Proposal> getProposalsByKeys(Conference conference, List<ProposalKey> keys)
-    {
-        List<Proposal> allProposals = this.getConferenceProposals(conference.getID());
-        return allProposals.stream().filter(x -> keys.stream().anyMatch(k -> k.getEmail().equals(x.getAuthor().getEmail()) && k.getTitle().equals(x.getProposalName()))).collect(Collectors.toList());
-    }
 
-    public void addSection(Long confId, String chair, List<String> topics, List<ProposalKey> proposalKeys, List<String> emailParticipants, Integer room)
+
+    public void addParticipantToConference(Long confId, String email)
     {
         if(this.repository.findById(confId).isEmpty())
         {
             throw new ServiceException("[ERROR] Conference doesn't exists!");
         }
         Conference conference = this.repository.findById(confId).get();
-        List<Proposal> proposals = this.getProposalsByKeys(conference, proposalKeys);
-        if (this.userService.findByEmail(chair).isEmpty())
+        User usr = this.userService.getUserAfterValidation(email);
+        conference.addParticipantToConference(usr);
+    }
+
+    public void removeParticipantFromConference(Long confId, String email)
+    {
+        if(this.repository.findById(confId).isEmpty())
         {
-            throw new ServiceException("[ERROR] User doesn't exist");
+            throw new ServiceException("[ERROR] Conference doesn't exists!");
         }
-        User userChair = this.userService.findByEmail(chair).get();
-        List<User> participants = this.userService.getUsersInEmailList(emailParticipants);
-        Section section = new Section(userChair, topics, proposals, participants, room);
-        conference.addSection(section);
+        Conference conference = this.repository.findById(confId).get();
+        User usr = this.userService.getUserAfterValidation(email);
+        conference.removeParticipantFromConference(usr);
     }
 }

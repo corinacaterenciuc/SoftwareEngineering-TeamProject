@@ -1,6 +1,7 @@
 package theotherhalf.superconference.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import theotherhalf.superconference.domain.Proposal;
 import theotherhalf.superconference.domain.User;
 
@@ -10,17 +11,26 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SectionDTO
 {
+    @JsonProperty
+    private Long id;
+
+    @JsonProperty
     private String chair;
 
+    @JsonProperty
     private List<String> topics;
 
+    @JsonProperty
     private List<ProposalDTO> proposals;
 
+    @JsonProperty
     private List<JsonEmailDTO> participants;
 
+    @JsonProperty
     private Integer room;
 
-    public SectionDTO(String chair, List<String> topics, List<ProposalDTO> proposals, List<JsonEmailDTO> participants, Integer room) {
+    public SectionDTO(String chair, List<String> topics, List<ProposalDTO> proposals, List<JsonEmailDTO> participants, Integer room)
+    {
         this.chair = chair;
         this.topics = topics;
         this.proposals = proposals;
