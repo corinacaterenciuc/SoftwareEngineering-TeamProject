@@ -1,12 +1,13 @@
 import React from 'react';
 import './ConferenceList.css';
-import AddEditConferenceModal from "../AddEditConferenceModal/AddEditConferenceModal";
-import Conference from "../Conference/Conference";
+import Conference from "../conference/ConferenceCard/ConferenceCard";
 import {Button} from "baseui/button";
-import PropTypes from "prop-types";
 import {useSelector} from "react-redux";
-import {AUTHOR, PCM, SCM} from "../../userClaims";
 import ParticipateOptions from "../ParticipateOptions/ParticipateOptions";
+import AddEditConferenceModal from "../conference/AddEditConferenceModal/AddEditConferenceModal";
+import {PCM} from "../../userClaims";
+
+
 
 const ConferenceList = (props) => {
   const [editConference, setEditConference] = React.useState(null);
@@ -15,9 +16,8 @@ const ConferenceList = (props) => {
   // const [participateConference, setParticipateConference] = React.useState(null);
 
 
-
   let conferences = useSelector(state => state.conference.conferences);
-  let claims = useSelector(state =>state.user.claims);
+  let claims = useSelector(state =>state.auth.claims);
   console.log(conferences);
 
   return(

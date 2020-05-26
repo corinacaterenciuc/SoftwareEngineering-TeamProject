@@ -1,4 +1,4 @@
-import './Conference.css'
+import './ConferenceCard.css'
 import React from "react";
 import {
   Card,
@@ -6,13 +6,12 @@ import {
   StyledAction
 } from "baseui/card";
 import { Button } from "baseui/button";
-import PropTypes from "prop-types";
-import {conferenceType} from "../../propTypes";
+import PropTypes, {Requireable as conferenceType} from "prop-types";
 import {useDispatch} from "react-redux";
-import {SET_EDIT_CONFERENCE, PARTICIPATE_OPTIONS} from "../../redux/actions";
+import conferenceService from "../../../redux/conference/conferenceService";
 
 
-export default function Conference(props){
+export default function ConferenceCard(props){
 
   const dispatch = useDispatch();
 
@@ -42,11 +41,9 @@ export default function Conference(props){
                 overrides={{
                   BaseButton: { style: { width: "100%" } }}}
                 onClick = {() => {
-                  dispatch({
-                    type: SET_EDIT_CONFERENCE,
-                    conference: props.conference
-                  });
-                  props.setOpen(true);} }>
+                    dispatch(conferenceService.updateConference(props.conference));
+                    props.setEditConference(props.conference);
+                    props.setOpen(true);}}>
               Edit
             </Button>
               {/*<Button*/}
@@ -68,8 +65,8 @@ export default function Conference(props){
 
 }
 
-Conference.propTypes = {
-  conference: conferenceType.isRequired,
+ConferenceCard.propTypes = {
+  conference: conferenceType,
   setEditConference: PropTypes.func.isRequired,
   setOpen: PropTypes.func.isRequired
 };

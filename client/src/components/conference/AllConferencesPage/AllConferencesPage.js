@@ -1,11 +1,19 @@
 import React from 'react';
 import './AllConferencesPage.css';
+import SectionNavigation from "../../navigation/SectionNavigation/SectionNavigation";
+import NotFound from "../../navigation/NotFound/NotFound";
+import {Route, Switch} from "react-router";
+import ConferenceList from "../../ConferenceList/ConferenceList";
 
-const AllConferencesPage = () => (
+const AllConferencesPage = () => {
+
+
+    return (
     <div className="AllConferencesPage">
-        AllConferencesPage Component
+        <ConferenceList />
     </div>
-);
+    );
+};
 
 AllConferencesPage.propTypes = {};
 

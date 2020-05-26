@@ -8,8 +8,8 @@ import {Datepicker} from "baseui/datepicker";
 import {FormControl} from "baseui/form-control";
 import {Textarea} from "baseui/textarea";
 import {Select} from "baseui/select";
-import {conferenceType} from "../../propTypes";
 import {useSelector} from "react-redux";
+import {conferenceType} from "../../../propTypes";
 
 const AddEditConferenceModal = (props) => {
 

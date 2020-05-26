@@ -39,7 +39,34 @@ function updateSection(state: ConferenceState, conferenceId: number, section: Se
     return updateConference(state, conference);
 }
 
-export default function (state = {conferences: [],}, action: Action) {
+const initialState = {
+    conferences: [
+        {
+            id :1,
+            name: "name1",
+            description: "desc1",
+            zeroDeadline: new Date('2019-12-12'),
+            abstractDeadline: new Date('2019-12-12'),
+            proposalDeadline: new Date('2019-12-12'),
+            biddingDeadline: new Date('2019-12-12'),
+            evaluationDeadline: new Date('2019-12-12'),
+            presentationDeadline: new Date('2019-12-12'),
+        },
+        {
+            id :2,
+            name: "name2",
+            description: "desc2",
+            zeroDeadline: new Date('2019-12-12'),
+            abstractDeadline: new Date('2019-12-12'),
+            proposalDeadline: new Date('2019-12-12'),
+            biddingDeadline: new Date('2019-12-12'),
+            evaluationDeadline: new Date('2019-12-12'),
+            presentationDeadline: new Date('2019-12-12'),
+        }],
+    editConference: null
+};
+
+export default function (state: ConferenceState = initialState, action: Action) {
     let newState: ConferenceState = {conferences: []};
     let {type, payload} = action;
     let conferenceU: Conference = null;

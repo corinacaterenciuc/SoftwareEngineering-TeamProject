@@ -4,9 +4,10 @@
 
 .ConferenceList {
     /* propertys here */
-    margin: 10% ;
+    width: 100%;
+    height: 100%;
 }
 
 .ConferenceList > * {
-    margin: 1em 0em 0em 0em;
+    margin: 0em 0em 1em 0em;
 }

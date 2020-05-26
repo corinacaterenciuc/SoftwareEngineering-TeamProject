@@ -1,11 +1,12 @@
 // @ts-nocheck
+import {PCM, AUTHOR, USER} from "../../userClaims";
 import {JWT} from "../serviceConstants";
 import {LOGIN, LOGOUT, REGISTER} from "./authenticationActions";
 
 type AuthState = { firstname: string, lastname: string, email: string, token: JWT };
 type Action = { type: string, payload: object }
 
-const initState: AuthState = {firstname: '', lastname: '', email: '', token: ''};
+const initState: AuthState = {firstname: '', lastname: '', email: '', token: '', claims: [PCM, USER]};
 
 export default function (
     state: AuthState = initState,
