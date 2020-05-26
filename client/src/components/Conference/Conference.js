@@ -9,7 +9,7 @@ import { Button } from "baseui/button";
 import PropTypes from "prop-types";
 import {conferenceType} from "../../propTypes";
 import {useDispatch} from "react-redux";
-import {SET_EDIT_CONFERENCE} from "../../redux/actions";
+import {SET_EDIT_CONFERENCE, PARTICIPATE_OPTIONS} from "../../redux/actions";
 
 
 export default function Conference(props){
@@ -21,17 +21,20 @@ export default function Conference(props){
         <Card className="cardConference">
           <StyledBody>
             <div className="center-container">
-                <ul>
-                    <li><h3>Name </h3> {props.conference.name}</li>
-                    <li><h3>Description</h3>{props.conference.description}</li>
-                    <h3>DEADLINES: </h3>
-                    <li><h3>Zero Phase </h3> {props.conference.zeroDeadline.toLocaleDateString("ro-RO")}</li>
-                    <li><h3>Abstract </h3> {props.conference.abstractDeadline.toLocaleDateString("ro-RO")}</li>
-                    <li><h3>Full Proposal </h3>{props.conference.proposalDeadline.toLocaleDateString("ro-RO")}</li>
-                    <li><h3>Bidding </h3> {props.conference.biddingDeadline.toLocaleDateString("ro-RO")}</li>
-                    <li><h3>Evaluation </h3> {props.conference.evaluationDeadline.toLocaleDateString("ro-RO")}</li>
-                    <li><h3>Presentation </h3> {props.conference.presentationDeadline.toLocaleDateString("ro-RO")}</li>
-                </ul>
+                <div>
+                    <h3>Name </h3> {props.conference.name}
+                    <h3>Description</h3>{props.conference.description}
+                </div>
+                <div>
+                    <div><h3>Zero Phase </h3> {props.conference.zeroDeadline.toLocaleDateString("ro-RO")} </div>
+                    <div><h3>Abstract </h3> {props.conference.abstractDeadline.toLocaleDateString("ro-RO")}</div>
+                    <div><h3>Full Proposal </h3>{props.conference.proposalDeadline.toLocaleDateString("ro-RO")}</div>
+                </div>
+                <div>
+                    <div><h3>Bidding </h3> {props.conference.biddingDeadline.toLocaleDateString("ro-RO")}</div>
+                    <div><h3>Evaluation </h3> {props.conference.evaluationDeadline.toLocaleDateString("ro-RO")}</div>
+                    <div><h3>Presentation </h3> {props.conference.presentationDeadline.toLocaleDateString("ro-RO")}</div>
+                </div>
             </div>
           </StyledBody>
           <StyledAction>
@@ -46,7 +49,17 @@ export default function Conference(props){
                   props.setOpen(true);} }>
               Edit
             </Button>
-
+              {/*<Button*/}
+              {/*    overrides={{*/}
+              {/*        BaseButton: { style: { width: "100%" } }}}*/}
+              {/*    onClick = {() => {*/}
+              {/*        dispatch({*/}
+              {/*            type: PARTICIPATE_OPTIONS,*/}
+              {/*            conference: props.conference*/}
+              {/*        });*/}
+              {/*        props.setOpenOptions(true);} }>*/}
+              {/*    Participate*/}
+              {/*</Button>*/}
 
           </StyledAction>
         </Card>

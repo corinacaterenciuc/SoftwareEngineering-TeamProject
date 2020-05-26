@@ -4,11 +4,26 @@
 
 .center-container{
 
-    background-color: aqua;
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    margin: 10px;
+    justify-content: space-between;
+    /*margin: 10px;*/
 
+}
+
+.center-container > div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin: 2em;
+}
+
+.center-container > div > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.center-container > div > div > h3 {
+    margin: 1em 2em ;
 }
