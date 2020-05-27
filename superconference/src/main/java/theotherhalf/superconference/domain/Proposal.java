@@ -152,6 +152,11 @@ public class Proposal extends BaseEntity
         this.reviewers = reviewers;
     }
 
+    public void removeReviewers(List<User> reviewers)
+    {
+        this.reviewers = this.reviewers.stream().filter(x -> reviewers.stream().noneMatch(y -> y.equals(x))).collect(Collectors.toList());
+    }
+
     public List<Review> getReviews() {
         return reviews;
     }
@@ -184,11 +189,16 @@ public class Proposal extends BaseEntity
     @Transactional
     public void updateReview(Review review)
     {
-        if(null != review)
+        if(null == review.getID())
         {
             throw new ValidationException("[ERROR] Invalid review id given");
         }
         Review oldReview = this.reviews.stream().filter(x -> x.getID().equals(review.getID())).findFirst().get();
+        if(!review.getUser().equals(oldReview.getUser()))
+        {
+            throw new ValidationException("[ERROR] Reviewer email can't be changed.");
+        }
+
         if(null != review.getGrade())
         {
             oldReview.setGrade(review.getGrade());
@@ -203,6 +213,12 @@ public class Proposal extends BaseEntity
     public void addBidder(User usr)
     {
         this.biddingPeople.add(usr);
+    }
+
+    @Transactional
+    public void removeBidder(User usr)
+    {
+        this.biddingPeople.remove(usr);
     }
 
 }

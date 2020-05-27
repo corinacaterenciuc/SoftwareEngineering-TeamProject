@@ -1,5 +1,6 @@
 package theotherhalf.superconference.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import theotherhalf.superconference.domain.ENUMERATION_GRADES;
 import theotherhalf.superconference.domain.Proposal;
@@ -15,14 +16,16 @@ public class ReviewDTO
 {
     private Long id;
     private JsonEmailDTO reviewer;
-    private Long proposal;
+    private Long proposalId;
     private String justification;
+
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private ENUMERATION_GRADES grade;
 
-    public ReviewDTO(Long id, JsonEmailDTO reviewer, Long proposal, String justification, ENUMERATION_GRADES grade) {
+    public ReviewDTO(Long id, JsonEmailDTO reviewer, Long proposalId, String justification, ENUMERATION_GRADES grade) {
         this.id = id;
         this.reviewer = reviewer;
-        this.proposal = proposal;
+        this.proposalId = proposalId;
         this.justification = justification;
         this.grade = grade;
     }
@@ -88,11 +91,11 @@ public class ReviewDTO
     }
 
     public Long getProposal() {
-        return proposal;
+        return proposalId;
     }
 
-    public void setProposal(Long proposal) {
-        this.proposal = proposal;
+    public void setProposal(Long proposalId) {
+        this.proposalId = proposalId;
     }
 
     public String getJustification() {

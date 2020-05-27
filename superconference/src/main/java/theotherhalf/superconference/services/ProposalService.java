@@ -53,8 +53,23 @@ public class ProposalService
     {
         if(null != reviewers)
         {
+            if(reviewers.size() > 4)
+            {
+                throw new ServiceException("[ERROR] Too many reviewers given.");
+            }
             proposal.setReviewers(this.userService.getUsersInEmailList(reviewers));
         }
+    }
+
+    @Transactional
+    public void removeReviewersFromProposal(Proposal proposal, List<String> reviewerEmails)
+    {
+        if(null == reviewerEmails)
+        {
+            throw new ServiceException("[ERROR] Empty email list given to reviewers removal.");
+        }
+        proposal.removeReviewers(this.userService.getUsersInEmailList(reviewerEmails));
+
     }
 
     @Transactional
@@ -121,6 +136,7 @@ public class ProposalService
 
     }
 
+    @Transactional
     public void addBid(Long confId, Long proposalId, String email)
     {
         Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
@@ -128,6 +144,16 @@ public class ProposalService
         Proposal proposal = main.getProposal(proposalId);
         User usr = this.userService.getUserAfterValidation(email);
         proposal.addBidder(usr);
+    }
+
+    @Transactional
+    public void removeBid(Long confId, Long proposalId, String email)
+    {
+        Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
+        Section main = conference.getDefaultSection();
+        Proposal proposal = main.getProposal(proposalId);
+        User usr = this.userService.getUserAfterValidation(email);
+        proposal.removeBidder(usr);
     }
 
     public List<User> getBidders(Long confId, Long proposalId)

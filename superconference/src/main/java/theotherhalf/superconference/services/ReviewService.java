@@ -1,5 +1,6 @@
 package theotherhalf.superconference.services;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import theotherhalf.superconference.domain.*;
@@ -71,11 +72,29 @@ public class ReviewService
     }
 
     @Transactional
-    public void updateReview(Long confId, Long proposalId, Review review)
+    public void updateReview(Long confId, Long proposalId, Review review, String userEmail)
     {
+        User user = this.userService.getUserAfterValidation(userEmail);
         Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
+        review.setUser(user);
         Section main = conference.getDefaultSection();
         Proposal proposal = main.getProposal(proposalId);
         proposal.updateReview(review);
+    }
+
+    @Transactional
+    public void addReviewers(Long confId, Long proposalId, List<String> userEmails)
+    {
+        Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
+        Proposal proposal = conference.getDefaultSection().getProposal(proposalId);
+        this.proposalService.addReviewersToProposal(proposal, userEmails);
+    }
+
+    @Transactional
+    public void removeReviewers(Long confId, Long proposalId, List<String> userEmails)
+    {
+        Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
+        Proposal proposal = conference.getDefaultSection().getProposal(proposalId);
+        this.proposalService.removeReviewersFromProposal(proposal, userEmails);
     }
 }

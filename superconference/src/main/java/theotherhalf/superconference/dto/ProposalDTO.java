@@ -25,7 +25,8 @@ public class ProposalDTO
     private List<JsonEmailDTO> coAuthors;
     private List<String> keywords;
     private List<JsonEmailDTO> bidders;
-    private List<Long> reviews;
+    //private List<Long> reviews;
+    private List<JsonEmailDTO> reviewers;
 
     public ProposalDTO(Long id,
                        Long conference,
@@ -37,7 +38,7 @@ public class ProposalDTO
                        List<JsonEmailDTO> coAuthors,
                        List<String> keywords,
                        List<JsonEmailDTO> bidders,
-                       List<Long> reviews)
+                       List<JsonEmailDTO> reviewers)
     {
         this.id = id;
         this.conference = conference;
@@ -49,7 +50,7 @@ public class ProposalDTO
         this.coAuthors = coAuthors;
         this.keywords = keywords;
         this.bidders = bidders;
-        this.reviews = reviews;
+        this.reviewers = reviewers;
     }
 
     public ProposalDTO() {
@@ -68,7 +69,7 @@ public class ProposalDTO
                 proposal.getCoAuthors().stream().map(x -> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()),
                 proposal.getKeywords(),
                 proposal.getBiddingPeople().stream().map(x-> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()),
-                proposal.getReviews().stream().map(BaseEntity::getID).collect(Collectors.toList()));
+                proposal.getReviewers().stream().map(x -> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()));
     }
 
     public static Proposal toPartialDomain(ProposalDTO proposalDTO)
@@ -162,12 +163,12 @@ public class ProposalDTO
         this.bidders = bidders;
     }
 
-    public List<Long> getReviews() {
-        return reviews;
+    public List<JsonEmailDTO> getReviewers() {
+        return reviewers;
     }
 
-    public void setReviews(List<Long> reviews) {
-        this.reviews = reviews;
+    public void setReviewers(List<JsonEmailDTO> reviewers) {
+        this.reviewers = reviewers;
     }
 }
 

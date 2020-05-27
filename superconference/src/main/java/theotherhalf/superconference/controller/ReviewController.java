@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.Proposal;
 import theotherhalf.superconference.domain.Review;
+import theotherhalf.superconference.dto.JsonEmailDTO;
 import theotherhalf.superconference.dto.ReviewDTO;
 import theotherhalf.superconference.exceptions.ControllerException;
 import theotherhalf.superconference.services.ReviewService;
@@ -43,6 +44,12 @@ public class ReviewController
         return ReviewDTO.toDTO(rev, proposalId);
     }
 
+    @PutMapping("{confId}/proposals/{proposalId}/reviews")
+    public void updateReview(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody @Valid ReviewDTO reviewDTO)
+    {
+        this.reviewService.updateReview(confId, proposalId, ReviewDTO.toDomain(reviewDTO), reviewDTO.getReviewer().getEmail());
+    }
+
     @GetMapping("{confId}/proposals/{proposalId}/reviews")
     public List<ReviewDTO> getReviews(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId)
     {
@@ -54,4 +61,6 @@ public class ReviewController
     {
         this.reviewService.removeReview(confId, proposalId, reviewId);
     }
+
+
 }

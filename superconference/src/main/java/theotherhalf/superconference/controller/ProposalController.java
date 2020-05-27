@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.Proposal;
 import theotherhalf.superconference.domain.User;
+import theotherhalf.superconference.dto.JsonEmailDTO;
 import theotherhalf.superconference.dto.ProposalDTO;
 import theotherhalf.superconference.exceptions.ControllerException;
 import theotherhalf.superconference.services.ProposalService;
+import theotherhalf.superconference.services.ReviewService;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -26,6 +28,9 @@ public class ProposalController
     @Autowired
     private ProposalService proposalService;
 
+    @Autowired
+    private ReviewService reviewService;
+
     public ProposalController(ConferenceController conferenceController, UserController userController, ProposalService proposalService)
     {
         this.conferenceController = conferenceController;
@@ -39,6 +44,7 @@ public class ProposalController
         Proposal theProposal = ProposalDTO.toPartialDomain(proposalDTO);
         List<String> coAuthors = null;
         List<String> bidders = null;
+        List<String> reviewers = null;
         String author = null;
         if(null == proposalDTO.getAuthor())
         {
@@ -52,11 +58,16 @@ public class ProposalController
         {
             bidders = this.conferenceController.getEmailsFromJsonMailDTOs(proposalDTO.getBidders());
         }
+        if(null != proposalDTO.getReviewers())
+        {
+            reviewers = this.conferenceController.getEmailsFromJsonMailDTOs(proposalDTO.getReviewers());
+        }
         author = proposalDTO.getAuthor().getEmail();
         this.proposalService.saveAsEntity(theProposal, author);
         Proposal response = this.proposalService.addConferenceProposal(confId, theProposal);
         this.proposalService.addCoAuthorsToProposal(response, coAuthors);
         this.proposalService.addBiddersToProposal(response, bidders);
+        this.proposalService.addReviewersToProposal(response, reviewers);
 
         return ProposalDTO.toDTO(confId, response);
     }
@@ -73,4 +84,27 @@ public class ProposalController
         return this.proposalService.getProposals(confId).stream().map(x -> ProposalDTO.toDTO(confId, x)).collect(Collectors.toList());
     }
 
+    @PutMapping("{confId}/proposals/{proposalId}/reviewers")
+    public void addReviewers(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody List<JsonEmailDTO> emails)
+    {
+        this.reviewService.addReviewers(confId, proposalId, this.conferenceController.getEmailsFromJsonMailDTOs(emails));
+    }
+
+    @DeleteMapping("{confId}/proposals/{proposalId}/reviewers")
+    public void removeReviewers(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody List<JsonEmailDTO> emails)
+    {
+        this.reviewService.removeReviewers(confId, proposalId, this.conferenceController.getEmailsFromJsonMailDTOs(emails));
+    }
+
+    @PutMapping("{confId}/proposals/{proposalId}/bid")
+    public void bidOnProposal(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody JsonEmailDTO email)
+    {
+        this.proposalService.addBid(confId, proposalId, email.getEmail());
+    }
+
+    @PutMapping("{confId}/proposals/{proposalId}/unbid")
+    public void removeBidOnProposal(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody JsonEmailDTO email)
+    {
+        this.proposalService.removeBid(confId, proposalId, email.getEmail());
+    }
 }
