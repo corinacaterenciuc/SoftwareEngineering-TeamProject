@@ -7,8 +7,11 @@ import theotherhalf.superconference.domain.*;
 import theotherhalf.superconference.exceptions.ServiceException;
 import theotherhalf.superconference.repository.ConferenceRepository;
 import theotherhalf.superconference.repository.RoleRepository;
+import theotherhalf.superconference.repository.SectionRepository;
 import theotherhalf.superconference.validators.ConferenceValidator;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -29,6 +32,12 @@ public class ConferenceService
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SectionRepository sectionRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public ConferenceService()
     {
@@ -142,6 +151,14 @@ public class ConferenceService
         return tempConf.get();
     }
 
+    @Transactional
+    public Section addSectionToConference(Long conferenceId, Section section)
+    {
+        //section.setID(new Random().nextLong());
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        conference.addSection(section);
+        return section;
+    }
     public Optional<Conference> findById(Long conferenceID)
     {
         return this.repository.findById(conferenceID);

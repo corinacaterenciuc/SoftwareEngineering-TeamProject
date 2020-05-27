@@ -5,7 +5,11 @@ import org.springframework.stereotype.Service;
 import theotherhalf.superconference.domain.*;
 import theotherhalf.superconference.exceptions.ServiceException;
 import theotherhalf.superconference.repository.ConferenceRepository;
+import theotherhalf.superconference.repository.SectionRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Transient;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +29,12 @@ public class SectionService
     @Autowired
     private ConferenceService conferenceService;
 
+    @Autowired
+    private SectionRepository sectionRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public SectionService()
     {
 
@@ -36,28 +46,22 @@ public class SectionService
         return allProposals.stream().filter(x -> keys.stream().anyMatch(k -> k.getEmail().equals(x.getAuthor().getEmail()) && k.getTitle().equals(x.getProposalName()))).collect(Collectors.toList());
     }
 
-    public Section addSection(Long confId, String chair, List<String> topics, List<ProposalKey> proposalKeys, List<String> emailParticipants, Integer room)
+    @Transactional
+    public Section saveEntity(User user, List<String> topics, List<User> participants, List<Proposal> proposals, Integer room)
     {
-        if(this.conferenceService.findById(confId).isEmpty())
-        {
-            throw new ServiceException("[ERROR] Conference doesn't exists!");
-        }
-        Conference conference = this.conferenceService.findById(confId).get();
-        List<Proposal> proposals = this.getProposalsByKeys(conference, proposalKeys);
-        if (this.userService.findByEmail(chair).isEmpty())
-        {
-            throw new ServiceException("[ERROR] User doesn't exist");
-        }
-        User userChair = this.userService.findByEmail(chair).get();
-        List<User> participants = this.userService.getUsersInEmailList(emailParticipants);
-        Section section = new Section(userChair, topics, proposals, participants, room);
-        section.setID(new Random().nextLong());
+        Section section = new Section(user, topics, proposals, participants, room);
+        section.setId(new Random().nextLong());
+        //section.setID(new Random().nextLong());
+        //this.sectionRepository.save(section);
 
-        return conference.addSection(section);
+        return section;
     }
 
-    public void updateSection(Long confId, String chair, List<String> topics, List<ProposalKey> proposalKeys, List<String> emailParticipants, Integer room)
+    public Section addSection(Long confId, String chair, List<String> topics, List<ProposalKey> proposalKeys, List<String> emailParticipants, Integer room)
     {
+        //Section section = this.saveEntity();
+        //return this.conferenceService.addSectionToConference(confId);
+
         if(this.conferenceService.findById(confId).isEmpty())
         {
             throw new ServiceException("[ERROR] Conference doesn't exists!");
@@ -70,10 +74,41 @@ public class SectionService
         }
         User userChair = this.userService.findByEmail(chair).get();
         List<User> participants = this.userService.getUsersInEmailList(emailParticipants);
+//        Section section = new Section(userChair, topics, proposals, participants, room);
+//        section.setID(new Random().nextLong());
+        Section saved = this.saveEntity(userChair, topics, participants, proposals, room);
+        return this.conferenceService.addSectionToConference(confId, saved);
+    }
+
+    @Transactional
+    public void updateSection(Long id, Long confId, String chair, List<String> topics, List<ProposalKey> proposalKeys, List<String> emailParticipants, Integer room)
+    {
+        if(null == id)
+        {
+            throw new ServiceException("[ERROR] Null id given to update");
+        }
+        User userChair = null;
+        if(this.conferenceService.findById(confId).isEmpty())
+        {
+            throw new ServiceException("[ERROR] Conference doesn't exists!");
+        }
+        Conference conference = this.conferenceService.findById(confId).get();
+        List<Proposal> proposals = this.getProposalsByKeys(conference, proposalKeys);
+        if (null != chair && this.userService.findByEmail(chair).isEmpty())
+        {
+            throw new ServiceException("[ERROR] User doesn't exist");
+        }
+        if(null != chair)
+        {
+            userChair = this.userService.findByEmail(chair).get();
+        }
+        List<User> participants = this.userService.getUsersInEmailList(emailParticipants);
         Section section = new Section(userChair, topics, proposals, participants, room);
+        section.setId(id);
         conference.updateSection(section);
     }
 
+    @Transactional
     public void removeSection(Long confId, Long sectionId)
     {
         if(this.conferenceService.findById(confId).isEmpty())
@@ -89,6 +124,7 @@ public class SectionService
 
     }
 
+    @Transactional
     public void addParticipants(Long confId, Long sectionId, String email)
     {
         Optional<Conference> conferenceOptional = this.conferenceService.findById(confId);
@@ -106,6 +142,7 @@ public class SectionService
         section.addParticipant(usr);
     }
 
+    @Transactional
     public void removeParticipant(Long confId, Long sectionId, String email)
     {
         Optional<Conference> conferenceOptional = this.conferenceService.findById(confId);

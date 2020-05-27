@@ -13,10 +13,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Entity
-public class Section extends BaseEntity
+public class Section //extends BaseEntity
 {
-   // @ManyToOne(cascade = CascadeType.ALL)
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @Id
+    @Column(name = "_id", nullable = false)
+    @NotNull
+    private Long id;
+
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    //@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private User chair;
 
     @ElementCollection
@@ -49,6 +55,20 @@ public class Section extends BaseEntity
         this.room = 0;
     }
 
+    public Long getId()
+    {
+        return this.id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+    public Long getID()
+    {
+        return this.id;
+    }
     public User getChair() {
         return chair;
     }

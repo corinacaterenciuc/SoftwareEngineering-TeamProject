@@ -1,6 +1,7 @@
 package theotherhalf.superconference.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.Proposal;
 import theotherhalf.superconference.domain.Review;
@@ -44,6 +45,7 @@ public class ReviewController
         return ReviewDTO.toDTO(rev, proposalId);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("{confId}/proposals/{proposalId}/reviews")
     public void updateReview(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody @Valid ReviewDTO reviewDTO)
     {

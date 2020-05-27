@@ -2,6 +2,7 @@ package theotherhalf.superconference.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.ProposalKey;
 import theotherhalf.superconference.dto.SectionDTO;
@@ -13,7 +14,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-@Transactional
+
 @RestController
 @RequestMapping("api/conferences")
 public class SectionController
@@ -80,16 +81,18 @@ public class SectionController
         {
             sectionDTO.getParticipants().forEach(x -> participantsEmail.add(x.getEmail()));
         }
-        this.sectionService.updateSection(confId, sectionDTO.getChair(), sectionDTO.getTopics(), proposalKeys, participantsEmail, sectionDTO.getRoom());
+        this.sectionService.updateSection(sectionDTO.getId(), confId, sectionDTO.getChair(), sectionDTO.getTopics(), proposalKeys, participantsEmail, sectionDTO.getRoom());
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "{confId}/sections")
     public void removeSection(@PathVariable("confId") Long confId, @RequestParam("id") Long sectionId)
     {
-        System.out.println("FICUS");
+        this.sectionService.removeSection(confId, sectionId);
     }
 
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(path = "{confId}/sections/{sectionId}/participants")
     public void addParticipantToSection(@PathVariable("confId") Long confId, @PathVariable("sectionId") Long sectionId, @RequestBody String jsonString)
     {
@@ -97,6 +100,7 @@ public class SectionController
         this.sectionService.addParticipants(confId, sectionId, email);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "{confId}/sections/{sectionId}/participants")
     public void removeParticipantFromSection(@PathVariable("confId") Long confId, @PathVariable("sectionId") Long sectionId, @RequestParam("email") String email)
     {

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SectionDTO
 {
+
     @JsonProperty
     private Long id;
 
@@ -46,11 +47,37 @@ public class SectionDTO
 
     public static SectionDTO toDTO(Long confId, Section section)
     {
-        return new SectionDTO(section.getChair().getEmail(),
-                              section.getTopic(),
-                              section.getProposals().stream().map(x -> ProposalDTO.toDTO(confId, x)).collect(Collectors.toList()),
-                              section.getParticipants().stream().map(x -> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()),
-                              section.getRoom());
+        SectionDTO sectionDTO = new SectionDTO();
+        if(null != section.getID())
+        {
+            sectionDTO.setId(section.getID());
+        }
+        if(null != section.getChair())
+        {
+            sectionDTO.setChair(section.getChair().getEmail());
+        }
+        if(null != section.getTopic())
+        {
+            sectionDTO.setTopics(section.getTopic());
+        }
+        if(null != section.getProposals())
+        {
+            sectionDTO.setProposals(section.getProposals().stream().map(x -> ProposalDTO.toDTO(confId, x)).collect(Collectors.toList()));
+        }
+        if(null != section.getParticipants())
+        {
+            sectionDTO.setParticipants(section.getParticipants().stream().map(x -> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()));
+        }
+        if(null != section.getRoom())
+        {
+            sectionDTO.setRoom(section.getRoom());
+        }
+        return sectionDTO;
+//        return new SectionDTO(section.getChair().getEmail(),
+//                              section.getTopic(),
+//                              section.getProposals().stream().map(x -> ProposalDTO.toDTO(confId, x)).collect(Collectors.toList()),
+//                              section.getParticipants().stream().map(x -> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()),
+//                              section.getRoom());
     }
 
     public String getChair() {
@@ -92,4 +119,13 @@ public class SectionDTO
     public void setRoom(Integer room) {
         this.room = room;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }

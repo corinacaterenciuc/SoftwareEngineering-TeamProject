@@ -223,12 +223,12 @@ public class UserService
     public void addRoleToUser(User user, Conference conference, ENUMERATION_ROLES role)
     {
         Optional<UserClaims> claim = this.roleRepository.findByConferenceAndUserAndRole(conference, user, role);
-        if(claim.isPresent())
+        if(claim.isEmpty())
         {
-            throw new ServiceException("[ERROR] User has been assigned with the specified role already.");
+            UserClaims theNewRole = new UserClaims(user, conference, role);
+            this.roleRepository.save(theNewRole);
         }
-        UserClaims theNewRole = new UserClaims(user, conference, role);
-        this.roleRepository.save(theNewRole);
+
     }
 
     public void removeRoleFromUser(User user, Conference conference, ENUMERATION_ROLES role)

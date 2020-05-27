@@ -1,6 +1,7 @@
 package theotherhalf.superconference.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.Notification;
 import theotherhalf.superconference.domain.User;
@@ -45,6 +46,7 @@ public class NotificationController
         return notifications.stream().map(x -> NotificationDTO.toDTO(x.getNotification(), x.getID(), x.isRead())).collect(Collectors.toList());
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("{notifId}")
     public void markNotificationAsRead(@PathVariable("notifId") Long notifId)
     {

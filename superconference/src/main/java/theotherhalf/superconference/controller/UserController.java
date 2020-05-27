@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.boot.json.JacksonJsonParser;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.Conference;
 import theotherhalf.superconference.domain.User;
@@ -43,12 +44,14 @@ public class UserController
         return UserDTO.toDTO(savedUser);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping
     public void deleteUser(@RequestParam("email") String email)
     {
         this.userService.deleteUser(email);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping
     public UserDTO updateUser(@RequestBody @Valid UserDTO userDTO)
     {

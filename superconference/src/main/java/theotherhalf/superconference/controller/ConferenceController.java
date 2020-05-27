@@ -3,6 +3,7 @@ package theotherhalf.superconference.controller;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.Conference;
 import theotherhalf.superconference.domain.ProposalKey;
@@ -158,6 +159,7 @@ public class ConferenceController
         return response;
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping
     public void deleteConference(@RequestParam("id") Long confId)
     {
@@ -273,6 +275,7 @@ public class ConferenceController
     // ------ SECTIONS --------
 
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(path = "{confId}/participants")
     public void addParticipantToConference(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
     {
@@ -280,6 +283,7 @@ public class ConferenceController
         this.conferenceService.addParticipantToConference(confId, userEmail);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "{confId}/participants")
     public void removeParticipantFromConference(@PathVariable("confId") Long confId, @RequestParam("email") String email)
     {

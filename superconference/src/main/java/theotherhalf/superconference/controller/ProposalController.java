@@ -1,6 +1,7 @@
 package theotherhalf.superconference.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.Proposal;
 import theotherhalf.superconference.domain.User;
@@ -72,6 +73,7 @@ public class ProposalController
         return ProposalDTO.toDTO(confId, response);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "{confId}/proposals")
     public void deleteProposal(@PathVariable("confId") Long confId, @RequestParam("id") Long proposalId)
     {
@@ -96,18 +98,21 @@ public class ProposalController
         this.reviewService.removeReviewers(confId, proposalId, this.conferenceController.getEmailsFromJsonMailDTOs(emails));
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("{confId}/proposals/{proposalId}/bid")
     public void bidOnProposal(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody JsonEmailDTO email)
     {
         this.proposalService.addBid(confId, proposalId, email.getEmail());
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("{confId}/proposals/{proposalId}/unbid")
     public void removeBidOnProposal(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody JsonEmailDTO email)
     {
         this.proposalService.removeBid(confId, proposalId, email.getEmail());
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("{confId}/proposals/{proposalId}/sh")
     public void addSecondHandReviewer(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody JsonEmailDTO email)
     {

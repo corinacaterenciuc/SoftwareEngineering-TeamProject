@@ -52,7 +52,7 @@ public class Proposal extends BaseEntity
     @OneToMany(mappedBy = "proposal", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinTable(name = "proposal_shreviewer")
     @JoinColumn(name="cmsuser__id", nullable = true)
     private User secondHandReviewer;

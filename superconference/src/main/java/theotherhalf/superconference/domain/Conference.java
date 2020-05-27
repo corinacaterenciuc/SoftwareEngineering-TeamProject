@@ -1,8 +1,6 @@
 package theotherhalf.superconference.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
-import theotherhalf.superconference.exceptions.NotAddedException;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
@@ -182,7 +180,7 @@ public class Conference extends BaseEntity
         }
         else
         {
-            throw new NotAddedException("[ERROR] Section couldn't be added");
+            throw new ValidationException("[ERROR] Section couldn't be added");
         }
     }
 
