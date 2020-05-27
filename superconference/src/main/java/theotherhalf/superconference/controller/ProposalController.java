@@ -67,7 +67,7 @@ public class ProposalController
         Proposal response = this.proposalService.addConferenceProposal(confId, theProposal);
         this.proposalService.addCoAuthorsToProposal(response, coAuthors);
         this.proposalService.addBiddersToProposal(response, bidders);
-        this.proposalService.addReviewersToProposal(response, reviewers);
+        //this.proposalService.addReviewersToProposal(response, reviewers);
 
         return ProposalDTO.toDTO(confId, response);
     }
@@ -107,4 +107,16 @@ public class ProposalController
     {
         this.proposalService.removeBid(confId, proposalId, email.getEmail());
     }
+
+    @PutMapping("{confId}/proposals/{proposalId}/sh")
+    public void addSecondHandReviewer(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody JsonEmailDTO email)
+    {
+        this.proposalService.addSecondHandReviewer(confId, proposalId, email.getEmail());
+    }
+
+//    @PutMapping("{confId}/proposals/{proposalId}/sh")
+//    public void addSecondHandReviewer(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody JsonEmailDTO email)
+//    {
+//        this.proposalService.addSecondHandReviewer(confId, proposalId, email.getEmail());
+//    }
 }

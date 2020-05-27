@@ -156,6 +156,26 @@ public class ProposalService
         proposal.removeBidder(usr);
     }
 
+    @Transactional
+    public void addSecondHandReviewer(Long confId, Long proposalId, String email)
+    {
+        Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
+        Section main = conference.getDefaultSection();
+        Proposal proposal = main.getProposal(proposalId);
+        User usr = this.userService.getUserAfterValidation(email);
+        proposal.addSecondHandReviewer(usr);
+    }
+
+    @Transactional
+    public void removeSecondHandReviewer(Long confId, Long proposalId, String email)
+    {
+        Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
+        Section main = conference.getDefaultSection();
+        Proposal proposal = main.getProposal(proposalId);
+        User usr = this.userService.getUserAfterValidation(email);
+        proposal.removeSecondHandReviewer(usr);
+    }
+
     public List<User> getBidders(Long confId, Long proposalId)
     {
         Conference conference = this.conferenceService.getConferenceAfterValidation(confId);

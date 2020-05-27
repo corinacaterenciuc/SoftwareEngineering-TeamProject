@@ -52,6 +52,11 @@ public class Proposal extends BaseEntity
     @OneToMany(mappedBy = "proposal", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(name = "proposal_shreviewer")
+    @JoinColumn(name="cmsuser__id", nullable = true)
+    private User secondHandReviewer;
+
     public Proposal(@NotNull String proposalName, String filePath, String abstractDescription, List<String> topics, List<String> keywords) {
         this.proposalName = proposalName;
         this.filePath = filePath;
@@ -134,6 +139,14 @@ public class Proposal extends BaseEntity
 
     public void setCoAuthors(List<User> coAuthors) {
         this.coAuthors = coAuthors;
+    }
+
+    public User getSecondHandReviewer() {
+        return secondHandReviewer;
+    }
+
+    public void setSecondHandReviewer(User secondHandReviewer) {
+        this.secondHandReviewer = secondHandReviewer;
     }
 
     public List<User> getBiddingPeople() {
@@ -219,6 +232,22 @@ public class Proposal extends BaseEntity
     public void removeBidder(User usr)
     {
         this.biddingPeople.remove(usr);
+    }
+
+    @Transactional
+    public void addSecondHandReviewer(User usr)
+    {
+        if(null != this.secondHandReviewer)
+        {
+            throw new ValidationException("[ERROR] Second hand reviewer already assigned.");
+        }
+        this.secondHandReviewer = usr;
+    }
+
+    @Transactional
+    public void removeSecondHandReviewer(User usr)
+    {
+        this.secondHandReviewer = null;
     }
 
 }

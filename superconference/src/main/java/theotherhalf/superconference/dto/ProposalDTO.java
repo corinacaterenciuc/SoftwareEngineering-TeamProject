@@ -25,8 +25,16 @@ public class ProposalDTO
     private List<JsonEmailDTO> coAuthors;
     private List<String> keywords;
     private List<JsonEmailDTO> bidders;
-    //private List<Long> reviews;
     private List<JsonEmailDTO> reviewers;
+    private JsonEmailDTO secondHandReviewer;
+
+    public JsonEmailDTO getSecondHandReviewer() {
+        return secondHandReviewer;
+    }
+
+    public void setSecondHandReviewer(JsonEmailDTO secondHandReviewer) {
+        this.secondHandReviewer = secondHandReviewer;
+    }
 
     public ProposalDTO(Long id,
                        Long conference,
@@ -58,7 +66,7 @@ public class ProposalDTO
 
     public static ProposalDTO toDTO(Long confId, Proposal proposal)
     {
-        return new ProposalDTO(
+        ProposalDTO proposalDTO = new ProposalDTO(
                 proposal.getID(),
                 confId,
                 proposal.getProposalName(),
@@ -70,6 +78,11 @@ public class ProposalDTO
                 proposal.getKeywords(),
                 proposal.getBiddingPeople().stream().map(x-> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()),
                 proposal.getReviewers().stream().map(x -> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()));
+        if(null != proposal.getSecondHandReviewer())
+        {
+            proposalDTO.setSecondHandReviewer(new JsonEmailDTO(proposal.getSecondHandReviewer().getEmail()));
+        }
+        return proposalDTO;
     }
 
     public static Proposal toPartialDomain(ProposalDTO proposalDTO)
