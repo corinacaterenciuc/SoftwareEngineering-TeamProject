@@ -37,20 +37,8 @@ public class ReviewController
             throw new ControllerException("[ERROR] Null reviewer id given");
         }
         reviewDTO.setProposal(proposalId);
-        //Review review = ReviewDTO.toDomain(reviewDTO);
         String reviewer = reviewDTO.getReviewer().getEmail();
-        //Review rev = this.reviewService.saveReview(review, reviewer, confId, proposalId);
         Review rev = this.reviewService.addReviewToProposal(reviewDTO.getGrade(), reviewDTO.getJustification(), proposalId, confId, reviewer);
-//        this.reviewService.addReview(confId, proposalId, rev);
-//        return ReviewDTO.toDTO(rev, proposalId);
-
-//        this.proposalService.fmm(theProposal, author);
-//        Proposal response = this.proposalService.addConferenceProposal(confId, theProposal);
-//        this.proposalService.addCoAuthorsToProposal(response, coAuthors);
-//        this.proposalService.addBiddersToProposal(response, bidders);
-
-        //this.reviewService.saveReview(rev, reviewer, confId, proposalId);
-        //Review response = this.reviewService.addProposalReview(rev, proposalId);
 
         return ReviewDTO.toDTO(rev, proposalId);
     }

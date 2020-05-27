@@ -46,35 +46,6 @@ public class ReviewService
     }
 
     @Transactional
-    public Review saveReview(Review review, String userEmail, Long confId, Long proposalId)
-    {
-        User user = this.userService.getUserAfterValidation(userEmail);
-        if (null == review.getID())
-        {
-            review.setID(new Random().nextLong());
-        }
-        review.setUser(user);
-        this.reviewRepository.save(review);
-        return review;
-    }
-
-    @Transactional
-    public Review addReview(Long confId, Long proposalId, Review review)
-    {
-        if (null == review.getID())
-        {
-            review.setID(new Random().nextLong());
-        }
-        Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
-        Review response = conference.addReviewToProposal(review, proposalId);
-        //Section main = conference.getDefaultSection();
-        //Proposal proposal = main.getProposal(proposalId);
-        //Review response = proposal.addReview(review);
-        entityManager.flush();
-        return response;
-    }
-
-    @Transactional
     public Review addReviewToProposal(ENUMERATION_GRADES grade, String just, Long proposalId, Long conferenceId, String userEmail)
     {
         User user = this.userService.getUserAfterValidation(userEmail);

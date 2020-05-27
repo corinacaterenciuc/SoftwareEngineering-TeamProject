@@ -42,7 +42,7 @@ public class ProposalService
     }
 
     @Transactional
-    public void fmm(Proposal proposal, String email)
+    public void saveAsEntity(Proposal proposal, String email)
     {
         proposal.setAuthor(this.userService.getUserAfterValidation(email));
         this.proposalsRepository.save(proposal);
@@ -81,39 +81,16 @@ public class ProposalService
         List<User> authors = new ArrayList<>();
         List<User> bidrs = new ArrayList<>();
         Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
-       // entityManager.detach(conference);
 
         if (null == proposal.getID())
         {
             proposal.setID(new Random().nextLong());
         }
 
-        //Proposal response = conference.getDefaultSection().addProposal(proposal);
         Proposal response = this.transactionalAddProposal(conference, proposal);
-//        if(null != coAuthors)
-//        {
-//            authors = this.userService.getUsersInEmailList(coAuthors);
-//            proposal.setCoAuthors(authors);
-//        }
-//        if(null != bidders)
-//        {
-//            bidrs = this.userService.getUsersInEmailList(bidders);
-//            proposal.setBiddingPeople(bidrs);
-//        }
-//
-//        if (null == proposal.getID())
-//        {
-//            proposal.setID(new Random().nextLong());
-//        }
 
         // here save file on disk and give a name
         return response;
-    }
-
-    @Transactional
-    public void addAuxiliaryProposal(Proposal proposal, String user, List<String> coAuthors, List<String> bidders)
-    {
-        ;
     }
 
     public void updateProposal(Long confId, Proposal proposal)

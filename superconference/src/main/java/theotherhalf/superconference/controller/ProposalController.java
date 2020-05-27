@@ -53,10 +53,11 @@ public class ProposalController
             bidders = this.conferenceController.getEmailsFromJsonMailDTOs(proposalDTO.getBidders());
         }
         author = proposalDTO.getAuthor().getEmail();
-        this.proposalService.fmm(theProposal, author);
+        this.proposalService.saveAsEntity(theProposal, author);
         Proposal response = this.proposalService.addConferenceProposal(confId, theProposal);
         this.proposalService.addCoAuthorsToProposal(response, coAuthors);
         this.proposalService.addBiddersToProposal(response, bidders);
+
         return ProposalDTO.toDTO(confId, response);
     }
 
