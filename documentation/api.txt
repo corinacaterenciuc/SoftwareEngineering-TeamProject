@@ -345,6 +345,7 @@ PROPOSALS
     PUT
     body:
       {
+        proposalId: ID
         reviewer: Email,
         grade: number,
         justification: string
@@ -372,7 +373,7 @@ PROPOSALS
           [
             {
               id: ID,
-              proposal: ID,
+              proposalId: ID,
               reviewer: Email,
               grade: number,
               justification: string
