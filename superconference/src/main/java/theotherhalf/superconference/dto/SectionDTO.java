@@ -3,10 +3,12 @@ package theotherhalf.superconference.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import theotherhalf.superconference.domain.Proposal;
+import theotherhalf.superconference.domain.Section;
 import theotherhalf.superconference.domain.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SectionDTO
@@ -40,6 +42,15 @@ public class SectionDTO
 
     public SectionDTO()
     {
+    }
+
+    public static SectionDTO toDTO(Long confId, Section section)
+    {
+        return new SectionDTO(section.getChair().getEmail(),
+                              section.getTopic(),
+                              section.getProposals().stream().map(x -> ProposalDTO.toDTO(confId, x)).collect(Collectors.toList()),
+                              section.getParticipants().stream().map(x -> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()),
+                              section.getRoom());
     }
 
     public String getChair() {

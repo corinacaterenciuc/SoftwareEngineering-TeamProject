@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+
 @Service
 public class ConferenceService
 {
@@ -34,6 +35,7 @@ public class ConferenceService
 
     }
 
+    @Transactional
     public Conference add(Conference conference)
     {
         if (null == conference.getID())
@@ -50,6 +52,8 @@ public class ConferenceService
         {
             throw new ServiceException("[ERROR] Null id given for removal");
         }
+        Conference conference = this.getConferenceAfterValidation(ID);
+        this.userService.deleteAllClaimsFromConference(conference);
         this.repository.deleteById(ID);
     }
 
@@ -155,6 +159,44 @@ public class ConferenceService
         return this.userService.getConferencePCM(conference);
     }
 
+    public User getConferenceCPCM(Long conferenceId)
+    {
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        return this.userService.getConferenceCPCM(conference);
+    }
+
+    public User getConferenceCCPCM(Long conferenceId)
+    {
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        return this.userService.getConferenceCCPCM(conference);
+    }
+
+    public User getConferenceCSCM(Long conferenceId)
+    {
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        return this.userService.getConferenceCSCM(conference);
+    }
+
+    public User getConferenceCCSCM(Long conferenceId)
+    {
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        return this.userService.getConferenceCCSCM(conference);
+    }
+
+    @Transactional
+    public void makeSCMS(Long conferenceId, List<String> emails)
+    {
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        emails.forEach(x -> this.userService.addSCM(x, conference));
+    }
+
+    @Transactional
+    public void makePCMS(Long conferenceId, List<String> emails)
+    {
+        emails.forEach(x -> this.addPCM(x, conferenceId));
+    }
+
+    @Transactional
     public void addSCM(String userEmail, Long conferenceID)
     {
         this.userService.addSCM(userEmail, this.getConferenceAfterValidation(conferenceID));
@@ -185,6 +227,7 @@ public class ConferenceService
         this.userService.removeCCSCM(userEmail, this.getConferenceAfterValidation(conferenceID));
     }
 
+    @Transactional
     public void addPCM(String userEmail, Long conferenceID)
     {
         this.userService.addPCM(userEmail, this.getConferenceAfterValidation(conferenceID));
@@ -225,6 +268,11 @@ public class ConferenceService
         this.userService.removeSectionChair(userEmail, this.getConferenceAfterValidation(conferenceID));
     }
 
+    public List<User> getParticipants(Long conferenceId)
+    {
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        return conference.getParticipants();
+    }
     public List<Proposal> getConferenceProposals(Long confId)
     {
         if(this.repository.findById(confId).isEmpty())
@@ -234,7 +282,10 @@ public class ConferenceService
         Conference conference = this.repository.findById(confId).get();
         List<Section> sections = conference.getSections();
         ArrayList<Proposal> allProposals = new ArrayList<>();
-        sections.forEach( x -> allProposals.addAll(x.getProposals()));
+        if(null != sections)
+        {
+            sections.forEach( x -> allProposals.addAll(x.getProposals()));
+        }
         return allProposals;
     }
 

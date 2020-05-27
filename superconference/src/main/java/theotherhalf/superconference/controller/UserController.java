@@ -15,10 +15,12 @@ import theotherhalf.superconference.exceptions.ControllerException;
 import theotherhalf.superconference.services.ConferenceService;
 import theotherhalf.superconference.services.UserService;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @RestController
 @RequestMapping("api/users")
 public class UserController
@@ -42,11 +44,9 @@ public class UserController
     }
 
     @DeleteMapping
-    public void deleteUser(@RequestBody String jsonBody)
+    public void deleteUser(@RequestParam("email") String email)
     {
-        JacksonJsonParser gson = new JacksonJsonParser();
-        String eml = gson.parseMap(jsonBody).get("email").toString();
-        this.userService.deleteUser(eml);
+        this.userService.deleteUser(email);
     }
 
     @PutMapping

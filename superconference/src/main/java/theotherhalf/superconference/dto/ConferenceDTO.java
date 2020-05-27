@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import theotherhalf.superconference.domain.Conference;
+import theotherhalf.superconference.domain.Section;
 import theotherhalf.superconference.domain.User;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ConferenceDTO
@@ -49,6 +51,58 @@ public class ConferenceDTO
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date presentationDeadline;
 
+    @JsonProperty
+    private List<JsonEmailDTO> participants;
+    private List<JsonEmailDTO> scms;
+    private JsonEmailDTO cscm;
+    private JsonEmailDTO ccscm;
+    private List<JsonEmailDTO> pcms;
+    private JsonEmailDTO cpcm;
+    private JsonEmailDTO ccpcm;
+    private List<SectionDTO> sections;
+
+    public ConferenceDTO(Long id,
+                         @NotBlank String name,
+                         @NotBlank String description,
+                         @NotNull Date zeroDeadline,
+                         Date abstractDeadline,
+                         Date proposalDeadline,
+                         Date biddingDeadline,
+                         Date evaluationDeadline,
+                         Date presentationDeadline,
+                         List<JsonEmailDTO> participants,
+                         List<JsonEmailDTO> scms,
+                         JsonEmailDTO cscm,
+                         JsonEmailDTO ccscm,
+                         List<JsonEmailDTO> pcms,
+                         JsonEmailDTO cpcm,
+                         JsonEmailDTO ccpcm,
+                         List<SectionDTO> sections)
+    {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.zeroDeadline = zeroDeadline;
+        this.abstractDeadline = abstractDeadline;
+        this.proposalDeadline = proposalDeadline;
+        this.biddingDeadline = biddingDeadline;
+        this.evaluationDeadline = evaluationDeadline;
+        this.presentationDeadline = presentationDeadline;
+        this.participants = participants;
+        this.scms = scms;
+        this.cscm = cscm;
+        this.ccscm = ccscm;
+        this.pcms = pcms;
+        this.cpcm = cpcm;
+        this.ccpcm = ccpcm;
+        this.sections = sections;
+    }
+
+    public ConferenceDTO()
+    {
+
+    }
+
 
     public ConferenceDTO(Long id,
                          @NotBlank String name,
@@ -71,28 +125,29 @@ public class ConferenceDTO
         this.presentationDeadline = presentationDeadline;
     }
 
-    public ConferenceDTO(
-            @JsonProperty @NotBlank String name,
-            @JsonProperty @NotBlank String description,
-            @JsonProperty @NotNull Date zeroDeadline,
-            @JsonProperty  Date abstractDeadline,
-            @JsonProperty  Date proposalDeadline,
-            @JsonProperty  Date biddingDeadline,
-            @JsonProperty  Date evaluationDeadline,
-            @JsonProperty  Date presentationDeadline) {
-        this.name = name;
-        this.description = description;
-        this.zeroDeadline = zeroDeadline;
-        this.abstractDeadline = abstractDeadline;
-        this.proposalDeadline = proposalDeadline;
-        this.biddingDeadline = biddingDeadline;
-        this.evaluationDeadline = evaluationDeadline;
-        this.presentationDeadline = presentationDeadline;
+    public static Conference toDomain(ConferenceDTO dto)
+    {
+        return new Conference(dto.getName(),
+                dto.getDescription(),
+                dto.getZeroDeadline(),
+                dto.getAbstractDeadline(),
+                dto.getProposalDeadline(),
+                dto.getBiddingDeadline(),
+                dto.getEvaluationDeadline(),
+                dto.getPresentationDeadline());
     }
 
-    public ConferenceDTO()
+    public static ConferenceDTO toDTO(final Conference conference)
     {
-
+        return new ConferenceDTO(conference.getID(),
+                conference.getName(),
+                conference.getDescription(),
+                conference.getZeroDeadline(),
+                conference.getAbstractDeadline(),
+                conference.getProposalDeadline(),
+                conference.getBiddingDeadline(),
+                conference.getEvaluationDeadline(),
+                conference.getPresentationDeadline());
     }
 
     public String getName() {
@@ -121,6 +176,14 @@ public class ConferenceDTO
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public List<SectionDTO> getSections() {
+        return sections;
+    }
+
+    public void setSections(List<SectionDTO> sections) {
+        this.sections = sections;
     }
 
     public void setZeroDeadline(Date zeroDeadline) {
@@ -167,28 +230,59 @@ public class ConferenceDTO
         this.evaluationDeadline = evaluationDeadline;
     }
 
-    public static Conference toDomain(ConferenceDTO dto)
-    {
-        return new Conference(dto.getName(),
-                              dto.getDescription(),
-                              dto.getZeroDeadline(),
-                              dto.getAbstractDeadline(),
-                              dto.getProposalDeadline(),
-                              dto.getBiddingDeadline(),
-                              dto.getEvaluationDeadline(),
-                              dto.getPresentationDeadline());
+    public List<JsonEmailDTO> getParticipants() {
+        return participants;
     }
 
-    public static ConferenceDTO toDTO(final Conference conference)
-    {
-        return new ConferenceDTO(conference.getID(),
-                                 conference.getName(),
-                                 conference.getDescription(),
-                                 conference.getZeroDeadline(),
-                                 conference.getAbstractDeadline(),
-                                 conference.getProposalDeadline(),
-                                 conference.getBiddingDeadline(),
-                                 conference.getEvaluationDeadline(),
-                                 conference.getPresentationDeadline());
+    public void setParticipants(List<JsonEmailDTO> participants) {
+        this.participants = participants;
+    }
+
+    public List<JsonEmailDTO> getScms() {
+        return scms;
+    }
+
+    public void setScms(List<JsonEmailDTO> scms) {
+        this.scms = scms;
+    }
+
+    public JsonEmailDTO getCscm() {
+        return cscm;
+    }
+
+    public void setCscm(JsonEmailDTO cscm) {
+        this.cscm = cscm;
+    }
+
+    public JsonEmailDTO getCcscm() {
+        return ccscm;
+    }
+
+    public void setCcscm(JsonEmailDTO ccscm) {
+        this.ccscm = ccscm;
+    }
+
+    public List<JsonEmailDTO> getPcms() {
+        return pcms;
+    }
+
+    public void setPcms(List<JsonEmailDTO> pcms) {
+        this.pcms = pcms;
+    }
+
+    public JsonEmailDTO getCpcm() {
+        return cpcm;
+    }
+
+    public void setCpcm(JsonEmailDTO cpcm) {
+        this.cpcm = cpcm;
+    }
+
+    public JsonEmailDTO getCcpcm() {
+        return ccpcm;
+    }
+
+    public void setCcpcm(JsonEmailDTO ccpcm) {
+        this.ccpcm = ccpcm;
     }
 }

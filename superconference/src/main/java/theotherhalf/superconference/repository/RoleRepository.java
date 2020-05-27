@@ -19,4 +19,7 @@ public interface RoleRepository extends SystemRepository<UserClaims, Long>
 
     @Query("SELECT c FROM UserClaims c WHERE c.conference = :cid AND c.role = :role")
     List<UserClaims> findByConferenceAndRole(@Param("cid") Conference conference, @Param("role") ENUMERATION_ROLES role);
+
+    @Query("SELECT c from UserClaims c WHERE c.conference = :cid")
+    List<UserClaims> findByConference(@Param("cid") Conference conference);
 }

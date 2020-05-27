@@ -7,16 +7,20 @@ import theotherhalf.superconference.domain.ENUMERATION_ROLES;
 import theotherhalf.superconference.domain.User;
 import theotherhalf.superconference.domain.UserClaims;
 
+import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserClaimsDTO
 {
-    @ManyToOne(fetch = FetchType.LAZY)
+    //@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private ConferenceDTO conference;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    //@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private UserDTO user;
 
     @NotNull

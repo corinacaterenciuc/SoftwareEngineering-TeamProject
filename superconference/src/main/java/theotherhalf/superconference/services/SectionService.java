@@ -6,10 +6,12 @@ import theotherhalf.superconference.domain.*;
 import theotherhalf.superconference.exceptions.ServiceException;
 import theotherhalf.superconference.repository.ConferenceRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
+
 
 @Service
 public class SectionService
@@ -49,6 +51,8 @@ public class SectionService
         User userChair = this.userService.findByEmail(chair).get();
         List<User> participants = this.userService.getUsersInEmailList(emailParticipants);
         Section section = new Section(userChair, topics, proposals, participants, room);
+        section.setID(new Random().nextLong());
+
         return conference.addSection(section);
     }
 
@@ -119,4 +123,14 @@ public class SectionService
         section.removeParticipant(usr);
     }
 
+    public List<Section> getSections(Long confId)
+    {
+        Optional<Conference> conferenceOptional = this.conferenceService.findById(confId);
+        if (conferenceOptional.isEmpty())
+        {
+            throw new ServiceException("[ERROR] Invalid conference id given");
+        }
+        Conference conference = conferenceOptional.get();
+        return conference.getSections();
+    }
 }

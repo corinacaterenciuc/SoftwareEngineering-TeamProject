@@ -9,9 +9,11 @@ import theotherhalf.superconference.exceptions.ControllerException;
 import theotherhalf.superconference.services.ConferenceService;
 import theotherhalf.superconference.services.SectionService;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+@Transactional
 @RestController
 @RequestMapping("api/conferences")
 public class SectionController
@@ -55,7 +57,7 @@ public class SectionController
         List<String> participantsEmail = new ArrayList<>();
         if(sectionDTO.getProposals() != null)
         {
-            sectionDTO.getProposals().forEach(x -> proposalKeys.add(new ProposalKey(x.getEmail(), x.getTitle(), confId)));
+            sectionDTO.getProposals().forEach(x -> proposalKeys.add(new ProposalKey(x.getAuthor().getEmail(), x.getProposalName(), confId)));
         }
         if(sectionDTO.getParticipants() != null)
         {
@@ -72,7 +74,7 @@ public class SectionController
         List<String> participantsEmail = new ArrayList<>();
         if(sectionDTO.getProposals() != null)
         {
-            sectionDTO.getProposals().forEach(x -> proposalKeys.add(new ProposalKey(x.getEmail(), x.getTitle(), confId)));
+            sectionDTO.getProposals().forEach(x -> proposalKeys.add(new ProposalKey(x.getAuthor().getEmail(), x.getProposalName(), confId)));
         }
         if(sectionDTO.getParticipants() != null)
         {

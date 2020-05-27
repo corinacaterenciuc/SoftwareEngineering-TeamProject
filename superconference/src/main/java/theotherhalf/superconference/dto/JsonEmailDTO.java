@@ -7,12 +7,12 @@ public class JsonEmailDTO
 {
     private String email;
 
-    JsonEmailDTO()
+    public JsonEmailDTO()
     {
 
     }
 
-    JsonEmailDTO(String email)
+    public JsonEmailDTO(String email)
     {
         this.email = email;
     }

@@ -1,20 +1,15 @@
 package theotherhalf.superconference.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import theotherhalf.superconference.exceptions.NotAddedException;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.transaction.Transactional;
 import javax.validation.ValidationException;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -41,10 +36,17 @@ public class Conference extends BaseEntity
 
     private Date presentationDeadline;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
+    //@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private List<Section> sections;
 
     public Conference()
+    {
+        this.initializeSections();
+    }
+
+    @Transactional
+    void initializeSections()
     {
         this.sections = new ArrayList<>();
         this.sections.add(new Section());
@@ -66,8 +68,7 @@ public class Conference extends BaseEntity
         this.biddingDeadline = biddingDeadline;
         this.evaluationDeadline = evaluationDeadline;
         this.presentationDeadline = presentationDeadline;
-        this.sections = new ArrayList<>();
-        this.sections.add(new Section());
+        this.initializeSections();
     }
 
 
@@ -239,15 +240,24 @@ public class Conference extends BaseEntity
     public void addParticipantToConference(User usr)
     {
         Section main = this.getDefaultSection();
+        if(main.hasParticipant(usr.getEmail()))
+        {
+            throw new ValidationException("[ERROR] Participant already exists");
+        }
         main.addParticipant(usr);
     }
 
     public void removeParticipantFromConference(User usr)
     {
         Section main = this.getDefaultSection();
+        if(!main.hasParticipant(usr.getEmail()))
+        {
+            throw new ValidationException("[ERROR] Participant doesn't exist");
+        }
         main.removeParticipant(usr);
     }
-    private Section getDefaultSection()
+
+    public Section getDefaultSection()
     {
         Optional<Section> defau = this.sections.stream().filter(x -> x.getChair() == null).findFirst();
         if(defau.isPresent())
@@ -258,5 +268,49 @@ public class Conference extends BaseEntity
         {
             throw new ValidationException("[ERROR] Something really bad happened");
         }
+    }
+
+    @Transactional
+    public Review addReviewToProposal(Review review, Long proposalId)
+    {
+        Section main = this.getDefaultSection();
+        return main.getProposal(proposalId).addReview(review);
+    }
+
+    public Proposal addProposal(Proposal proposal)
+    {
+        Section main = this.getDefaultSection();
+        if(main.hasProposal(proposal.getID()))
+        {
+            throw new ValidationException("[ERROR] Proposal already exists");
+        }
+
+        return main.addProposal(proposal);
+    }
+
+    public void updateProposal(Proposal proposal)
+    {
+        Section main = this.getDefaultSection();
+        if(!main.hasProposal(proposal.getID()))
+        {
+            throw new ValidationException("[ERROR] Proposal doesn't exist");
+        }
+        main.updateProposal(proposal);
+    }
+    public void removeProposal(Long proposalId)
+    {
+        Section main = this.getDefaultSection();
+        if(!main.hasProposal(proposalId))
+        {
+            throw new ValidationException("[ERROR] Proposal doesn't exist");
+        }
+        main.removeProposal(proposalId);
+    }
+
+    public List<User> getParticipants()
+    {
+        List<User> allParticipants = new ArrayList<>();
+        this.sections.forEach(x -> allParticipants.addAll(x.getParticipants()));
+        return allParticipants.stream().distinct().collect(Collectors.toList());
     }
 }

@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+
 @Service
 public class UserService
 {
@@ -127,6 +128,18 @@ public class UserService
         return usersPCM;
     }
 
+    public List<UserClaims> getAllClaimsFromConference(Conference conference)
+    {
+        return this.roleRepository.findByConference(conference);
+    }
+
+    @Transactional
+    public void deleteAllClaimsFromConference(Conference conference)
+    {
+        List<UserClaims> claims = this.getAllClaimsFromConference(conference);
+        claims.forEach(x -> this.roleRepository.delete(x));
+    }
+
     public List<User> getConferenceSCM(Conference conference)
     {
         List<User> allSCM = new ArrayList<>();
@@ -155,6 +168,55 @@ public class UserService
         allPCM.addAll(usersCCPCM);
 
         return allPCM;
+    }
+
+    public User getConferenceCPCM(Conference conference)
+    {
+        List<User> users = this.getConferenceUsersByRole(conference, ENUMERATION_ROLES.CHAIR_PCM);
+        if(users.size() == 0)
+        {
+            return null;
+        }
+        else
+        {
+            return users.get(0);
+        }
+    }
+    public User getConferenceCCPCM(Conference conference)
+    {
+        List<User> users = this.getConferenceUsersByRole(conference, ENUMERATION_ROLES.CO_CHAIR_PCM);
+        if(users.size() == 0)
+        {
+            return null;
+        }
+        else
+        {
+            return users.get(0);
+        }
+    }
+    public User getConferenceCSCM(Conference conference)
+    {
+        List<User> users = this.getConferenceUsersByRole(conference, ENUMERATION_ROLES.CHAIR_SCM);
+        if(users.size() == 0)
+        {
+            return null;
+        }
+        else
+        {
+            return users.get(0);
+        }
+    }
+    public User getConferenceCCSCM(Conference conference)
+    {
+        List<User> users = this.getConferenceUsersByRole(conference, ENUMERATION_ROLES.CO_CHAIR_SCM);
+        if(users.size() == 0)
+        {
+            return null;
+        }
+        else
+        {
+            return users.get(0);
+        }
     }
     // START OF CLAIMS SECTION
 

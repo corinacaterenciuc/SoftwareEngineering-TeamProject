@@ -10,10 +10,12 @@ import javax.persistence.*;
 @Table(name="cmsuserclaims")
 public class UserClaims extends BaseEntity
 {
-    @ManyToOne(fetch = FetchType.LAZY)
+    //@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private Conference conference;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    //@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private User user;
 
     @NotNull

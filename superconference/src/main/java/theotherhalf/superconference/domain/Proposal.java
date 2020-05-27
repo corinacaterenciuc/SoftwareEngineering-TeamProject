@@ -1,8 +1,13 @@
 package theotherhalf.superconference.domain;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
+import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Entity
 public class Proposal extends BaseEntity
@@ -21,24 +26,43 @@ public class Proposal extends BaseEntity
     @ElementCollection
     private List<String> keywords;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    //@ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name="cmsuser__id", nullable = false)
     private User author;
 
-    @ManyToMany
-    @JoinColumn(name="cmsuser__id")
+    //@ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "proposal_coauthors")
+    @JoinColumn(name="cmsuser__id", nullable=true)
     private List<User> coAuthors;
 
-    @ManyToMany
-    @JoinColumn(name="cmsuser__id")
+    //@ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "proposal_bidders")
+    @JoinColumn(name="cmsuser__id", nullable=true)
     private List<User> biddingPeople;
 
-    @ManyToMany
-    @JoinColumn(name="cmsuser__id")
+    //@ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "proposal_reviewers")
+    @JoinColumn(name="cmsuser__id", nullable=true)
     private List<User> reviewers;
 
     @OneToMany(mappedBy = "proposal", cascade = CascadeType.ALL)
     private List<Review> reviews;
+
+    public Proposal(@NotNull String proposalName, String filePath, String abstractDescription, List<String> topics, List<String> keywords) {
+        this.proposalName = proposalName;
+        this.filePath = filePath;
+        this.abstractDescription = abstractDescription;
+        this.topics = topics;
+        this.keywords = keywords;
+        this.biddingPeople = new ArrayList<>();
+        this.coAuthors = new ArrayList<>();
+        this.reviews = new ArrayList<>();
+        this.reviewers = new ArrayList<>();
+    }
 
     public Proposal(@NotNull String proposalName, String filePath, String abstractDescription, List<String> topics, List<String> keywords, User author, List<User> coAuthors, List<User> biddingPeople, List<User> reviewers, List<Review> reviews) {
         this.proposalName = proposalName;
@@ -135,4 +159,50 @@ public class Proposal extends BaseEntity
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
+
+    public boolean hasReview(Long reviewId)
+    {
+        return this.reviews.stream().anyMatch(x -> x.getID().equals(reviewId));
+    }
+
+    @Transactional
+    public Review addReview(Review review)
+    {
+        if(this.reviews.add(review))
+        {
+            return review;
+        }
+        throw new ValidationException("[ERROR] Review couldn't be added");
+    }
+
+    @Transactional
+    public void removeReview(Long reviewId)
+    {
+        this.reviews = this.reviews.stream().filter(x -> !x.getID().equals(reviewId)).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void updateReview(Review review)
+    {
+        if(null != review)
+        {
+            throw new ValidationException("[ERROR] Invalid review id given");
+        }
+        Review oldReview = this.reviews.stream().filter(x -> x.getID().equals(review.getID())).findFirst().get();
+        if(null != review.getGrade())
+        {
+            oldReview.setGrade(review.getGrade());
+        }
+        if(null != review.getJustification())
+        {
+            oldReview.setJustification(review.getJustification());
+        }
+    }
+
+    @Transactional
+    public void addBidder(User usr)
+    {
+        this.biddingPeople.add(usr);
+    }
+
 }
