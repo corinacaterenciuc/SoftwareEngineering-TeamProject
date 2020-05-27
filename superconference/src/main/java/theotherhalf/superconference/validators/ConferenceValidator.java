@@ -26,6 +26,67 @@ public class ConferenceValidator implements BasicValidator<Conference>
         }
 
         int comparativ = entity.getZeroDeadline().compareTo(new Date());
+
+        if(null != entity.getAbstractDeadline())
+        {
+            if(0 > entity.getAbstractDeadline().compareTo(new Date()))
+            {
+                throw new ValidationException("[ERROR] Conference date cannot be set into the past");
+            }
+            if(0 > entity.getAbstractDeadline().compareTo(entity.getZeroDeadline()))
+            {
+                throw new ValidationException("[ERROR] Conference abstract deadline cannot be set before zero deadline");
+            }
+        }
+
+        if(null != entity.getProposalDeadline())
+        {
+            if(0 > entity.getProposalDeadline().compareTo(new Date()))
+            {
+                throw new ValidationException("[ERROR] Conference date cannot be set into the past");
+            }
+            if(0 > entity.getProposalDeadline().compareTo(entity.getAbstractDeadline()))
+            {
+                throw new ValidationException("[ERROR] Conference proposal deadline cannot be set before abstract deadline");
+            }
+        }
+
+        if(null != entity.getBiddingDeadline())
+        {
+            if(0 > entity.getBiddingDeadline().compareTo(new Date()))
+            {
+                throw new ValidationException("[ERROR] Conference date cannot be set into the past");
+            }
+            if(0 > entity.getBiddingDeadline().compareTo(entity.getProposalDeadline()))
+            {
+                throw new ValidationException("[ERROR] Conference bidding deadline cannot be set before proposal deadline");
+            }
+        }
+
+        if(null != entity.getEvaluationDeadline())
+        {
+            if(0 > entity.getEvaluationDeadline().compareTo(new Date()))
+            {
+                throw new ValidationException("[ERROR] Conference date cannot be set into the past");
+            }
+            if(0 > entity.getEvaluationDeadline().compareTo(entity.getBiddingDeadline()))
+            {
+                throw new ValidationException("[ERROR] Conference evaluation deadline cannot be set before bidding deadline");
+            }
+        }
+
+        if(null != entity.getPresentationDeadline())
+        {
+            if(0 > entity.getPresentationDeadline().compareTo(new Date()))
+            {
+                throw new ValidationException("[ERROR] Conference date cannot be set into the past");
+            }
+            if(0 > entity.getPresentationDeadline().compareTo(entity.getEvaluationDeadline()))
+            {
+                throw new ValidationException("[ERROR] Conference presentation deadline cannot be set before evaluation deadline");
+            }
+        }
+
         // if ZeroDeadline has passed
         if (0 >= comparativ)
         {
