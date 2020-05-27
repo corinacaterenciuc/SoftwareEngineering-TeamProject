@@ -116,7 +116,7 @@ public class UserService
         Optional<User> opUser = this.repository.findById(email);
         if(opUser.isEmpty())
         {
-            throw new ServiceException("[ERROR] Invalid email address given");
+            throw new ServiceException("[ERROR] No such user exists.");
         }
         return opUser.get();
     }
