@@ -47,7 +47,7 @@ public class SectionService
     }
 
     @Transactional
-    public Section saveEntity(User user, List<String> topics, List<User> participants, List<Proposal> proposals, Integer room)
+    public Section saveEntity(CMSUser user, List<String> topics, List<CMSUser> participants, List<Proposal> proposals, Integer room)
     {
         Section section = new Section(user, topics, proposals, participants, room);
         section.setId(new Random().nextLong());
@@ -70,10 +70,10 @@ public class SectionService
         List<Proposal> proposals = this.getProposalsByKeys(conference, proposalKeys);
         if (this.userService.findByEmail(chair).isEmpty())
         {
-            throw new ServiceException("[ERROR] User doesn't exist");
+            throw new ServiceException("[ERROR] CMSUser doesn't exist");
         }
-        User userChair = this.userService.findByEmail(chair).get();
-        List<User> participants = this.userService.getUsersInEmailList(emailParticipants);
+        CMSUser userChair = this.userService.findByEmail(chair).get();
+        List<CMSUser> participants = this.userService.getUsersInEmailList(emailParticipants);
 //        Section section = new Section(userChair, topics, proposals, participants, room);
 //        section.setID(new Random().nextLong());
         Section saved = this.saveEntity(userChair, topics, participants, proposals, room);
@@ -87,7 +87,7 @@ public class SectionService
         {
             throw new ServiceException("[ERROR] Null id given to update");
         }
-        User userChair = null;
+        CMSUser userChair = null;
         if(this.conferenceService.findById(confId).isEmpty())
         {
             throw new ServiceException("[ERROR] Conference doesn't exists!");
@@ -96,13 +96,13 @@ public class SectionService
         List<Proposal> proposals = this.getProposalsByKeys(conference, proposalKeys);
         if (null != chair && this.userService.findByEmail(chair).isEmpty())
         {
-            throw new ServiceException("[ERROR] User doesn't exist");
+            throw new ServiceException("[ERROR] CMSUser doesn't exist");
         }
         if(null != chair)
         {
             userChair = this.userService.findByEmail(chair).get();
         }
-        List<User> participants = this.userService.getUsersInEmailList(emailParticipants);
+        List<CMSUser> participants = this.userService.getUsersInEmailList(emailParticipants);
         Section section = new Section(userChair, topics, proposals, participants, room);
         section.setId(id);
         conference.updateSection(section);
@@ -138,7 +138,7 @@ public class SectionService
             throw new ServiceException("[ERROR] Conference doesn't have the given section");
         }
         Section section = conference.getSectionById(sectionId);
-        User usr = this.userService.getUserAfterValidation(email);
+        CMSUser usr = this.userService.getUserAfterValidation(email);
         section.addParticipant(usr);
     }
 
@@ -156,7 +156,7 @@ public class SectionService
             throw new ServiceException("[ERROR] Conference doesn't have the given section");
         }
         Section section = conference.getSectionById(sectionId);
-        User usr = this.userService.getUserAfterValidation(email);
+        CMSUser usr = this.userService.getUserAfterValidation(email);
         section.removeParticipant(usr);
     }
 

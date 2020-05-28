@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import theotherhalf.superconference.domain.*;
+import theotherhalf.superconference.exceptions.ServiceException;
 import theotherhalf.superconference.repository.ReviewRepository;
 
 import javax.persistence.EntityManager;
@@ -49,15 +50,23 @@ public class ReviewService
     @Transactional
     public Review addReviewToProposal(ENUMERATION_GRADES grade, String just, Long proposalId, Long conferenceId, String userEmail)
     {
-        User user = this.userService.getUserAfterValidation(userEmail);
+        CMSUser user = this.userService.getUserAfterValidation(userEmail);
         Conference conference = this.conferenceService.getConferenceAfterValidation(conferenceId);
         Section main = conference.getDefaultSection();
         Proposal proposal = main.getProposal(proposalId);
         Review review = new Review(user, proposal, grade, just);
-        review.setID(new Random().nextLong());
+        //review.setID(new Random().nextLong());
+        if(proposal.hasReviewFromUser(userEmail))
+        {
+            throw new ServiceException("[ERROR] Reviewer already sent a review");
+        }
+        if(!proposal.isReviewer(userEmail))
+        {
+            throw new ServiceException("[ERROR] User is not an assigned reviewer");
+        }
         proposal.addReview(review);
         this.reviewRepository.save(review);
-
+        review.setID(review.getID());
         return review;
     }
 
@@ -74,7 +83,7 @@ public class ReviewService
     @Transactional
     public void updateReview(Long confId, Long proposalId, Review review, String userEmail)
     {
-        User user = this.userService.getUserAfterValidation(userEmail);
+        CMSUser user = this.userService.getUserAfterValidation(userEmail);
         Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
         review.setUser(user);
         Section main = conference.getDefaultSection();
@@ -87,7 +96,7 @@ public class ReviewService
     {
         Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
         Proposal proposal = conference.getDefaultSection().getProposal(proposalId);
-        this.proposalService.addReviewersToProposal(proposal, userEmails);
+        this.proposalService.addReviewersToProposal(proposal, confId, userEmails);
     }
 
     @Transactional

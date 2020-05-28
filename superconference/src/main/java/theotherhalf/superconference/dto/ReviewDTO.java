@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import theotherhalf.superconference.domain.ENUMERATION_GRADES;
 import theotherhalf.superconference.domain.Proposal;
 import theotherhalf.superconference.domain.Review;
-import theotherhalf.superconference.domain.User;
+import theotherhalf.superconference.domain.CMSUser;
 
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;

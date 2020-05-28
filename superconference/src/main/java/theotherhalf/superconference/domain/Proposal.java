@@ -8,13 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.data.relational.core.mapping.Table;
 
+@Table
 @Entity
 public class Proposal extends BaseEntity
 {
 
     @NotNull
-    @Column(name = "proposal_name")
+    @Column(name = "name")
     private String proposalName;
 
     private String filePath;
@@ -28,34 +30,34 @@ public class Proposal extends BaseEntity
 
     //@ManyToOne(cascade = CascadeType.ALL)
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name="cmsuser__id", nullable = false)
-    private User author;
+    @JoinColumn(name="id", nullable = false)
+    private CMSUser author;
 
     //@ManyToMany(cascade = CascadeType.ALL)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "proposal_coauthors")
     @JoinColumn(name="cmsuser__id", nullable=true)
-    private List<User> coAuthors;
+    private List<CMSUser> coAuthors;
 
     //@ManyToMany(cascade = CascadeType.ALL)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "proposal_bidders")
-    @JoinColumn(name="cmsuser__id", nullable=true)
-    private List<User> biddingPeople;
+    @JoinColumn(name="id", nullable=true)
+    private List<CMSUser> biddingPeople;
 
     //@ManyToMany(cascade = CascadeType.ALL)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "proposal_reviewers")
-    @JoinColumn(name="cmsuser__id", nullable=true)
-    private List<User> reviewers;
+    @JoinColumn(name="id", nullable=true)
+    private List<CMSUser> reviewers;
 
     @OneToMany(mappedBy = "proposal", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinTable(name = "proposal_shreviewer")
-    @JoinColumn(name="cmsuser__id", nullable = true)
-    private User secondHandReviewer;
+    @JoinColumn(name="id", nullable = true)
+    private CMSUser secondHandReviewer;
 
     public Proposal(@NotNull String proposalName, String filePath, String abstractDescription, List<String> topics, List<String> keywords) {
         this.proposalName = proposalName;
@@ -69,7 +71,7 @@ public class Proposal extends BaseEntity
         this.reviewers = new ArrayList<>();
     }
 
-    public Proposal(@NotNull String proposalName, String filePath, String abstractDescription, List<String> topics, List<String> keywords, User author, List<User> coAuthors, List<User> biddingPeople, List<User> reviewers, List<Review> reviews) {
+    public Proposal(@NotNull String proposalName, String filePath, String abstractDescription, List<String> topics, List<String> keywords, CMSUser author, List<CMSUser> coAuthors, List<CMSUser> biddingPeople, List<CMSUser> reviewers, List<Review> reviews) {
         this.proposalName = proposalName;
         this.filePath = filePath;
         this.abstractDescription = abstractDescription;
@@ -125,47 +127,47 @@ public class Proposal extends BaseEntity
         this.keywords = keywords;
     }
 
-    public User getAuthor() {
+    public CMSUser getAuthor() {
         return author;
     }
 
-    public void setAuthor(User author) {
+    public void setAuthor(CMSUser author) {
         this.author = author;
     }
 
-    public List<User> getCoAuthors() {
+    public List<CMSUser> getCoAuthors() {
         return coAuthors;
     }
 
-    public void setCoAuthors(List<User> coAuthors) {
+    public void setCoAuthors(List<CMSUser> coAuthors) {
         this.coAuthors = coAuthors;
     }
 
-    public User getSecondHandReviewer() {
+    public CMSUser getSecondHandReviewer() {
         return secondHandReviewer;
     }
 
-    public void setSecondHandReviewer(User secondHandReviewer) {
+    public void setSecondHandReviewer(CMSUser secondHandReviewer) {
         this.secondHandReviewer = secondHandReviewer;
     }
 
-    public List<User> getBiddingPeople() {
+    public List<CMSUser> getBiddingPeople() {
         return biddingPeople;
     }
 
-    public void setBiddingPeople(List<User> biddingPeople) {
+    public void setBiddingPeople(List<CMSUser> biddingPeople) {
         this.biddingPeople = biddingPeople;
     }
 
-    public List<User> getReviewers() {
+    public List<CMSUser> getReviewers() {
         return reviewers;
     }
 
-    public void setReviewers(List<User> reviewers) {
+    public void setReviewers(List<CMSUser> reviewers) {
         this.reviewers = reviewers;
     }
 
-    public void removeReviewers(List<User> reviewers)
+    public void removeReviewers(List<CMSUser> reviewers)
     {
         this.reviewers = this.reviewers.stream().filter(x -> reviewers.stream().noneMatch(y -> y.equals(x))).collect(Collectors.toList());
     }
@@ -183,6 +185,15 @@ public class Proposal extends BaseEntity
         return this.reviews.stream().anyMatch(x -> x.getID().equals(reviewId));
     }
 
+    public boolean hasReviewFromUser(String userEmail)
+    {
+        return this.reviews.stream().anyMatch(x -> x.getUser().getEmail().equals(userEmail));
+    }
+
+    public boolean isReviewer(String userEmail)
+    {
+        return this.reviewers.stream().anyMatch(x -> x.getEmail().equals(userEmail));
+    }
     @Transactional
     public Review addReview(Review review)
     {
@@ -223,19 +234,19 @@ public class Proposal extends BaseEntity
     }
 
     @Transactional
-    public void addBidder(User usr)
+    public void addBidder(CMSUser usr)
     {
         this.biddingPeople.add(usr);
     }
 
     @Transactional
-    public void removeBidder(User usr)
+    public void removeBidder(CMSUser usr)
     {
         this.biddingPeople.remove(usr);
     }
 
     @Transactional
-    public void addSecondHandReviewer(User usr)
+    public void addSecondHandReviewer(CMSUser usr)
     {
         if(null != this.secondHandReviewer)
         {
@@ -245,7 +256,7 @@ public class Proposal extends BaseEntity
     }
 
     @Transactional
-    public void removeSecondHandReviewer(User usr)
+    public void removeSecondHandReviewer(CMSUser usr)
     {
         this.secondHandReviewer = null;
     }

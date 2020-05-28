@@ -1,7 +1,7 @@
 package theotherhalf.superconference.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
-
+import org.springframework.data.relational.core.mapping.Table;
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import javax.validation.ValidationException;
@@ -12,18 +12,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Table
 @Entity
 public class Section //extends BaseEntity
 {
     @Id
-    @Column(name = "_id", nullable = false)
+    @Column(nullable = false)
     @NotNull
     private Long id;
 
 
     @ManyToOne(cascade = CascadeType.ALL)
     //@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-    private User chair;
+    private CMSUser chair;
 
     @ElementCollection
     private List<String> topic;
@@ -34,11 +35,11 @@ public class Section //extends BaseEntity
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     //@ManyToMany(cascade = CascadeType.ALL)
-    private List<User> participants;
+    private List<CMSUser> participants;
 
     private Integer room;
 
-    public Section(User chair, @NotBlank List<String> topic, List<Proposal> proposals, List<User> participants, @NotNull Integer room) {
+    public Section(CMSUser chair, @NotBlank List<String> topic, List<Proposal> proposals, List<CMSUser> participants, @NotNull Integer room) {
         this.chair = chair;
         this.topic = topic;
         this.proposals = proposals;
@@ -69,11 +70,11 @@ public class Section //extends BaseEntity
     {
         return this.id;
     }
-    public User getChair() {
+    public CMSUser getChair() {
         return chair;
     }
 
-    public void setChair(User chair) {
+    public void setChair(CMSUser chair) {
         this.chair = chair;
     }
 
@@ -93,11 +94,11 @@ public class Section //extends BaseEntity
         this.proposals = proposals;
     }
 
-    public List<User> getParticipants() {
+    public List<CMSUser> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(List<User> participants) {
+    public void setParticipants(List<CMSUser> participants) {
         this.participants = participants;
     }
 
@@ -110,22 +111,22 @@ public class Section //extends BaseEntity
     }
 
     @Transactional
-    public void addParticipant(User usr)
+    public void addParticipant(CMSUser usr)
     {
         if(this.participants.contains(usr))
         {
-            throw new ValidationException("[ERROR] User is already a participant");
+            throw new ValidationException("[ERROR] CMSUser is already a participant");
         }
 
         this.participants.add(usr);
     }
 
     @Transactional
-    public void removeParticipant(User usr)
+    public void removeParticipant(CMSUser usr)
     {
         if(!this.participants.contains(usr))
         {
-            throw new ValidationException("[ERROR] User was not a participant");
+            throw new ValidationException("[ERROR] CMSUser was not a participant");
         }
         this.participants = this.participants.stream().filter(x-> !x.getEmail().equals(usr.getEmail())).collect(Collectors.toList());
     }
@@ -141,7 +142,7 @@ public class Section //extends BaseEntity
     }
 
     @Transactional
-    public void updateProposal(Proposal proposal)
+    public Proposal updateProposal(Proposal proposal)
     {
         Proposal oldProposal = this.getProposal(proposal.getID());
         if(null != proposal.getProposalName())
@@ -184,6 +185,7 @@ public class Section //extends BaseEntity
         {
             oldProposal.setTopics(proposal.getTopics());
         }
+        return oldProposal;
     }
 
     @Transactional
@@ -209,12 +211,12 @@ public class Section //extends BaseEntity
 
     public boolean hasParticipant(String email)
     {
-        Optional<User> optional = this.participants.stream().filter(x -> x.getEmail().equals(email)).findFirst();
+        Optional<CMSUser> optional = this.participants.stream().filter(x -> x.getEmail().equals(email)).findFirst();
         return optional.isPresent();
     }
-    public User getParticipant(String email)
+    public CMSUser getParticipant(String email)
     {
-        Optional<User> optional = this.participants.stream().filter(x -> x.getEmail().equals(email)).findFirst();
+        Optional<CMSUser> optional = this.participants.stream().filter(x -> x.getEmail().equals(email)).findFirst();
         return optional.get();
     }
 }

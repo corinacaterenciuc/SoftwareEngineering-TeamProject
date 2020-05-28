@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.Conference;
 import theotherhalf.superconference.domain.ProposalKey;
-import theotherhalf.superconference.domain.User;
+import theotherhalf.superconference.domain.CMSUser;
 import theotherhalf.superconference.dto.ConferenceDTO;
 import theotherhalf.superconference.dto.JsonEmailDTO;
 import theotherhalf.superconference.dto.SectionDTO;
@@ -66,10 +66,10 @@ public class ConferenceController
     public ConferenceDTO plugToConferenceDTOExtraBody(Conference conference)
     {
         ConferenceDTO response = ConferenceDTO.toDTO(conference);
-        User cpcm = this.conferenceService.getConferenceCPCM(conference.getID());
-        User ccpcm = this.conferenceService.getConferenceCCPCM(conference.getID());
-        User cscm = this.conferenceService.getConferenceCSCM(conference.getID());
-        User ccscm = this.conferenceService.getConferenceCCSCM(conference.getID());
+        CMSUser cpcm = this.conferenceService.getConferenceCPCM(conference.getID());
+        CMSUser ccpcm = this.conferenceService.getConferenceCCPCM(conference.getID());
+        CMSUser cscm = this.conferenceService.getConferenceCSCM(conference.getID());
+        CMSUser ccscm = this.conferenceService.getConferenceCCSCM(conference.getID());
         if(null != cpcm)
         {
             response.setCpcm(new JsonEmailDTO(cpcm.getEmail()));
@@ -86,47 +86,60 @@ public class ConferenceController
         {
             response.setCcscm(new JsonEmailDTO(ccscm.getEmail()));
         }
-        response.setPcms(this.conferenceService.getConferencePCM(conference.getID()).stream().map(x -> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()));
-        response.setScms(this.conferenceService.getConferenceSCM(conference.getID()).stream().map(x -> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()));
+        response.setPcms(this.conferenceService.getOnlyPCM(conference.getID()).stream().map(x -> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()));
+        response.setScms(this.conferenceService.getOnlySCM(conference.getID()).stream().map(x -> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()));
         response.setParticipants(this.conferenceService.getParticipants(conference.getID()).stream().map(x -> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()));
 
         if(this.sectionService.getSections(conference.getID()) != null)
         {
-            response.setSections(this.sectionService.getSections(conference.getID()).stream().map(x -> SectionDTO.toDTO(conference.getID(), x)).collect(Collectors.toList()));
+            response.setSections(this.sectionService.getSections(conference.getID()).stream().filter(k -> k.getChair() != null).map(x -> SectionDTO.toDTO(conference.getID(), x)).collect(Collectors.toList()));
         }
         return response;
     }
 
+    @Transactional
     public void processConferenceDTOExtraBody(ConferenceDTO conferenceDTO, Conference conference)
     {
         if(null != conferenceDTO.getParticipants())
         {
             List<String> participants = this.getEmailsFromJsonMailDTOs(conferenceDTO.getParticipants());
+            this.conferenceService.removeParticipantsFromConference(conference.getID());
             participants.forEach(x -> this.conferenceService.addParticipantToConference(conference.getID(), x));
         }
 
         if(null != conferenceDTO.getPcms())
         {
+            this.conferenceService.removePCMS(conference.getID());
             this.conferenceService.makePCMS(conference.getID(), this.getEmailsFromJsonMailDTOs(conferenceDTO.getPcms()));
         }
+
         if(null != conferenceDTO.getScms())
         {
+            this.conferenceService.removeSCMS(conference.getID());
             this.conferenceService.makeSCMS(conference.getID(), this.getEmailsFromJsonMailDTOs(conferenceDTO.getScms()));
         }
+
         if(null != conferenceDTO.getCpcm())
         {
+            this.conferenceService.removeCPCM(conference.getID());
             this.conferenceService.addCPCM(conferenceDTO.getCpcm().getEmail(), conference.getID());
         }
+
         if(null != conferenceDTO.getCcpcm())
         {
+            this.conferenceService.removeCCPCM(conference.getID());
             this.conferenceService.addCCPCM(conferenceDTO.getCcpcm().getEmail(), conference.getID());
         }
+
         if(null != conferenceDTO.getCscm())
         {
+            this.conferenceService.removeCSCM(conference.getID());
             this.conferenceService.addCSCM(conferenceDTO.getCscm().getEmail(),conference.getID());
         }
+
         if(null != conferenceDTO.getCcscm())
         {
+            this.conferenceService.removeCCSCM(conference.getID());
             this.conferenceService.addCCSCM(conferenceDTO.getCcscm().getEmail(), conference.getID());
         }
     }
@@ -177,14 +190,14 @@ public class ConferenceController
     @GetMapping(path = "{confId}/pcm")
     public List<UserDTO> getAllPCM(@PathVariable("confId") Long confId)
     {
-        List<User> usersPCM = this.conferenceService.getConferencePCM(confId);
+        List<CMSUser> usersPCM = this.conferenceService.getConferencePCM(confId);
         return usersPCM.stream().map(UserDTO::toDTO).collect(Collectors.toList());
     }
 
     @GetMapping(path = "{confId}/scm")
     public List<UserDTO> getAllSCM(@PathVariable("confId") Long confId)
     {
-        List<User> usersPCM = this.conferenceService.getConferenceSCM(confId);
+        List<CMSUser> usersPCM = this.conferenceService.getConferenceSCM(confId);
         return usersPCM.stream().map(UserDTO::toDTO).collect(Collectors.toList());
     }
 

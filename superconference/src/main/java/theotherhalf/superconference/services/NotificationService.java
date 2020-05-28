@@ -3,7 +3,7 @@ package theotherhalf.superconference.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import theotherhalf.superconference.domain.Notification;
-import theotherhalf.superconference.domain.User;
+import theotherhalf.superconference.domain.CMSUser;
 import theotherhalf.superconference.domain.UserNotification;
 import theotherhalf.superconference.repository.NotificationRepository;
 import theotherhalf.superconference.repository.UserNotificationRepository;
@@ -45,7 +45,7 @@ public class NotificationService
 
     public List<UserNotification> getAllNotificationsForUser(String email)
     {
-        User usr = this.userService.getUserAfterValidation(email);
+        CMSUser usr = this.userService.getUserAfterValidation(email);
         return this.userNotificationRepository.findByUser(usr);
     }
 

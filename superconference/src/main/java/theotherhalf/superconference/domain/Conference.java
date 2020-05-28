@@ -1,6 +1,9 @@
 package theotherhalf.superconference.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
@@ -11,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name="conference")
+@Table
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Conference extends BaseEntity
 {
@@ -47,7 +50,9 @@ public class Conference extends BaseEntity
     void initializeSections()
     {
         this.sections = new ArrayList<>();
-        this.sections.add(new Section());
+        Section main = new Section();
+        main.setId(new Random().nextLong());
+        this.sections.add(main);
     }
 
     public Conference(@NotBlank String name,
@@ -235,17 +240,17 @@ public class Conference extends BaseEntity
         return this.sections.stream().filter(x -> x.getID().equals(sectionId)).findFirst().get();
     }
 
-    public void addParticipantToConference(User usr)
+    public void addParticipantToConference(CMSUser usr)
     {
         Section main = this.getDefaultSection();
-        if(main.hasParticipant(usr.getEmail()))
+        if(!main.hasParticipant(usr.getEmail()))
         {
-            throw new ValidationException("[ERROR] Participant already exists");
+            main.addParticipant(usr);
         }
-        main.addParticipant(usr);
+
     }
 
-    public void removeParticipantFromConference(User usr)
+    public void removeParticipantFromConference(CMSUser usr)
     {
         Section main = this.getDefaultSection();
         if(!main.hasParticipant(usr.getEmail()))
@@ -286,14 +291,15 @@ public class Conference extends BaseEntity
         return main.addProposal(proposal);
     }
 
-    public void updateProposal(Proposal proposal)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Proposal updateProposal(Proposal proposal)
     {
         Section main = this.getDefaultSection();
         if(!main.hasProposal(proposal.getID()))
         {
             throw new ValidationException("[ERROR] Proposal doesn't exist");
         }
-        main.updateProposal(proposal);
+        return main.updateProposal(proposal);
     }
     public void removeProposal(Long proposalId)
     {
@@ -305,10 +311,16 @@ public class Conference extends BaseEntity
         main.removeProposal(proposalId);
     }
 
-    public List<User> getParticipants()
+    public List<CMSUser> getParticipants()
     {
-        List<User> allParticipants = new ArrayList<>();
+        List<CMSUser> allParticipants = new ArrayList<>();
         this.sections.forEach(x -> allParticipants.addAll(x.getParticipants()));
         return allParticipants.stream().distinct().collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void removeAllParticipants()
+    {
+        this.sections.forEach(x -> x.setParticipants(new ArrayList<>()));
     }
 }

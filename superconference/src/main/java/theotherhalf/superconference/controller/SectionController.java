@@ -5,6 +5,7 @@ import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.ProposalKey;
+import theotherhalf.superconference.domain.Section;
 import theotherhalf.superconference.dto.SectionDTO;
 import theotherhalf.superconference.exceptions.ControllerException;
 import theotherhalf.superconference.services.ConferenceService;
@@ -64,7 +65,11 @@ public class SectionController
         {
             sectionDTO.getParticipants().forEach(x -> participantsEmail.add(x.getEmail()));
         }
-        this.sectionService.addSection(confId, sectionDTO.getChair(), sectionDTO.getTopics(), proposalKeys, participantsEmail, sectionDTO.getRoom());
+        Section section = this.sectionService.addSection(confId, sectionDTO.getChair().getEmail(), sectionDTO.getTopics(), proposalKeys, participantsEmail, sectionDTO.getRoom());
+        if(null != section.getId())
+        {
+            sectionDTO.setId(section.getId());
+        }
         return sectionDTO;
     }
 
@@ -81,7 +86,7 @@ public class SectionController
         {
             sectionDTO.getParticipants().forEach(x -> participantsEmail.add(x.getEmail()));
         }
-        this.sectionService.updateSection(sectionDTO.getId(), confId, sectionDTO.getChair(), sectionDTO.getTopics(), proposalKeys, participantsEmail, sectionDTO.getRoom());
+        this.sectionService.updateSection(sectionDTO.getId(), confId, sectionDTO.getChair().getEmail(), sectionDTO.getTopics(), proposalKeys, participantsEmail, sectionDTO.getRoom());
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

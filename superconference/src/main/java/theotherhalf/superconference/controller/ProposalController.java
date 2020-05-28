@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.Proposal;
-import theotherhalf.superconference.domain.User;
+import theotherhalf.superconference.domain.CMSUser;
 import theotherhalf.superconference.dto.JsonEmailDTO;
 import theotherhalf.superconference.dto.ProposalDTO;
 import theotherhalf.superconference.exceptions.ControllerException;
@@ -67,10 +67,50 @@ public class ProposalController
         this.proposalService.saveAsEntity(theProposal, author);
         Proposal response = this.proposalService.addConferenceProposal(confId, theProposal);
         this.proposalService.addCoAuthorsToProposal(response, coAuthors);
-        this.proposalService.addBiddersToProposal(response, bidders);
+        this.proposalService.addBiddersToProposal(response, confId, bidders);
         //this.proposalService.addReviewersToProposal(response, reviewers);
 
         return ProposalDTO.toDTO(confId, response);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping(path = "{confId}/proposals")
+    public void updateProposal(@PathVariable("confId") Long confId, @RequestBody ProposalDTO proposalDTO)
+    {
+        if(null == proposalDTO.getId())
+        {
+            throw new ControllerException("[ERROR] Null proposal id given to update");
+        }
+
+        Proposal theProposal = ProposalDTO.toPartialDomain(proposalDTO);
+        theProposal.setID(proposalDTO.getId());
+        List<String> coAuthors = null;
+        List<String> bidders = null;
+        List<String> reviewers = null;
+        String author = null;
+        if(null == proposalDTO.getAuthor())
+        {
+            throw new ControllerException("[ERROR] Proposal must have author");
+        }
+        if(null != proposalDTO.getCoAuthors())
+        {
+            coAuthors = this.conferenceController.getEmailsFromJsonMailDTOs(proposalDTO.getCoAuthors());
+        }
+        if(null != proposalDTO.getBidders())
+        {
+            bidders = this.conferenceController.getEmailsFromJsonMailDTOs(proposalDTO.getBidders());
+        }
+        if(null != proposalDTO.getReviewers())
+        {
+            reviewers = this.conferenceController.getEmailsFromJsonMailDTOs(proposalDTO.getReviewers());
+        }
+
+        Proposal response = this.proposalService.updateProposal(confId, theProposal);
+        this.proposalService.addCoAuthorsToProposal(response, coAuthors);
+        this.proposalService.addBiddersToProposal(response, confId, bidders);
+        this.proposalService.addReviewersToProposal(response, confId, reviewers);
+
+        //return ProposalDTO.toDTO(confId, response);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

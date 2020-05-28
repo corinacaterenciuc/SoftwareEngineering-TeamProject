@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.Notification;
-import theotherhalf.superconference.domain.User;
+import theotherhalf.superconference.domain.CMSUser;
 import theotherhalf.superconference.domain.UserNotification;
 import theotherhalf.superconference.dto.JsonEmailDTO;
 import theotherhalf.superconference.dto.NotificationDTO;

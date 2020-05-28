@@ -2,12 +2,12 @@ package theotherhalf.superconference.validators;
 
 import org.apache.commons.validator.EmailValidator;
 import org.springframework.stereotype.Component;
-import theotherhalf.superconference.domain.User;
+import theotherhalf.superconference.domain.CMSUser;
 import theotherhalf.superconference.exceptions.ValidationException;
 
 
 @Component
-public class UserValidator implements BasicValidator<User>
+public class UserValidator implements BasicValidator<CMSUser>
 {
     public UserValidator()
     {
@@ -20,7 +20,7 @@ public class UserValidator implements BasicValidator<User>
     }
 
     @Override
-    public void validate(User entity) throws ValidationException
+    public void validate(CMSUser entity) throws ValidationException
     {
         if(null == entity)
         {
@@ -40,7 +40,7 @@ public class UserValidator implements BasicValidator<User>
         }
         else if(entity.getFirstName().strip().equals("") || entity.getLastName().strip().equals(""))
         {
-            throw new ValidationException("[VALIDATION ERROR] User names should not be blank");
+            throw new ValidationException("[VALIDATION ERROR] CMSUser names should not be blank");
         }
     }
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import theotherhalf.superconference.domain.Proposal;
 import theotherhalf.superconference.domain.Section;
-import theotherhalf.superconference.domain.User;
+import theotherhalf.superconference.domain.CMSUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class SectionDTO
     private Long id;
 
     @JsonProperty
-    private String chair;
+    private JsonEmailDTO chair;
 
     @JsonProperty
     private List<String> topics;
@@ -32,8 +32,18 @@ public class SectionDTO
     @JsonProperty
     private Integer room;
 
-    public SectionDTO(String chair, List<String> topics, List<ProposalDTO> proposals, List<JsonEmailDTO> participants, Integer room)
+    public SectionDTO(JsonEmailDTO chair, List<String> topics, List<ProposalDTO> proposals, List<JsonEmailDTO> participants, Integer room)
     {
+        this.chair = chair;
+        this.topics = topics;
+        this.proposals = proposals;
+        this.participants = participants;
+        this.room = room;
+    }
+
+    public SectionDTO(Long id, JsonEmailDTO chair, List<String> topics, List<ProposalDTO> proposals, List<JsonEmailDTO> participants, Integer room)
+    {
+        this.id = id;
         this.chair = chair;
         this.topics = topics;
         this.proposals = proposals;
@@ -54,7 +64,7 @@ public class SectionDTO
         }
         if(null != section.getChair())
         {
-            sectionDTO.setChair(section.getChair().getEmail());
+            sectionDTO.setChair(new JsonEmailDTO(section.getChair().getEmail()));
         }
         if(null != section.getTopic())
         {
@@ -80,11 +90,11 @@ public class SectionDTO
 //                              section.getRoom());
     }
 
-    public String getChair() {
+    public JsonEmailDTO getChair() {
         return chair;
     }
 
-    public void setChair(String chair) {
+    public void setChair(JsonEmailDTO chair) {
         this.chair = chair;
     }
 

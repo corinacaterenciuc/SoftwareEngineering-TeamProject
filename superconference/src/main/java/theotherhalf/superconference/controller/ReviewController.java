@@ -42,7 +42,12 @@ public class ReviewController
         String reviewer = reviewDTO.getReviewer().getEmail();
         Review rev = this.reviewService.addReviewToProposal(reviewDTO.getGrade(), reviewDTO.getJustification(), proposalId, confId, reviewer);
 
-        return ReviewDTO.toDTO(rev, proposalId);
+        ReviewDTO dto = ReviewDTO.toDTO(rev, proposalId);
+        if(null != rev.getID())
+        {
+            dto.setId(rev.getID());
+        }
+        return dto;
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

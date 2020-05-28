@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sun.istack.NotNull;
 import theotherhalf.superconference.domain.Conference;
 import theotherhalf.superconference.domain.ENUMERATION_ROLES;
-import theotherhalf.superconference.domain.User;
+import theotherhalf.superconference.domain.CMSUser;
 import theotherhalf.superconference.domain.UserClaims;
 
 import javax.persistence.CascadeType;
@@ -78,7 +78,7 @@ public class UserClaimsDTO
     public static UserClaims toDomain(UserClaimsDTO userClaimsDTO)
     {
         Conference conference = ConferenceDTO.toDomain(userClaimsDTO.getConference());
-        User user = UserDTO.toDomain(userClaimsDTO.getUser());
+        CMSUser user = UserDTO.toDomain(userClaimsDTO.getUser());
         return new UserClaims(user, conference, userClaimsDTO.getRole());
     }
 }

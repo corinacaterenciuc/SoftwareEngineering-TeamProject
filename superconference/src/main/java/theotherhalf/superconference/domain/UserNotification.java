@@ -1,9 +1,10 @@
 package theotherhalf.superconference.domain;
 
 import com.sun.istack.NotNull;
-
+import org.springframework.data.relational.core.mapping.Table;
 import javax.persistence.*;
 
+@Table
 @Entity
 public class UserNotification extends BaseEntity
 {
@@ -11,11 +12,11 @@ public class UserNotification extends BaseEntity
     private Notification notification;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-    private User user;
+    private CMSUser user;
 
     private boolean read;
 
-    public UserNotification(Notification notification, User user, boolean read) {
+    public UserNotification(Notification notification, CMSUser user, boolean read) {
         this.notification = notification;
         this.user = user;
         this.read = read;
@@ -40,11 +41,11 @@ public class UserNotification extends BaseEntity
         this.notification = conference;
     }
 
-    public User getUser() {
+    public CMSUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(CMSUser user) {
         this.user = user;
     }
 }

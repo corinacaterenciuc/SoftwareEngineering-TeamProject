@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import theotherhalf.superconference.domain.Conference;
 import theotherhalf.superconference.domain.Section;
-import theotherhalf.superconference.domain.User;
+import theotherhalf.superconference.domain.CMSUser;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

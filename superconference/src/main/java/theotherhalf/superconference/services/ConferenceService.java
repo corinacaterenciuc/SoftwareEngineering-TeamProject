@@ -164,37 +164,37 @@ public class ConferenceService
         return this.repository.findById(conferenceID);
     }
 
-    public List<User> getConferenceSCM(Long conferenceID)
+    public List<CMSUser> getConferenceSCM(Long conferenceID)
     {
         Conference conference = this.getConferenceAfterValidation(conferenceID);
         return this.userService.getConferenceSCM(conference);
     }
 
-    public List<User> getConferencePCM(Long conferenceID)
+    public List<CMSUser> getConferencePCM(Long conferenceID)
     {
         Conference conference = this.getConferenceAfterValidation(conferenceID);
         return this.userService.getConferencePCM(conference);
     }
 
-    public User getConferenceCPCM(Long conferenceId)
+    public CMSUser getConferenceCPCM(Long conferenceId)
     {
         Conference conference = this.getConferenceAfterValidation(conferenceId);
         return this.userService.getConferenceCPCM(conference);
     }
 
-    public User getConferenceCCPCM(Long conferenceId)
+    public CMSUser getConferenceCCPCM(Long conferenceId)
     {
         Conference conference = this.getConferenceAfterValidation(conferenceId);
         return this.userService.getConferenceCCPCM(conference);
     }
 
-    public User getConferenceCSCM(Long conferenceId)
+    public CMSUser getConferenceCSCM(Long conferenceId)
     {
         Conference conference = this.getConferenceAfterValidation(conferenceId);
         return this.userService.getConferenceCSCM(conference);
     }
 
-    public User getConferenceCCSCM(Long conferenceId)
+    public CMSUser getConferenceCCSCM(Long conferenceId)
     {
         Conference conference = this.getConferenceAfterValidation(conferenceId);
         return this.userService.getConferenceCCSCM(conference);
@@ -208,9 +208,38 @@ public class ConferenceService
     }
 
     @Transactional
+    public void removeSCMS(Long conferenceId)
+    {
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        List<CMSUser> users = this.userService.getConferenceUsersByRole(conference, ENUMERATION_ROLES.SCM);
+        users.forEach(x -> this.userService.removeSCM(x.getEmail(), conference));
+    }
+
+    public List<CMSUser> getOnlySCM(Long conferenceId)
+    {
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        List<CMSUser> users = this.userService.getConferenceUsersByRole(conference, ENUMERATION_ROLES.SCM);
+        return users;
+    }
+    public List<CMSUser> getOnlyPCM(Long conferenceId)
+    {
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        List<CMSUser> users = this.userService.getConferenceUsersByRole(conference, ENUMERATION_ROLES.PCM);
+        return users;
+    }
+
+    @Transactional
     public void makePCMS(Long conferenceId, List<String> emails)
     {
         emails.forEach(x -> this.addPCM(x, conferenceId));
+    }
+
+    @Transactional
+    public void removePCMS(Long conferenceId)
+    {
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        List<CMSUser> users = this.userService.getConferenceUsersByRole(conference, ENUMERATION_ROLES.PCM);
+        users.forEach(x -> this.userService.removePCM(x.getEmail(), conference));
     }
 
     @Transactional
@@ -239,6 +268,7 @@ public class ConferenceService
         this.userService.addCCSCM(userEmail, this.getConferenceAfterValidation(conferenceID));
     }
 
+    @Transactional
     public void removeCCSCM(String userEmail, Long conferenceID)
     {
         this.userService.removeCCSCM(userEmail, this.getConferenceAfterValidation(conferenceID));
@@ -250,26 +280,59 @@ public class ConferenceService
         this.userService.addPCM(userEmail, this.getConferenceAfterValidation(conferenceID));
     }
 
+    @Transactional
     public void removePCM(String userEmail, Long conferenceID)
     {
         this.userService.removePCM(userEmail, this.getConferenceAfterValidation(conferenceID));
     }
 
+    @Transactional
     public void addCPCM(String userEmail, Long conferenceID)
     {
         this.userService.addCPCM(userEmail, this.getConferenceAfterValidation(conferenceID));
     }
 
+    @Transactional
     public void removeCPCM(String userEmail, Long conferenceID)
     {
         this.userService.removeCPCM(userEmail, this.getConferenceAfterValidation(conferenceID));
     }
 
+    @Transactional
+    public void removeCPCM(Long conferenceId)
+    {
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        this.userService.removeCPCM(conference);
+    }
+
+    @Transactional
+    public void removeCCPCM(Long conferenceId)
+    {
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        this.userService.removeCCPCM(conference);
+    }
+
+    @Transactional
+    public void removeCSCM(Long conferenceId)
+    {
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        this.userService.removeCSCM(conference);
+    }
+
+    @Transactional
+    public void removeCCSCM(Long conferenceId)
+    {
+        Conference conference = this.getConferenceAfterValidation(conferenceId);
+        this.userService.removeCCSCM(conference);
+    }
+
+    @Transactional
     public void addCCPCM(String userEmail, Long conferenceID)
     {
         this.userService.addCCPCM(userEmail, this.getConferenceAfterValidation(conferenceID));
     }
 
+    @Transactional
     public void removeCCPCM(String userEmail, Long conferenceID)
     {
         this.userService.removeCCPCM(userEmail, this.getConferenceAfterValidation(conferenceID));
@@ -285,7 +348,7 @@ public class ConferenceService
         this.userService.removeSectionChair(userEmail, this.getConferenceAfterValidation(conferenceID));
     }
 
-    public List<User> getParticipants(Long conferenceId)
+    public List<CMSUser> getParticipants(Long conferenceId)
     {
         Conference conference = this.getConferenceAfterValidation(conferenceId);
         return conference.getParticipants();
@@ -315,7 +378,7 @@ public class ConferenceService
             throw new ServiceException("[ERROR] Conference doesn't exists!");
         }
         Conference conference = this.repository.findById(confId).get();
-        User usr = this.userService.getUserAfterValidation(email);
+        CMSUser usr = this.userService.getUserAfterValidation(email);
         conference.addParticipantToConference(usr);
     }
 
@@ -326,7 +389,18 @@ public class ConferenceService
             throw new ServiceException("[ERROR] Conference doesn't exists!");
         }
         Conference conference = this.repository.findById(confId).get();
-        User usr = this.userService.getUserAfterValidation(email);
+        CMSUser usr = this.userService.getUserAfterValidation(email);
         conference.removeParticipantFromConference(usr);
+    }
+
+    @Transactional
+    public void removeParticipantsFromConference(Long confId)
+    {
+        if(this.repository.findById(confId).isEmpty())
+        {
+            throw new ServiceException("[ERROR] Conference doesn't exists!");
+        }
+        Conference conference = this.repository.findById(confId).get();
+        conference.removeAllParticipants();
     }
 }

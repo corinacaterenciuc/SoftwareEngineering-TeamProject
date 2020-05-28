@@ -7,13 +7,16 @@ import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import theotherhalf.superconference.domain.Conference;
-import theotherhalf.superconference.domain.User;
+import theotherhalf.superconference.domain.CMSUser;
 import theotherhalf.superconference.domain.UserClaims;
 import theotherhalf.superconference.dto.UserClaimsDTO;
 import theotherhalf.superconference.dto.UserDTO;
 import theotherhalf.superconference.exceptions.ControllerException;
 import theotherhalf.superconference.services.ConferenceService;
+import theotherhalf.superconference.services.FileService;
 import theotherhalf.superconference.services.UserService;
 
 import javax.transaction.Transactional;
@@ -30,6 +33,9 @@ public class UserController
     private final ConferenceService conferenceService;
 
     @Autowired
+    private FileService fileService;
+
+    @Autowired
     public UserController(UserService userService, ConferenceService conferenceService)
     {
         this.userService = userService;
@@ -39,10 +45,11 @@ public class UserController
     @PostMapping
     public UserDTO addNewUser(@RequestBody @Valid UserDTO userDTO)
     {
-        User user = UserDTO.toDomain(userDTO);
-        User savedUser = this.userService.addUser(user);
+        CMSUser user = UserDTO.toDomain(userDTO);
+        CMSUser savedUser = this.userService.addUser(user, userDTO.getPassword());
         return UserDTO.toDTO(savedUser);
     }
+
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping
@@ -55,8 +62,8 @@ public class UserController
     @PutMapping
     public UserDTO updateUser(@RequestBody @Valid UserDTO userDTO)
     {
-        User user = UserDTO.toDomain(userDTO);
-        User updatedUser = this.userService.updateUser(user);
+        CMSUser user = UserDTO.toDomain(userDTO);
+        CMSUser updatedUser = this.userService.updateUser(user);
         return UserDTO.toDTO(updatedUser);
     }
 
@@ -79,14 +86,14 @@ public class UserController
     @GetMapping
     public List<UserDTO> getAllUsers()
     {
-        List<User> userList = this.userService.getAllUsers();
+        List<CMSUser> userList = this.userService.getAllUsers();
         return userList.stream().map(UserDTO::toDTO).collect(Collectors.toList());
     }
 
     @GetMapping(path="/user/{email}")
     public List<UserClaimsDTO> getAllRoles(@PathVariable("email") String userEmail)
     {
-        User user = this.userService.findByEmail(userEmail).orElse(null);
+        CMSUser user = this.userService.findByEmail(userEmail).orElse(null);
         if (null == user)
         {
             throw new ControllerException("[ERROR] Null user given for roles search");

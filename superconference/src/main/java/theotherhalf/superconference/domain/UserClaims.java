@@ -1,5 +1,6 @@
 package theotherhalf.superconference.domain;
 
+import org.springframework.data.relational.core.mapping.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
@@ -7,7 +8,7 @@ import com.sun.istack.NotNull;
 import javax.persistence.*;
 
 @Entity
-@Table(name="cmsuserclaims")
+@Table
 public class UserClaims extends BaseEntity
 {
     //@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -16,13 +17,13 @@ public class UserClaims extends BaseEntity
 
     //@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-    private User user;
+    private CMSUser user;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     private ENUMERATION_ROLES role;
 
-    public UserClaims(@JsonProperty("user") User user,
+    public UserClaims(@JsonProperty("user") CMSUser user,
                       @JsonProperty("conference") Conference conference,
                       @JsonProperty("role") ENUMERATION_ROLES role)
     {
@@ -31,7 +32,7 @@ public class UserClaims extends BaseEntity
         this.conference = conference;
     }
 
-    public UserClaims(User user, Conference conference)
+    public UserClaims(CMSUser user, Conference conference)
     {
         this.conference = conference;
         this.user = user;
@@ -53,12 +54,12 @@ public class UserClaims extends BaseEntity
         this.conference = conference;
     }
 
-    public User getUser()
+    public CMSUser getUser()
     {
         return user;
     }
 
-    public void setUser(User user)
+    public void setUser(CMSUser user)
     {
         this.user = user;
     }

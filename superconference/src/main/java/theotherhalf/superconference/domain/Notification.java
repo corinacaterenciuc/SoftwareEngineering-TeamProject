@@ -2,7 +2,9 @@ package theotherhalf.superconference.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import org.springframework.data.relational.core.mapping.Table;
 
+@Table 
 @Entity
 public class Notification extends BaseEntity
 {

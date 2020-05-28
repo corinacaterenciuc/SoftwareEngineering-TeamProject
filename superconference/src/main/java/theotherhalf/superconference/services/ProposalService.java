@@ -3,10 +3,7 @@ package theotherhalf.superconference.services;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import theotherhalf.superconference.domain.Conference;
-import theotherhalf.superconference.domain.Proposal;
-import theotherhalf.superconference.domain.Section;
-import theotherhalf.superconference.domain.User;
+import theotherhalf.superconference.domain.*;
 import theotherhalf.superconference.exceptions.ServiceException;
 import theotherhalf.superconference.repository.ProposalsRepository;
 
@@ -17,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class ProposalService
@@ -49,7 +47,7 @@ public class ProposalService
     }
 
     @Transactional
-    public void addReviewersToProposal(Proposal proposal, List<String> reviewers)
+    public void addReviewersToProposal(Proposal proposal, Long conferenceId, List<String> reviewers)
     {
         if(null != reviewers)
         {
@@ -57,7 +55,16 @@ public class ProposalService
             {
                 throw new ServiceException("[ERROR] Too many reviewers given.");
             }
-            proposal.setReviewers(this.userService.getUsersInEmailList(reviewers));
+            Conference conference = this.conferenceService.getConferenceAfterValidation(conferenceId);
+            List<CMSUser> users = this.userService.getUsersInEmailList(reviewers);
+            List<CMSUser> pcm = new ArrayList<>();
+            users.forEach(x -> {
+                if(this.userService.hasRole(x, conference, ENUMERATION_ROLES.PCM) || this.userService.hasRole(x, conference, ENUMERATION_ROLES.CHAIR_PCM) || this.userService.hasRole(x, conference, ENUMERATION_ROLES.CO_CHAIR_PCM))
+                {
+                    pcm.add(x);
+                }
+            });
+            proposal.setReviewers(pcm);
         }
     }
 
@@ -73,11 +80,22 @@ public class ProposalService
     }
 
     @Transactional
-    public void addBiddersToProposal(Proposal proposal, List<String> bidders)
+    public void addBiddersToProposal(Proposal proposal, Long conferenceId, List<String> bidders)
     {
         if(null != bidders)
         {
-            proposal.setBiddingPeople(this.userService.getUsersInEmailList(bidders));
+            Conference conference = this.conferenceService.getConferenceAfterValidation(conferenceId);
+            List<CMSUser> users = this.userService.getUsersInEmailList(bidders);
+            List<CMSUser> pcm = new ArrayList<>();
+            users.forEach(x -> {
+                if(this.userService.hasRole(x, conference, ENUMERATION_ROLES.PCM) || this.userService.hasRole(x, conference, ENUMERATION_ROLES.CHAIR_PCM) || this.userService.hasRole(x, conference, ENUMERATION_ROLES.CO_CHAIR_PCM))
+                {
+                    pcm.add(x);
+                }
+            });
+            proposal.setReviewers(pcm);
+
+            proposal.setBiddingPeople(pcm);
         }
     }
 
@@ -86,15 +104,22 @@ public class ProposalService
     {
         if(null != coauthors)
         {
-            proposal.setCoAuthors(this.userService.getUsersInEmailList(coauthors));
+            proposal.setCoAuthors(this.userService.getUsersInEmailList(coauthors).stream().filter(x -> !x.getEmail().equals(proposal.getAuthor().getEmail())).collect(Collectors.toList()));
         }
+    }
+
+    @Transactional
+    public void setFilePath(Long confId, Long proposalId, String filePath)
+    {
+        Proposal proposal = this.getProposal(confId, proposalId);
+        proposal.setFilePath(filePath);
     }
 
     @Transactional
     public Proposal addConferenceProposal(Long confId, Proposal proposal)
     {
-        List<User> authors = new ArrayList<>();
-        List<User> bidrs = new ArrayList<>();
+        List<CMSUser> authors = new ArrayList<>();
+        List<CMSUser> bidrs = new ArrayList<>();
         Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
 
         if (null == proposal.getID())
@@ -103,20 +128,18 @@ public class ProposalService
         }
 
         Proposal response = this.transactionalAddProposal(conference, proposal);
-
-        // here save file on disk and give a name
         return response;
     }
 
-    public void updateProposal(Long confId, Proposal proposal)
+    @Transactional
+    public Proposal updateProposal(Long confId, Proposal proposal)
     {
         if (null == proposal.getID())
         {
             throw new ServiceException("[ERROR] Invalid proposal id given");
         }
         Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
-        // process file if present and retrieve just path
-        conference.updateProposal(proposal);
+        return conference.updateProposal(proposal);
     }
 
     @Transactional
@@ -136,13 +159,20 @@ public class ProposalService
 
     }
 
+    public Proposal getProposal(Long confId, Long proposalId)
+    {
+        Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
+        Section main = conference.getDefaultSection();
+        return main.getProposal(proposalId);
+    }
+
     @Transactional
     public void addBid(Long confId, Long proposalId, String email)
     {
         Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
         Section main = conference.getDefaultSection();
         Proposal proposal = main.getProposal(proposalId);
-        User usr = this.userService.getUserAfterValidation(email);
+        CMSUser usr = this.userService.getUserAfterValidation(email);
         proposal.addBidder(usr);
     }
 
@@ -152,7 +182,7 @@ public class ProposalService
         Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
         Section main = conference.getDefaultSection();
         Proposal proposal = main.getProposal(proposalId);
-        User usr = this.userService.getUserAfterValidation(email);
+        CMSUser usr = this.userService.getUserAfterValidation(email);
         proposal.removeBidder(usr);
     }
 
@@ -162,7 +192,7 @@ public class ProposalService
         Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
         Section main = conference.getDefaultSection();
         Proposal proposal = main.getProposal(proposalId);
-        User usr = this.userService.getUserAfterValidation(email);
+        CMSUser usr = this.userService.getUserAfterValidation(email);
         proposal.addSecondHandReviewer(usr);
     }
 
@@ -172,11 +202,11 @@ public class ProposalService
         Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
         Section main = conference.getDefaultSection();
         Proposal proposal = main.getProposal(proposalId);
-        User usr = this.userService.getUserAfterValidation(email);
+        CMSUser usr = this.userService.getUserAfterValidation(email);
         proposal.removeSecondHandReviewer(usr);
     }
 
-    public List<User> getBidders(Long confId, Long proposalId)
+    public List<CMSUser> getBidders(Long confId, Long proposalId)
     {
         Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
         Section main = conference.getDefaultSection();
@@ -184,7 +214,7 @@ public class ProposalService
         return proposal.getBiddingPeople();
     }
 
-    public List<User> setReviewers(Long confId, Long proposalId, List<String> emails)
+    public List<CMSUser> setReviewers(Long confId, Long proposalId, List<String> emails)
     {
         if(null == confId || null == proposalId)
         {
@@ -197,7 +227,7 @@ public class ProposalService
         }
         Section main = conference.getDefaultSection();
         Proposal proposal = main.getProposal(proposalId);
-        List<User> userii = this.userService.getUsersInEmailList(emails);
+        List<CMSUser> userii = this.userService.getUsersInEmailList(emails);
         proposal.setReviewers(userii);
         return userii;
     }
