@@ -57,12 +57,13 @@ USERS
           ]
 
 
-CONFERENCES
+CONFERENCES      ###################################  !!!!!!!!  Conferences also have name attribute !!!!!!!!!!!!!!! ####################################################### 
   add Conferences
       /api/conferences/
       POST
       body:
         {
+		  name: string,
           description: string,
           zeroDeadline: Date,
           abstractDeadline: Date | null,
@@ -83,6 +84,7 @@ CONFERENCES
         body:
           {
             id: ID
+			name: string,
             description: string,
             zeroDeadline: Date,
             abstractDeadline: Date | null,
@@ -111,7 +113,8 @@ CONFERENCES
       PUT
       body:
         {
-            id: ID
+            id: ID,
+			name: String, 
             description: string,
             zeroDeadline: Date,
             abstractDeadline: Date | null,
@@ -131,7 +134,8 @@ CONFERENCES
         status: 200 or 400
         body:
           {
-            id: ID
+            id: ID,
+			name: string
             description: string,
             zeroDeadline: Date,
             abstractDeadline: Date | null,
@@ -158,6 +162,7 @@ CONFERENCES
           [
             {
               id: ID
+			  name: string,
               description: string,
               zeroDeadline: Date,
               abstractDeadline: Date | null,
@@ -267,7 +272,7 @@ PROPOSALS
           abstract: string,     // abstract will be a plain old string
           topics: string[],
           keywords: string[] | null,
-          author: string,
+          author: Email,
           coAuthors: Email[] | null,
         }
       response:
@@ -281,7 +286,7 @@ PROPOSALS
             abstract: string,
             topics: string[],
             keywords: string[] | null,
-            author: string,
+            author: Email,
             coAuthors: Email[] | null,
             bidders: Email[] | null,
             reviewers: Email[] | null,
@@ -353,6 +358,22 @@ PROPOSALS
     response:
       status: 204 or 400
 
+  add reviewers
+    `${domain}/api/conferences/${conferenceId}/proposals/${proposalId}/reviewers`
+	PUT
+    body:
+	  Email[]
+	response:
+      status: 204 or 400
+	  
+  remove reviewers
+    `${domain}/api/conferences/${conferenceId}/proposals/${proposalId}/reviewers`
+	DELETE
+    body:
+	  Email[]
+	response:
+      status: 204 or 400
+	  
   add second hand reviewer
     `${domain}/api/conferences/${conferenceId}/proposals/${proposalId}/sh`
     PUT
