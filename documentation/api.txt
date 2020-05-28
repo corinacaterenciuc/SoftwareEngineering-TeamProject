@@ -321,6 +321,29 @@ PROPOSALS
             secondHandReviewer: Email[] | null
         ]
 
+  upload file to proposal        // also sets Proposal filePath to download link
+      /api/conferences/{conferenceid}/proposals/{proposalid}/upload
+      POST
+      body: form-data
+      response: 
+        status: 200 or 400
+        body:
+        {
+          "fileName": string,
+          "fileDownloadUri": string,  // this is the download link
+          "fileType": string,
+          "size": int  //size in bytes
+        }
+        
+  get file from proposal
+      /api/conferences/{conferenceid}/proposals/{proposalid}/downloadFile/{fileId}
+      GET
+      body: N/A
+      response: 
+        status: 200 or 400
+        response header: CONTENT_DISPOSITION + filename
+        body: attachment bytes
+      
   add review
       // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
       // IMPORTANT -> proposal was renamed into proposalId
