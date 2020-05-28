@@ -43,7 +43,15 @@ const initialState: ConferenceState = {
     conferences: [{
         id: 0,
         title: 'My cool conference',
-        description: 'Long ass description'
+        description: 'Long ass description',
+        pcms: ['reee@gmail.com', 'notnice@yahoo.com', 'boomermail@hotmail.co'],
+        cpcm: ['metroboomin@hills.co'],
+        zeroDeadline: Date.parse('2019-10-10'),
+        abstractDeadline: Date.parse('2019-15-10'),
+        proposalDeadline: Date.parse('2019-20-10'),
+        biddingDeadline: Date.parse('2019-23-10'),
+        evaluationDeadline: Date.parse('2019-25-10'),
+        presentationDeadline: Date.parse('2019-05-11'),
     }]
 };
 

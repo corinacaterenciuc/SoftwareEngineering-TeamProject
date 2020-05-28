@@ -1,2 +1,7 @@
-.ResolveProposalModal {
+.secondHandDiv {
+    display: flex;
+}
+
+.secondHandDiv :first-child {
+    margin-right: 1em;
 }

@@ -5,7 +5,8 @@ import {FormControl} from "baseui/form-control";
 import {Textarea} from "baseui/textarea";
 import {KIND} from "baseui/button";
 import {Select} from "baseui/select";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import proposalService from "../../../redux/proposal/proposalService";
 
 const ReviewProposalModal = (props) => {
     /**
@@ -13,8 +14,13 @@ const ReviewProposalModal = (props) => {
      * props.review.grade is expected as an object with properties `label` and `id` per the Select item below.
      * props.review.justification has a string value
      */
+    const {modalOpen, setModalOpen} = props;
+
+    const dispatch = useDispatch();
     const proposal = useSelector(state => state.context.currentProposal);
     const review = useSelector(state => state.context.currentReview);
+    const currentUserEmail = useSelector(state => state.auth.email);
+
     let stateReceived = useRef(false);
 
     const options = [
@@ -52,9 +58,9 @@ const ReviewProposalModal = (props) => {
     return (
         <div className="ReviewProposalModal" data-testid="ReviewProposalModal">
             <Modal
-                onClose={() => props.setModalOpen(false)}
+                onClose={() => setModalOpen(false)}
                 closeable
-                isOpen={props.modalOpen}
+                isOpen={modalOpen}
                 animate
                 autoFocus
                 size={SIZE.default}
@@ -91,7 +97,22 @@ const ReviewProposalModal = (props) => {
                         <ModalButton
                             size={SIZE.compact}
                             disabled={!formValid}
-                            onClick={() => console.log(grade, justification)}>
+                            onClick={() => {
+                                if (!review) {
+                                    dispatch(proposalService.addReview(
+                                        proposal.conferenceId,
+                                        proposal.id,
+                                        {
+                                            proposalId: proposal.id,
+                                            reviewer: currentUserEmail,
+                                            grade: grade,
+                                            justification: justification
+                                        }
+                                    ))
+                                } else {
+                                    dispatch(proposalService)
+                                }
+                            }}>
                             {review != null ? 'Update' : 'Submit'}
                         </ModalButton>
                     </ModalFooter>

@@ -6,6 +6,7 @@ import {
     StyledNavigationList as NavigationList,
 } from 'baseui/header-navigation';
 import {StyledLink as Link} from 'baseui/link';
+import './Navbar.css'
 
 export default () => (
     <HeaderNavigation>

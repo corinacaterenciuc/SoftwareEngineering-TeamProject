@@ -1,13 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import './EvaluationCard.css';
 import {Card, StyledBody} from "baseui/card";
 import {Checkbox} from "baseui/checkbox";
+import {colorScale, gradeToText} from "../../../constants";
+import {useSelector} from "react-redux";
 
 const EvaluationCard = (props) => {
-    const [checked, setChecked] = React.useState(false);
+    const {grade, justification, displayCheckbox, reviewer} = props;
+    const [checked, setChecked] = useState(false);
+    const reviewerProfile = useSelector(state => state.user.users.find(u => u.email === reviewer));
+    const reviewerName = `${reviewerProfile?.firstname} ${reviewerProfile?.lastname}`;
+
     const gradeStyle = {
-        color: props.colorScale[props.grade.gradeValue.toString()],
+        color: colorScale[props.grade.toString()],
         fontWeight: "bold",
         wordWrap: "break-word",
         marginRight: "1em"
@@ -17,18 +23,18 @@ const EvaluationCard = (props) => {
         <Card className={"EvaluationCard " + (checked && "fade")} data-testid="EvaluationCard">
             <StyledBody style={{display: "flex"}}>
                 <div style={{width: "90%"}}>
-                    <p>{props.justification}</p>
+                    <p>{justification}</p>
                     <div style={{display: "flex"}}>
-                        <small style={gradeStyle}>{props.grade.gradeText}</small>
-                        {props.authorName
-                        &&
-                        <small style={{fontWeight: "bold"}}>{props.authorName}</small>
-                        }
+                        <small style={gradeStyle}>{gradeToText[grade.toString()]}</small>
+                        <small> <b style={{marginRight: '1em'}}>{`${reviewerName}`}</b> {reviewer}</small>
                     </div>
                 </div>
-                {props.displayCheckbox && <div style={{width: "10%", display: "flex", justifyContent: "center", alignItems: "center"}}>
-                    <Checkbox checked={checked} onChange={e => setChecked(e.target.checked)}/>
-                </div>}
+                {
+                    displayCheckbox &&
+                    <div style={{width: "10%", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                        <Checkbox checked={checked} onChange={e => setChecked(e.target.checked)}/>
+                    </div>
+                }
             </StyledBody>
         </Card>
     )
@@ -36,27 +42,16 @@ const EvaluationCard = (props) => {
 
 EvaluationCard.propTypes = {
     justification: PropTypes.string.isRequired,
-    grade: PropTypes.exact({
-        gradeText: PropTypes.string.isRequired,
-        gradeValue: PropTypes.number.isRequired
-    }).isRequired,
-    colorScale: PropTypes.exact({
-        "-3": PropTypes.string.isRequired,
-        "-2": PropTypes.string.isRequired,
-        "-1": PropTypes.string.isRequired,
-        "0": PropTypes.string.isRequired,
-        "1": PropTypes.string.isRequired,
-        "2": PropTypes.string.isRequired,
-        "3": PropTypes.string.isRequired
-    }).isRequired,
+    grade: PropTypes.number,
     /*
         Should be true only for the use case where the
         MainAuthor wants to mark the feedback as "being accounted for"
         Thus, this prop gets a default value of false - see below
      */
     displayCheckbox: PropTypes.bool,
+    // TODO WTF was this?
     // Can be made null for use cases where the author must be anonymous
-    authorName: PropTypes.string
+    reviewerEmail: PropTypes.string
 };
 
 EvaluationCard.defaultProps = {

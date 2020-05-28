@@ -1,6 +1,5 @@
 .ConferenceSection {
-    height: auto;
-    width: 100%;
-    overflow: hidden; /*makes body non-scrollable - individual scrolling will be added to sidebar and main content */
+    min-height: 100%;
+    overflow: hidden;
     display: flex;
 }

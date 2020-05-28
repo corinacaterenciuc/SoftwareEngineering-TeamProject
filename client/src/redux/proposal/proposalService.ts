@@ -3,10 +3,12 @@ import {
     ADD_BID,
     ADD_PROPOSAL,
     ADD_REVIEW,
+    ADD_SH,
     FETCH_REVIEWS,
     GET_PROPOSALS,
     REMOVE_BID,
-    REMOVE_PROPOSAL
+    REMOVE_PROPOSAL,
+    UPDATE_REVIEW
 } from "./proposalActions";
 import {RootStateGetter} from "../index";
 import {Dispatch} from "redux";
@@ -15,7 +17,7 @@ const request = require('request-promise-native');
 
 const proposalService =
     {
-        // TODO: Expect file as hexadecimal string
+        // File expected as base64 string
         addProposal: (conferenceId: number, proposal: Proposal, proposalFile: string) =>
             (dispatch: Dispatch, getState: RootStateGetter) => request({
                 method: "POST",
@@ -30,13 +32,39 @@ const proposalService =
                     topics: proposal.topics,
                     keywords: proposal.keywords,
                     coAuthors: proposal.coAuthors,
-            }
-        })
-            .then((response: Proposal) => dispatch({
-                type: ADD_PROPOSAL,
-                payload: {proposal: response}
-            }))
-            .catch(logRequestError)
+                    conferenceId: conferenceId
+                }
+            })
+                .then((response: Proposal) => dispatch({
+                    type: ADD_PROPOSAL,
+                    payload: {proposal: response}
+                }))
+                .catch(logRequestError)
+        ,
+
+        // File expected as base64 string
+        updateProposal: (conferenceId: number, proposal: Proposal, proposalFile: string) =>
+            (dispatch: Dispatch, getState: RootStateGetter) => request({
+                method: "POST",
+                url: `${domain}/api/conferences/${conferenceId}/proposals/`,
+                json: true,
+                headers: buildAuthHeader(getState()),
+                body: {
+                    conferenceId: proposal.conferenceId,
+                    author: proposal.author,
+                    proposalName: proposal.proposalName,
+                    file: proposalFile,
+                    abstract: proposal.abstract,
+                    topics: proposal.topics,
+                    keywords: proposal.keywords,
+                    coAuthors: proposal.coAuthors,
+                }
+            })
+                .then((response: Proposal) => dispatch({
+                    type: ADD_PROPOSAL,
+                    payload: {proposal: response}
+                }))
+                .catch(logRequestError)
         ,
 
         removeProposal: (conferenceId: number, proposalId: number) =>
@@ -77,7 +105,22 @@ const proposalService =
                     type: ADD_REVIEW,
                     payload: {proposalId: proposalId, review: response}
                 }))
-            .catch(logRequestError)
+                .catch(logRequestError)
+        ,
+
+        updateReview: (conferenceId: number, proposalId: number, review: Review) =>
+            (dispatch: Dispatch, getState: RootStateGetter) => request({
+                method: "PUT",
+                url: `${domain}/api/conferences/${conferenceId}/proposals/${proposalId}/reviews`,
+                json: true,
+                headers: buildAuthHeader(getState()),
+                body: {reviewer: review.reviewer, grade: review.grade, justification: review.justification}
+            })
+                .then(_ => dispatch({
+                    type: UPDATE_REVIEW,
+                    payload: {proposalId: proposalId, review: review}
+                }))
+                .catch(logRequestError)
         ,
 
         getReviews: (conferenceId: number, proposalId: number) =>
@@ -122,6 +165,20 @@ const proposalService =
                 }))
                 .catch(logRequestError)
         ,
+
+        addSecondHandReviewer: (conferenceId: number, proposalId: number, shEmail: string) =>
+            (dispatch: Dispatch, getState: RootStateGetter) => request({
+                method: 'PUT',
+                url: `${domain}/api/conferences/${conferenceId}/proposals/${proposalId}/sh`,
+                headers: buildAuthHeader(getState()),
+                json: true,
+                body: {email: shEmail}
+            })
+                .then(_ => dispatch({
+                    type: ADD_SH,
+                    payload: {proposalId: proposalId, sh: shEmail}
+                }))
+                .catch(logRequestError)
     };
 
 export default proposalService;

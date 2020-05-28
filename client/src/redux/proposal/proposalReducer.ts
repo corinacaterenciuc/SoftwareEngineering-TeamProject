@@ -3,25 +3,43 @@ import {
     ADD_BID,
     ADD_PROPOSAL,
     ADD_REVIEW,
+    ADD_SH,
     FETCH_BIDDERS,
     FETCH_REVIEWS,
     GET_PROPOSALS,
-    REMOVE_PROPOSAL
+    REMOVE_PROPOSAL,
+    UPDATE_REVIEW
 } from "./proposalActions";
 
 
 type ProposalState = { proposals: Proposal[], reviews: Review[] };
 
-const initialState: ProposalState = {
-    proposals: [],
-    reviews: [{
-        id: 0,
-        proposalId: 0,
-        reviewer: "bratuandrei0@gmail.com",
-        justification: 'Foarte nice how how',
-        grade: 2
-    }]
-};
+const initialState: ProposalState =
+    {
+        proposals: [
+            {
+                id: 0,
+                conferenceId: 0,
+                proposalName: 'Super Cool',
+                abstract: 'A really long ass proposal abstract I dont really see how we can get this through I wish I had just stayed in bed.',
+                topics: ['ML', 'Economy'],
+                keywords: ['Neural Networks', 'Stocks', 'Prediction'],
+                bidders: ['financeguy@gmail.com'],
+                coAuthors: [],
+                filePath: '',
+                author: 'financeguy@gmail.com',
+                reviewers: ['somecoolguy@gmail.com', 'bratuandrei0@gmail.com'],
+                secondHandReviewer: null
+            }
+        ],
+        reviews: [{
+            id: 0,
+            proposalId: 0,
+            reviewer: "bratuandrei0@gmail.com",
+            justification: 'Nice nice really nice',
+            grade: 2
+        }]
+    };
 
 function getProposal(oldState: ProposalState, proposalId: number) {
     return {...oldState.proposals.find(p => p.id === proposalId)};
@@ -36,20 +54,21 @@ function updateProposal(oldState: ProposalState, proposal: Proposal): ProposalSt
 type Action = {
     type: string,
     payload: {
-        proposal: Proposal | null,
-        proposals: Proposal[] | null,
-        review: Review | null,
-        proposalId: number | null,
-        bidder: Email | null,
-        bidders: Email[] | null,
-        reviews: Review[]
+        proposal: Proposal,
+        proposals: Proposal[],
+        review: Review,
+        proposalId: number,
+        bidder: Email,
+        bidders: Email[],
+        reviews: Review[],
+        shEmail: Email
     }
 }
 
 export default (state: ProposalState = initialState, action: Action) => {
     let newState: ProposalState = {...state};
     let {type, payload} = action;
-    console.log('PR', action);
+    let proposal: Proposal;
     switch (type) {
         case ADD_PROPOSAL: {
             // @ts-ignore
@@ -66,37 +85,40 @@ export default (state: ProposalState = initialState, action: Action) => {
             break;
         }
         case ADD_REVIEW: {
-            // @ts-ignore
-            const proposal: Proposal = getProposal(state, payload.proposalId);
-            // @ts-ignore
-            proposal.reviews.push(payload.review);
-            newState = updateProposal(state, proposal);
+            newState.reviews.push(payload.review);
             break;
         }
         case FETCH_REVIEWS: {
-            // @ts-ignore
-            const proposal: Proposal = getProposal(state, payload.proposalId);
-            // @ts-ignore
-            proposal.reviews = payload.reviews;
-            newState = updateProposal(state, proposal);
+            newState.reviews = payload.reviews;
             break;
         }
         case ADD_BID: {
             // @ts-ignore
-            const proposal: Proposal = getProposal(state, payload.proposalId);
+            proposal = getProposal(state, payload.proposalId);
             // @ts-ignore
             proposal.bidders.push(payload.bidder);
             newState = updateProposal(state, proposal);
             break;
         }
-        case FETCH_BIDDERS: {
+        case FETCH_BIDDERS:
             // @ts-ignore
-            const proposal: Proposal = getProposal(state, payload.proposalId);
+            proposal = getProposal(state, payload.proposalId);
             // @ts-ignore
             proposal.bidders = payload.bidders;
             newState = updateProposal(state, proposal);
             break;
-        }
+        case ADD_SH:
+            // @ts-ignore
+            proposal = getProposal(state, payload.proposalId);
+            // @ts-ignore
+            proposal.secondHandReviewer = payload.shEmail;
+            newState = updateProposal(state, proposal);
+            break;
+        case UPDATE_REVIEW:
+            newState.reviews = newState.reviews.map(r => r.id === payload.review.id ?
+                payload.review : r
+            );
+            break;
         default:
             break;
     }

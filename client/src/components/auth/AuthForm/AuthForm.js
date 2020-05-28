@@ -13,31 +13,16 @@ const AuthForm = (props) => {
     const [isRegister, setIsRegister] = React.useState(props.isRegister);
 
     const [name, setName] = React.useState('');
-    const [nameValid, setNameValid] = React.useState(true);
 
     const [email, setEmail] = React.useState('');
-    const [emailValid, setEmailValid] = React.useState(true);
 
     const [password, setPassword] = React.useState('');
-    const [passwordValid, setPasswordValid] = React.useState(true);
 
     const [formValid, setFormValid] = React.useState(false);
 
     useEffect(() => {
-        setNameValid(name !== '');
-    }, [name]);
-
-    useEffect(() => {
-        setEmailValid(email !== '');
-    }, [email]);
-
-    useEffect(() => {
-        setPasswordValid(password !== '');
-    }, [password]);
-
-    useEffect(() => {
-            setFormValid([nameValid, passwordValid, emailValid].every(v => v === true))
-        }, [nameValid, passwordValid, emailValid]
+            setFormValid([name !== '', password !== '', email !== ''].every(v => v))
+        }, [name, password, email]
     );
 
     return (
@@ -54,7 +39,6 @@ const AuthForm = (props) => {
                         <Input
                             value={name}
                             onChange={e => setName(e.target.value)}
-                            error={!nameValid}
                             placeholder="Name"
                             size={SIZE.compact}
                         />
@@ -64,7 +48,6 @@ const AuthForm = (props) => {
                         <Input
                             value={email}
                             onChange={e => setEmail(e.target.value)}
-                            error={!emailValid}
                             placeholder="Email"
                             size={SIZE.compact}
                         />
@@ -74,21 +57,12 @@ const AuthForm = (props) => {
                         <Input
                             value2={password}
                             onChange={e => setPassword(e.target.value2)}
-                            error={!passwordValid}
                             placeholder="Password"
                             size={SIZE.compact}
                         />
                     </FormControl>
 
-                    <StyledLink
-                        href="#"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            setName('');
-                            setPassword('');
-                            setEmail('');
-                            setIsRegister(!isRegister);
-                        }}>
+                    <StyledLink href={isRegister ? '/login' : '/register'}>
                         {isRegister ? "Already have an account?" : "Don't have an account? Register here"}
                     </StyledLink>
                 </ModalBody>

@@ -17,7 +17,8 @@ export type Proposal = {
     author: string,
     coAuthors: Email[],
     bidders: Email[],
-    reviews: ID[]
+    reviewers: Email[],
+    secondHandReviewer: Email | null
 }
 
 export type User = {
@@ -31,13 +32,12 @@ export type Section = {
     name: string,
     topics: string[],
     proposals: ID[] | null,
-    participants: Email[] | null,
     chair: Email,
     room: number
 }
 
 export type Review = {
-    id: ID | null,
+    id: ID,
     proposalId: ID,
     reviewer: Email,
     grade: number,
@@ -56,13 +56,11 @@ export type Conference = {
     presentationDeadline: Date,
     participants: Email[] | null,
     // TODO Might need to add below properties
-    scms: Email[] | null,
-    cscm: Email | null,
-    ccscm: Email | null,
-    pcms: Email[] | null,
-    cpcm: Email | null,
-    ccpcm: Email | null,
-    sections: Section[] | null
+    scms: Email[],
+    cscm: Email,
+    pcms: Email[],
+    cpcm: Email,
+    sections: Section[]
 }
 
 export type Notification = {
