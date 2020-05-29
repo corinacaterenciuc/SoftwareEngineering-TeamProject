@@ -16,7 +16,6 @@ import UploadPresentationModal from "../UploadPresentationModal/UploadPresentati
 
 const ConferenceSection = () => {
     const dispatch = useDispatch();
-    ``;
     const locations = [
         {title: 'My Conferences', itemId: '/dashboard/conferences/my-conferences',},
         {title: 'Attend Conference', itemId: '/dashboard/conferences/attend-conference'},
