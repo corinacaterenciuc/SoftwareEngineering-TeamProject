@@ -66,16 +66,6 @@ const ConferenceSection = () => {
                     render={(props) =>
                         <>
                             <ListContainer {...props}>
-                                <Button kind={BUTTON_KIND.secondary} style={{width: '50%'}} onClick={() => {
-                                    /*
-                                    Non-null proposal context implies that
-                                    AddEditProposalModal should operate in edit mode.
-                                    */
-                                    dispatch({type: RESET_CONTEXT_PROPOSAL});
-                                    setModalOpen(true);
-                                }}>
-                                    Add Conference
-                                </Button>
                                 {
                                     conferences.map(c =>
                                         <ConferenceCard
