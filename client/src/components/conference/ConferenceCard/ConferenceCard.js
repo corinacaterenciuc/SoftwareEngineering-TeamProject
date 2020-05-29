@@ -19,6 +19,12 @@ const ConferenceCard = (props) => {
         case 'add-section':
             buttonText = 'Add Section';
             break;
+        case 'attend-conference':
+            buttonText = 'Attend Conference';
+            break;
+        case 'upload-presentation':
+            buttonText = 'Upload Presentation';
+            break;
         default:
             console.assert(false, 'ConferenceCard btn text switch reached');
             break;
