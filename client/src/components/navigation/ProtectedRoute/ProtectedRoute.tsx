@@ -8,13 +8,13 @@ export const ProtectedRoute = ({component: Component, componentProps, ...args}) 
     return (
         <Route
             {...args}
-            render={(routeProps) => {
-                if (jwt) return <Component {...componentProps} {...routeProps}/>;
-                else return <Redirect to={{
-                    pathname: '/login',
-                    state: {from: routeProps.location}
-                }}/>
-            }}
+            render=
+                {
+                    (routeProps) =>
+                        (jwt) ?
+                            <Component {...componentProps} {...routeProps}/> :
+                            <Redirect to={{pathname: '/login', state: {from: routeProps.location}}}/>
+                }
         />
     );
 };

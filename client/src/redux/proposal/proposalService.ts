@@ -1,4 +1,4 @@
-import domain, {buildAuthHeader, logRequestError, Proposal, Review} from '../entities';
+import {buildAuthHeader, Proposal, Review} from '../entities';
 import {
     ADD_BID,
     ADD_PROPOSAL,
@@ -12,6 +12,7 @@ import {
 } from "./proposalActions";
 import {RootStateGetter} from "../index";
 import {Dispatch} from "redux";
+import {domain} from "../../constants";
 
 const request = require('request-promise-native');
 
@@ -35,11 +36,15 @@ const proposalService =
                     conferenceId: conferenceId
                 }
             })
-                .then((response: Proposal) => dispatch({
-                    type: ADD_PROPOSAL,
-                    payload: {proposal: response}
-                }))
-                .catch(logRequestError)
+                .then(function (response) {
+                    dispatch({
+                        type: ADD_PROPOSAL,
+                        payload: {proposal: response}
+                    })
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
         ,
 
         // File expected as base64 string
@@ -60,11 +65,15 @@ const proposalService =
                     coAuthors: proposal.coAuthors,
                 }
             })
-                .then((response: Proposal) => dispatch({
-                    type: ADD_PROPOSAL,
-                    payload: {proposal: response}
-                }))
-                .catch(logRequestError)
+                .then(function (response) {
+                    dispatch({
+                        type: ADD_PROPOSAL,
+                        payload: {proposal: response}
+                    })
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
         ,
 
         removeProposal: (conferenceId: number, proposalId: number) =>
@@ -73,11 +82,15 @@ const proposalService =
                 headers: buildAuthHeader(getState()),
                 url: `${domain}/api/conferences/${conferenceId}/proposals?id=${proposalId}`,
             })
-                .then(_ => dispatch({
-                    type: REMOVE_PROPOSAL,
-                    payload: {proposalId: proposalId}
-                }))
-                .catch(logRequestError)
+                .then(function () {
+                    dispatch({
+                        type: REMOVE_PROPOSAL,
+                        payload: {proposalId: proposalId}
+                    })
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
         ,
 
         getProposals: (conferenceId: number) =>
@@ -86,11 +99,15 @@ const proposalService =
                 headers: buildAuthHeader(getState()),
                 url: `${domain}/api/conferences/${conferenceId}/proposals`
             })
-                .then((response: Proposal[]) => dispatch({
-                    type: GET_PROPOSALS,
-                    payload: {proposals: response}
-                }))
-                .catch(logRequestError)
+                .then(function (response) {
+                    dispatch({
+                        type: GET_PROPOSALS,
+                        payload: {proposals: response}
+                    })
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
         ,
 
         addReview: (conferenceId: number, proposalId: number, review: Review) =>
@@ -101,11 +118,15 @@ const proposalService =
                 headers: buildAuthHeader(getState()),
                 body: {reviewer: review.reviewer, grade: review.grade, justification: review.justification}
             })
-                .then((response: Review) => dispatch({
-                    type: ADD_REVIEW,
-                    payload: {proposalId: proposalId, review: response}
-                }))
-                .catch(logRequestError)
+                .then(function (response) {
+                    dispatch({
+                        type: ADD_REVIEW,
+                        payload: {proposalId: proposalId, review: response}
+                    })
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
         ,
 
         updateReview: (conferenceId: number, proposalId: number, review: Review) =>
@@ -116,11 +137,15 @@ const proposalService =
                 headers: buildAuthHeader(getState()),
                 body: {reviewer: review.reviewer, grade: review.grade, justification: review.justification}
             })
-                .then(_ => dispatch({
-                    type: UPDATE_REVIEW,
-                    payload: {proposalId: proposalId, review: review}
-                }))
-                .catch(logRequestError)
+                .then(function () {
+                    dispatch({
+                        type: UPDATE_REVIEW,
+                        payload: {proposalId: proposalId, review: review}
+                    })
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
         ,
 
         getReviews: (conferenceId: number, proposalId: number) =>
@@ -129,11 +154,15 @@ const proposalService =
                 headers: buildAuthHeader(getState()),
                 url: `${domain}/api/conferences/${conferenceId}/proposals/${proposalId}/reviews`
             })
-                .then((response: Review[]) => dispatch({
-                    type: FETCH_REVIEWS,
-                    payload: {reviews: response}
-                }))
-                .catch(logRequestError)
+                .then(function (response) {
+                    dispatch({
+                        type: FETCH_REVIEWS,
+                        payload: {reviews: response}
+                    })
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
         ,
 
         bid: (conferenceId: number, proposalId: number, email: string) =>
@@ -144,11 +173,15 @@ const proposalService =
                 json: true,
                 body: {email: email}
             })
-                .then(_ => dispatch({
-                    type: ADD_BID,
-                    payload: {proposalId: proposalId, bidder: email}
-                }))
-                .catch(logRequestError)
+                .then(function () {
+                    dispatch({
+                        type: ADD_BID,
+                        payload: {proposalId: proposalId, bidder: email}
+                    })
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
         ,
 
         unbid: (conferenceId: number, proposalId: number, email: string) =>
@@ -159,11 +192,15 @@ const proposalService =
                 json: true,
                 body: {email: email}
             })
-                .then(_ => dispatch({
-                    type: REMOVE_BID,
-                    payload: {proposalId: proposalId, bidder: email}
-                }))
-                .catch(logRequestError)
+                .then(function () {
+                    dispatch({
+                        type: REMOVE_BID,
+                        payload: {proposalId: proposalId, bidder: email}
+                    })
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
         ,
 
         addSecondHandReviewer: (conferenceId: number, proposalId: number, shEmail: string) =>
@@ -174,11 +211,15 @@ const proposalService =
                 json: true,
                 body: {email: shEmail}
             })
-                .then(_ => dispatch({
-                    type: ADD_SH,
-                    payload: {proposalId: proposalId, sh: shEmail}
-                }))
-                .catch(logRequestError)
+                .then(function () {
+                    dispatch({
+                        type: ADD_SH,
+                        payload: {proposalId: proposalId, sh: shEmail}
+                    })
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
     };
 
 export default proposalService;

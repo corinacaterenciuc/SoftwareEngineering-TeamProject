@@ -11,7 +11,7 @@ export const UnprotectedRoute = ({component: Component, componentProps, ...args}
             render={(routeProps) => {
                 if (!jwt) return <Component {...componentProps} {...routeProps}/>;
                 else return <Redirect to={{
-                    pathname: '/',
+                    pathname: '',
                     state: {from: routeProps.location}
                 }}/>
             }}

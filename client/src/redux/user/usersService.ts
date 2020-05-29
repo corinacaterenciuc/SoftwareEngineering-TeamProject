@@ -1,7 +1,8 @@
-import domain, {buildAuthHeader, logRequestError, User} from '../entities';
+import {buildAuthHeader, User} from '../entities';
 import {GET_USERS, REMOVE_USER, UPDATE_USER} from "./userActions";
 import {Dispatch} from "redux";
 import {RootStateGetter} from "../index";
+import {domain} from "../../constants";
 
 const request = require('request-promise-native');
 
@@ -11,11 +12,15 @@ const userService = {
         url: `${domain}/api/users?email=${email}`,
         headers: buildAuthHeader(getState())
     })
-        .then(_ => dispatch({
-            type: REMOVE_USER,
-            payload: {user: email}
-        }))
-        .catch(logRequestError)
+        .then(function () {
+            dispatch({
+                type: REMOVE_USER,
+                payload: {user: email}
+            })
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
     ,
 
     getUsers: () => (dispatch: Dispatch, getState: RootStateGetter) => request({
@@ -23,11 +28,15 @@ const userService = {
         url: `${domain}/api/users/`,
         headers: buildAuthHeader(getState())
     })
-        .then((response: User[]) => dispatch({
-            type: GET_USERS,
-            payload: {users: response}
-        }))
-        .catch(logRequestError)
+        .then(function (response) {
+            dispatch({
+                type: GET_USERS,
+                payload: {users: response}
+            })
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
     ,
 
     updateUser: (updatedUser: User) => (dispatch: Dispatch, getState: RootStateGetter) => request({
@@ -37,11 +46,15 @@ const userService = {
         headers: buildAuthHeader(getState()),
         body: {...updatedUser}
     })
-        .then(_ => dispatch({
-            type: UPDATE_USER,
-            payload: {user: updatedUser}
-        }))
-        .catch(logRequestError)
+        .then(function () {
+            dispatch({
+                type: UPDATE_USER,
+                payload: {user: updatedUser}
+            })
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
 };
 
 export default userService;

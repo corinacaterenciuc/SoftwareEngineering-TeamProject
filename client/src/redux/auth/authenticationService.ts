@@ -1,6 +1,6 @@
-import domain, {JWT, logRequestError} from "../entities";
 import {LOGIN, LOGOUT, REGISTER} from "./authenticationActions";
 import {Dispatch} from "redux";
+import {domain} from "../../constants";
 
 type AuthResponse = { firstname: string, lastname: string, email: string, token: string }
 const request = require('request-promise-native');
@@ -10,7 +10,7 @@ const authenticationService =
         register: (firstname: string, lastname: string, email: string, password: string) =>
             (dispatch: Dispatch) => request({
                 method: "POST",
-                url: `${domain}/api/register/`,
+                url: `${domain}/api/register`,
                 json: true,
                 body: {
                     firstname: firstname,
@@ -19,16 +19,22 @@ const authenticationService =
                     password: password
                 }
             })
-                .then((response: { token: JWT }) => dispatch({
-                    type: REGISTER,
-                    payload: {
+                .then(function (response) {
+                    console.log(dispatch);
+                    let payload = {
                         firstname: firstname,
                         lastname: lastname,
                         email: email,
                         token: response.token
-                    }
-                }))
-                .catch(logRequestError)
+                    };
+                    dispatch({
+                        type: REGISTER,
+                        payload: payload
+                    })
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
         ,
 
         login: (email: string, password: string) => (dispatch: Dispatch) => request({
@@ -37,16 +43,20 @@ const authenticationService =
             json: true,
             body: {email: email, password: password}
         })
-            .then((response: AuthResponse) => dispatch({
-                type: LOGIN,
-                payload: {
-                    firstname: response.firstname,
-                    lastname: response.lastname,
-                    email: response.email,
-                    token: response.token
-                }
-            }))
-            .catch(logRequestError)
+            .then(function (response) {
+                dispatch({
+                    type: LOGIN,
+                    payload: {
+                        firstname: response.firstname,
+                        lastname: response.lastname,
+                        email: email,
+                        token: response.token
+                    }
+                })
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
         ,
 
         logout: () => (dispatch: Dispatch) => {

@@ -1,4 +1,4 @@
-import domain, {buildAuthHeader, Conference, logRequestError, Section} from '../entities';
+import {buildAuthHeader, Conference, Section} from '../entities';
 import {
     ADD_PARTICIPANT_CONFERENCE,
     ADD_PARTICIPANT_SECTION,
@@ -12,6 +12,7 @@ import {
 } from "./conferenceActions";
 import {Dispatch} from "redux";
 import {RootStateGetter} from "../index";
+import {domain} from "../../constants";
 
 const request = require('request-promise-native');
 
@@ -24,11 +25,15 @@ const conferenceService = {
         headers: buildAuthHeader(getState()),
         body: {...conference}
     })
-        .then((response: Conference) => dispatch({
-            type: FETCH_CONFERENCES,
-            payload: {conference: response}
-        }))
-        .catch(logRequestError)
+        .then(function (response) {
+            dispatch({
+                type: FETCH_CONFERENCES,
+                payload: {conference: response}
+            })
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
     ,
 
     removeConference: (id: number) => (dispatch: Dispatch, getState: RootStateGetter) => request({
@@ -36,11 +41,15 @@ const conferenceService = {
         url: `${domain}/api/conferences?id=${id}`,
         headers: buildAuthHeader(getState()),
     })
-        .then(_ => dispatch({
-            type: DELETE_CONFERENCE,
-            payload: {conferenceId: id}
-        }))
-        .catch(logRequestError)
+        .then(function () {
+            dispatch({
+                type: DELETE_CONFERENCE,
+                payload: {conferenceId: id}
+            })
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
     ,
 
     updateConference: (conference: Conference) => (dispatch: Dispatch, getState: RootStateGetter) => request({
@@ -50,11 +59,15 @@ const conferenceService = {
         json: true,
         body: {...conference}
     })
-        .then(_ => dispatch({
-            type: UPDATE_CONFERENCE,
-            payload: {conference: conference}
-        }))
-        .catch(logRequestError)
+        .then(function () {
+            dispatch({
+                type: UPDATE_CONFERENCE,
+                payload: {conference: conference}
+            })
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
     ,
 
     // TODO: Allow more detailed POST body
@@ -63,11 +76,15 @@ const conferenceService = {
         url: `${domain}/api/conferences/`,
         headers: buildAuthHeader(getState()),
     })
-        .then((response: Conference[]) => dispatch({
-            type: FETCH_CONFERENCES,
-            payload: {conferences: response}
-        }))
-        .catch(logRequestError)
+        .then(function (response) {
+            dispatch({
+                type: FETCH_CONFERENCES,
+                payload: {conferences: response}
+            })
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
     ,
 
     addParticipantToConference: (email: string, conferenceId: number) =>
@@ -78,11 +95,15 @@ const conferenceService = {
             json: true,
             body: {email: email}
         })
-            .then(_ => dispatch({
-                type: ADD_PARTICIPANT_CONFERENCE,
-                payload: {participant: email, conferenceId: conferenceId}
-            }))
-        .catch(logRequestError)
+            .then(function () {
+                dispatch({
+                    type: ADD_PARTICIPANT_CONFERENCE,
+                    payload: {participant: email, conferenceId: conferenceId}
+                })
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
     ,
 
     removeParticipantFromConference: (email: string, conferenceId: number) =>
@@ -91,11 +112,15 @@ const conferenceService = {
             url: `${domain}/api/conferences/${conferenceId}/participants?email=${email}`,
             headers: buildAuthHeader(getState()),
         })
-            .then(_ => dispatch({
-                type: REMOVE_PARTICIPANT_CONFERENCE,
-                payload: {participant: email, conferenceId: conferenceId}
-            }))
-            .catch(logRequestError)
+            .then(function () {
+                dispatch({
+                    type: REMOVE_PARTICIPANT_CONFERENCE,
+                    payload: {participant: email, conferenceId: conferenceId}
+                })
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
     ,
 
     addSection: (section: Section, conferenceId: number) =>
@@ -106,11 +131,15 @@ const conferenceService = {
             json: true,
             body: {...section}
         })
-            .then((response: Section) => dispatch({
-                type: ADD_SECTION,
-                payload: {section: response, conferenceId: conferenceId}
-            }))
-        .catch(logRequestError)
+            .then(function (response) {
+                dispatch({
+                    type: ADD_SECTION,
+                    payload: {section: response, conferenceId: conferenceId}
+                })
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
     ,
 
     updateSection: (section: Section, conferenceId: number) =>
@@ -121,11 +150,15 @@ const conferenceService = {
             headers: buildAuthHeader(getState()),
             body: {...section}
         })
-            .then(_ => dispatch({
-                type: UPDATE_SECTION,
-                payload: {section: section, conferenceId: conferenceId}
-            }))
-        .catch(logRequestError)
+            .then(function () {
+                dispatch({
+                    type: UPDATE_SECTION,
+                    payload: {section: section, conferenceId: conferenceId}
+                })
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
     ,
 
     removeSection: (conferenceId: number, sectionId: number) =>
@@ -134,11 +167,15 @@ const conferenceService = {
             url: `${domain}/api/conferences/${conferenceId}/sections?id=${sectionId}`,
             headers: buildAuthHeader(getState()),
         })
-            .then(_ => dispatch({
-                type: REMOVE_SECTION,
-                payload: {sectionId: sectionId, conferenceId: conferenceId}
-            }))
-            .catch(logRequestError)
+            .then(function () {
+                dispatch({
+                    type: REMOVE_SECTION,
+                    payload: {sectionId: sectionId, conferenceId: conferenceId}
+                })
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
     ,
 
     addParticipantToSection: (email: string, conferenceId: number, sectionId: number) =>
@@ -148,11 +185,15 @@ const conferenceService = {
             headers: buildAuthHeader(getState()),
             body: {email: email}
         })
-            .then(_ => dispatch({
-                type: ADD_PARTICIPANT_SECTION,
-                payload: {sectionId: sectionId, conferenceId: conferenceId, email: email}
-            }))
-            .catch(logRequestError)
+            .then(function () {
+                dispatch({
+                    type: ADD_PARTICIPANT_SECTION,
+                    payload: {sectionId: sectionId, conferenceId: conferenceId, email: email}
+                })
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
     ,
 
     removeParticipantFromSection: (email: string, conferenceId: number, sectionId: number) =>
@@ -162,11 +203,15 @@ const conferenceService = {
             headers: buildAuthHeader(getState()),
             body: {email: email}
         })
-            .then(_ => dispatch({
-                type: REMOVE_PARTICIPANT_CONFERENCE,
-                payload: {sectionId: sectionId, conferenceId: conferenceId, email: email}
-            }))
-            .catch(logRequestError)
+            .then(function () {
+                dispatch({
+                    type: REMOVE_PARTICIPANT_CONFERENCE,
+                    payload: {sectionId: sectionId, conferenceId: conferenceId, email: email}
+                })
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
 };
 
 export default conferenceService;

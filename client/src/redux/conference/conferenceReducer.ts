@@ -40,24 +40,25 @@ function updateSection(state: ConferenceState, conferenceId: number, section: Se
 }
 
 const initialState: ConferenceState = {
-    conferences: [{
-        id: 0,
-        title: 'My cool conference',
-        description: 'Long ass description',
-        pcms: ['reee@gmail.com', 'notnice@yahoo.com', 'boomermail@hotmail.co'],
-        cpcm: ['metroboomin@hills.co'],
-        zeroDeadline: Date.parse('2019-10-10'),
-        abstractDeadline: Date.parse('2019-15-10'),
-        proposalDeadline: Date.parse('2019-20-10'),
-        biddingDeadline: Date.parse('2019-23-10'),
-        evaluationDeadline: Date.parse('2019-25-10'),
-        presentationDeadline: Date.parse('2019-05-11'),
-    }]
+    conferences: [
+        {
+            id: 0,
+            title: 'Future Transportation Symposium',
+            description: 'The most prestigious scientific conference on mobility',
+            zeroDeadline: new Date('2020-01-20'),
+            abstractDeadline: new Date('2020-01-25'),
+            proposalDeadline: new Date('2020-02-03'),
+            biddingDeadline: new Date('2020-02-07'),
+            evaluationDeadline: new Date('2020-02-11'),
+            participants: []
+        }
+    ]
 };
 
 export default function (state = initialState, action: Action) {
     let newState: ConferenceState = {...state};
     let {type, payload} = action;
+    console.log(payload);
     let conferenceU: Conference = null;
     let sectionU: Section = null;
     switch (type) {

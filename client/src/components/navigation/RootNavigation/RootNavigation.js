@@ -6,15 +6,19 @@ import Dashboard from "../../generic/Dashboard/Dashboard";
 import {Redirect, Route, Switch} from "react-router-dom";
 import Logout from "../../auth/Logout/Logout";
 import NotFound from "../NotFound/NotFound";
+import {ProtectedRoute} from "../ProtectedRoute/ProtectedRoute";
+import {useDispatch} from "react-redux";
 
-const RootNavigation = () =>
-    <div className="RootNavigation">
+const RootNavigation = () => {
+    const dispatch = useDispatch();
+
+    return (<div className="RootNavigation">
         <Switch>
             <UnprotectedRoute path="/login" component={AuthForm} componentProps={{isRegister: false}}/>
 
             <UnprotectedRoute path="/register" component={AuthForm} componentProps={{isRegister: true}}/>
 
-            <UnprotectedRoute path={'/dashboard'} component={Dashboard}/>
+            <ProtectedRoute path={'/dashboard'} component={Dashboard}/>
 
             <Route path={'/logout'} component={Logout}/>
 
@@ -22,8 +26,8 @@ const RootNavigation = () =>
 
             <Route path={'*'} render={() => <NotFound/>}/>
         </Switch>
-    </div>
-;
+    </div>)
+};
 
 RootNavigation.propTypes = {};
 

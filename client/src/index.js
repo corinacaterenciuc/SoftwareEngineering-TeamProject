@@ -11,15 +11,6 @@ import {Provider} from "react-redux";
 import RootNavigation from "./components/navigation/RootNavigation/RootNavigation";
 
 const engine = new Styletron();
-// const colorScale = {
-//     '-3': '#ff0000',
-//     '-2': '#fb5600',
-//     '-1': '#ee8200',
-//     '0' : '#d7a700',
-//     '1' : '#b6c700',
-//     '2' : '#86e400',
-//     '3' : '#00ff00'
-// };
 
 ReactDOM.render(
     <Provider store={store}>

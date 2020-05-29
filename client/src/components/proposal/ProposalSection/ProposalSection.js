@@ -13,10 +13,13 @@ import {useDispatch, useSelector} from "react-redux";
 import AddEditProposalModal from "../AddEditProposalModal/AddEditProposalModal";
 import {Button, KIND as BUTTON_KIND} from "baseui/button";
 import {RESET_CONTEXT_PROPOSAL} from "../../../redux/context/contextActions";
+import {PROPOSAL_ACCEPTED} from "../../../redux/entities";
 
 const ProposalSection = () => {
     const dispatch = useDispatch();
-    const proposals = useSelector(state => state.proposal.proposals);
+    let proposals = useSelector(state => state.proposal.proposals);
+    let conferences = useSelector(state => state.conference.conferences);
+    const currEmail = useSelector(state => state.auth.email);
     const [modalOpen, setModalOpen] = useState(false);
 
     const locations = [
@@ -24,7 +27,7 @@ const ProposalSection = () => {
         {title: 'Bidding', itemId: '/dashboard/proposals/bidding'},
         {title: 'Review', itemId: "/dashboard/proposals/review"},
         {title: 'Resolve', itemId: '/dashboard/proposals/resolve'},
-        {title: 'Improve Proposals', itemId: '/dashboard/proposals/improve'}
+        {title: 'Improve Proposals', itemId: '/dashboard/proposals/improve'},
     ];
 
     return (
@@ -34,8 +37,9 @@ const ProposalSection = () => {
                 <Route
                     exact
                     path={'/dashboard/proposals/:subsection(my-proposals)'}
-                    render={(props) =>
-                        <>
+                    render={(props) => {
+                        proposals = proposals.filter(p => p.author === currEmail);
+                        return (<>
                             <ListContainer {...props}>
                                 <Button kind={BUTTON_KIND.secondary} style={{width: '50%'}} onClick={() => {
                                     /*
@@ -58,15 +62,16 @@ const ProposalSection = () => {
                                 }
                             </ListContainer>
                             <AddEditProposalModal modalOpen={modalOpen} setModalOpen={setModalOpen}/>
-                        </>
-                    }
+                        </>)
+                    }}
                 />
 
                 <Route
                     exact
                     path={'/dashboard/proposals/:subsection(bidding)'}
-                    render={(props) =>
-                        <>
+                    render={(props) => {
+                        proposals = proposals.filter(p => p.bidders.includes(currEmail));
+                        return (<>
                             <ListContainer {...props}>
                                 {
                                     proposals.map(p =>
@@ -79,15 +84,16 @@ const ProposalSection = () => {
                                 }
                             </ListContainer>
                             <BidModal modalOpen={modalOpen} setModalOpen={setModalOpen}/>
-                        </>
-                    }
+                        </>)
+                    }}
                 />
 
                 <Route
                     exact
                     path={'/dashboard/proposals/:subsection(review)'}
-                    render={(props) =>
-                        <>
+                    render={(props) => {
+                        proposals = proposals.filter(p => p.reviewers.includes(currEmail));
+                        return (<>
                             <ListContainer {...props}>
                                 {
                                     proposals.map(p =>
@@ -100,54 +106,62 @@ const ProposalSection = () => {
                                 }
                             </ListContainer>
                             <ReviewProposalModal modalOpen={modalOpen} setModalOpen={setModalOpen}/>
-                        </>
-                    }
+                        </>);
+                    }}
                 />
 
                 <Route
                     exact
                     path={'/dashboard/proposals/:subsection(resolve)'}
-                    render={(props) =>
-                        <>
-                            <ListContainer {...props}>
-                                {
-                                    proposals.map(p =>
-                                        <ProposalCard
-                                            key={p.id}
-                                            navProps={props}
-                                            proposal={p}
-                                            setModalOpen={setModalOpen}
-                                        />)
-                                }
-                            </ListContainer>
-                            <ResolveProposalModal modalOpen={modalOpen} setModalOpen={setModalOpen}/>
-                        </>
-                    }
+                    render={(props) => {
+                        // those where principal acts CPCM
+                        conferences = conferences.filter(c => c.cpcm === currEmail);
+                        proposals = proposals.filter(p => conferences.map(c => c.id).includes(p.id));
+                        return (
+                            <>
+                                <ListContainer {...props}>
+                                    {
+                                        proposals.map(p =>
+                                            <ProposalCard
+                                                key={p.id}
+                                                navProps={props}
+                                                proposal={p}
+                                                setModalOpen={setModalOpen}
+                                            />)
+                                    }
+                                </ListContainer>
+                                <ResolveProposalModal modalOpen={modalOpen} setModalOpen={setModalOpen}/>
+                            </>
+                        );
+                    }}
                 />
 
                 <Route
                     exact
                     path={'/dashboard/proposals/:subsection(improve)'}
-                    render={props =>
-                        <>
-                            <ListContainer {...props}>
-                                {
-                                    proposals.map(p =>
-                                        <ProposalCard
-                                            key={p.id}
-                                            navProps={props}
-                                            proposal={p}
-                                            setModalOpen={setModalOpen}
-                                        />)
-                                }
-                            </ListContainer>
-                            <AddEditProposalModal
-                                improveScenario={true}
-                                modalOpen={modalOpen}
-                                setModalOpen={setModalOpen}
-                            />
-                        </>
-                    }
+                    render={props => {
+                        proposals = proposals.filter(p => p.author === currEmail && p.status === PROPOSAL_ACCEPTED);
+                        return (
+                            <>
+                                <ListContainer {...props}>
+                                    {
+                                        proposals.map(p =>
+                                            <ProposalCard
+                                                key={p.id}
+                                                navProps={props}
+                                                proposal={p}
+                                                setModalOpen={setModalOpen}
+                                            />)
+                                    }
+                                </ListContainer>
+                                <AddEditProposalModal
+                                    improveScenario={true}
+                                    modalOpen={modalOpen}
+                                    setModalOpen={setModalOpen}
+                                />
+                            </>
+                        );
+                    }}
                 />
 
                 <Route path={'*'} component={NotFound}/>

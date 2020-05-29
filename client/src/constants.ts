@@ -18,4 +18,5 @@ export const gradeToText = {
     '-3': 'Strong Reject',
 };
 
+export const domain = "https://theotherhalf-superconference.herokuapp.com";
 export const FILE_SUBMITTED_TOKEN = 'FILE_SUBMITTED_TOKEN';

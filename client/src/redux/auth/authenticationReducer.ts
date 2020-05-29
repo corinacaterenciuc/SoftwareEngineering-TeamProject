@@ -6,10 +6,10 @@ type AuthState = { firstname: string, lastname: string, email: string, token: JW
 type Action = { type: string, payload: object }
 
 const initState: AuthState = {
-    firstname: '',
-    lastname: '',
-    email: 'bratuandrei0@gmail.com',
-    token: ''
+    firstname: 'Mihalca',
+    lastname: 'Razvan',
+    email: 'mihalcarazvan@gmail.com',
+    token: 'thisisafancyjwttoken'
 };
 
 export default function (state: AuthState = initState, action: Action) {
@@ -27,10 +27,10 @@ export default function (state: AuthState = initState, action: Action) {
         }
         case REGISTER: {
             newState = {
-                firstname: response.user.firstname,
-                lastname: response.user.lastname,
-                email: response.user.email,
-                token: response.token
+                firstname: payload.firstname,
+                lastname: payload.lastname,
+                email: payload.email,
+                token: payload.token
             };
             break;
         }

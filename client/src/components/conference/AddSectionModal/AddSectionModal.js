@@ -11,6 +11,7 @@ const AddSectionModal = (props) => {
 
     return (
         <div className="AddSectionModal">
+
         </div>
     );
 };

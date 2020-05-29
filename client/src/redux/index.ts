@@ -20,7 +20,9 @@ export type RootState = {
         token: JWT
     },
     context: {
-        currentProposal: Proposal | null
+        currentProposal: Proposal | null,
+        currentConference: Conference | null,
+        currentReview: Review | null,
     }
 }
 

@@ -17,28 +17,9 @@ type ProposalState = { proposals: Proposal[], reviews: Review[] };
 const initialState: ProposalState =
     {
         proposals: [
-            {
-                id: 0,
-                conferenceId: 0,
-                proposalName: 'Super Cool',
-                abstract: 'A really long ass proposal abstract I dont really see how we can get this through I wish I had just stayed in bed.',
-                topics: ['ML', 'Economy'],
-                keywords: ['Neural Networks', 'Stocks', 'Prediction'],
-                bidders: ['financeguy@gmail.com'],
-                coAuthors: [],
-                filePath: '',
-                author: 'financeguy@gmail.com',
-                reviewers: ['somecoolguy@gmail.com', 'bratuandrei0@gmail.com'],
-                secondHandReviewer: null
-            }
+
         ],
-        reviews: [{
-            id: 0,
-            proposalId: 0,
-            reviewer: "bratuandrei0@gmail.com",
-            justification: 'Nice nice really nice',
-            grade: 2
-        }]
+        reviews: []
     };
 
 function getProposal(oldState: ProposalState, proposalId: number) {
@@ -58,7 +39,6 @@ type Action = {
         proposals: Proposal[],
         review: Review,
         proposalId: number,
-        bidder: Email,
         bidders: Email[],
         reviews: Review[],
         shEmail: Email

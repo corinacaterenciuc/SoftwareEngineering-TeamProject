@@ -1,7 +1,3 @@
-let domain = "domain";
-
-export default domain;
-
 export type Email = string;
 export type ID = number;
 export type JWT = string;
@@ -19,6 +15,7 @@ export type Proposal = {
     bidders: Email[],
     reviewers: Email[],
     secondHandReviewer: Email | null
+    status: number
 }
 
 export type User = {
@@ -55,7 +52,6 @@ export type Conference = {
     evaluationDeadline: Date,
     presentationDeadline: Date,
     participants: Email[] | null,
-    // TODO Might need to add below properties
     scms: Email[],
     cscm: Email,
     pcms: Email[],
@@ -71,5 +67,11 @@ export type Notification = {
 }
 
 // @ts-ignore
-export const buildAuthHeader = (state: object): object => ({Authorization: `Bearer ${state.auth.token}`});
-export const logRequestError = (error) => {console.log(error)};
+export const buildAuthHeader = function (state) {
+    console.log(state);
+    return {Authorization: `Bearer ${state.auth.token}`};
+};
+
+export const PROPOSAL_REJECTED = -1;
+export const PROPOSAL_IN_PROGRESS = 0;
+export const PROPOSAL_ACCEPTED = 1;
