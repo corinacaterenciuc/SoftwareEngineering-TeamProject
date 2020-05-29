@@ -3,13 +3,16 @@ package theotherhalf.superconference.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import theotherhalf.superconference.domain.ProposalKey;
 import theotherhalf.superconference.domain.Section;
 import theotherhalf.superconference.dto.SectionDTO;
+import theotherhalf.superconference.exceptions.CMSForbidden;
 import theotherhalf.superconference.exceptions.ControllerException;
 import theotherhalf.superconference.services.ConferenceService;
 import theotherhalf.superconference.services.SectionService;
+import theotherhalf.superconference.services.UserService;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -27,8 +30,14 @@ public class SectionController
     @Autowired
     private final SectionService sectionService;
 
+    @Autowired
+    private UserController userController;
 
-    public SectionController(ConferenceService conferenceService, SectionService sectionService) {
+    @Autowired
+    private UserService userService;
+
+    public SectionController(ConferenceService conferenceService, SectionService sectionService)
+    {
         this.conferenceService = conferenceService;
         this.sectionService = sectionService;
     }
@@ -53,8 +62,15 @@ public class SectionController
     }
 
     @PostMapping(path = "{confId}/sections")
-    public SectionDTO addSection(@PathVariable("confId") Long confId, @RequestBody SectionDTO sectionDTO)
+    public SectionDTO addSection(@RequestHeader(name="Authorization") String token, @PathVariable("confId") Long confId, @RequestBody SectionDTO sectionDTO)
     {
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.userService.isAnySCM(tokenEmail, confId))
+        {
+            throw new CMSForbidden("[ERROR] No rights to create section");
+        }
+
+
         List<ProposalKey> proposalKeys = new ArrayList<>();
         List<String> participantsEmail = new ArrayList<>();
         if(sectionDTO.getProposals() != null)
@@ -74,8 +90,14 @@ public class SectionController
     }
 
     @PutMapping(path = "{confId}/sections")
-    public void updateSection(@PathVariable("confId") Long confId, @RequestBody SectionDTO sectionDTO)
+    public void updateSection(@RequestHeader(name="Authorization") String token, @PathVariable("confId") Long confId, @RequestBody SectionDTO sectionDTO)
     {
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.userService.isAnySCM(tokenEmail, confId))
+        {
+            throw new CMSForbidden("[ERROR] No rights to update section");
+        }
+
         List<ProposalKey> proposalKeys = new ArrayList<>();
         List<String> participantsEmail = new ArrayList<>();
         if(sectionDTO.getProposals() != null)
@@ -91,8 +113,13 @@ public class SectionController
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "{confId}/sections")
-    public void removeSection(@PathVariable("confId") Long confId, @RequestParam("id") Long sectionId)
+    public void removeSection(@RequestHeader(name="Authorization") String token, @PathVariable("confId") Long confId, @RequestParam("id") Long sectionId)
     {
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.userService.isAnySCM(tokenEmail, confId))
+        {
+            throw new CMSForbidden("[ERROR] No rights to remove section");
+        }
         this.sectionService.removeSection(confId, sectionId);
     }
 

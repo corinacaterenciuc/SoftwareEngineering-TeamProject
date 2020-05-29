@@ -3,6 +3,7 @@ package theotherhalf.superconference.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.security.core.userdetails.User;
 import theotherhalf.superconference.domain.CMSUser;
 
 import javax.validation.constraints.NotBlank;
@@ -36,6 +37,10 @@ public class UserDTO
         this.password = password;
     }
 
+    public UserDTO()
+    {
+
+    }
 //    public UserDTO(String firstName,
 //                   String lastName,
 //                   String email)
@@ -91,7 +96,8 @@ public class UserDTO
     {
         return new CMSUser(dto.getfirstName(),
                         dto.getlastName(),
-                        dto.getEmail());
+                        dto.getEmail(),
+                        dto.getPassword());
     }
 
     public static UserDTO toDTO(final CMSUser user)

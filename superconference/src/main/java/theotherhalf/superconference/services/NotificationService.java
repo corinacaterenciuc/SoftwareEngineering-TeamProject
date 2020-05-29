@@ -10,6 +10,7 @@ import theotherhalf.superconference.repository.UserNotificationRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class NotificationService
@@ -37,9 +38,15 @@ public class NotificationService
         return this.userNotificationRepository.findAll();
     }
 
+    public Notification makeNotification(String text, String href)
+    {
+        return new Notification(text,href);
+    }
+
     @Transactional
     public void addNotification(UserNotification userNotification)
     {
+        this.notificationRepository.save(userNotification.getNotification());
         this.userNotificationRepository.save(userNotification);
     }
 
@@ -47,6 +54,12 @@ public class NotificationService
     {
         CMSUser usr = this.userService.getUserAfterValidation(email);
         return this.userNotificationRepository.findByUser(usr);
+    }
+
+    public List<UserNotification> getAllUnreadNotificationsForUser(String email)
+    {
+        CMSUser usr = this.userService.getUserAfterValidation(email);
+        return this.userNotificationRepository.findByUser(usr).stream().filter(x -> !x.isRead()).collect(Collectors.toList());
     }
 
     @Transactional

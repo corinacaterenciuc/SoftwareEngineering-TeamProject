@@ -16,4 +16,8 @@ public enum ENUMERATION_GRADES
     {
         this.grade = grade;
     }
+
+    public Integer getGrade() {
+        return grade;
+    }
 }

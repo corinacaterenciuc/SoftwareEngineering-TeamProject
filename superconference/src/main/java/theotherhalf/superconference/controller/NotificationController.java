@@ -39,10 +39,26 @@ public class NotificationController
         return notifications.stream().map(x -> NotificationDTO.toDTO(x.getNotification(), x.getID(), x.isRead())).collect(Collectors.toList());
     }
 
+    @PatchMapping
+    public void dod()
+    {
+        CMSUser usr = this.userService.getUserAfterValidation("ma@miau.ro");
+        Notification nto = new Notification("Ba esti prost", "http://maiestiprost.com");
+        UserNotification userNotification = new UserNotification(nto, usr, false);
+        this.notificationService.addNotification(userNotification);
+    }
+
     @GetMapping("{email}")
     public List<NotificationDTO> getNotificationsForUser(@PathVariable("email") JsonEmailDTO email)
     {
         List<UserNotification> notifications = this.notificationService.getAllNotificationsForUser(email.getEmail());
+        return notifications.stream().map(x -> NotificationDTO.toDTO(x.getNotification(), x.getID(), x.isRead())).collect(Collectors.toList());
+    }
+
+    @GetMapping("unread/{email}")
+    public List<NotificationDTO> getUnreadNotificationsForUser(@PathVariable("email") JsonEmailDTO email)
+    {
+        List<UserNotification> notifications = this.notificationService.getAllUnreadNotificationsForUser(email.getEmail());
         return notifications.stream().map(x -> NotificationDTO.toDTO(x.getNotification(), x.getID(), x.isRead())).collect(Collectors.toList());
     }
 

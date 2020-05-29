@@ -12,9 +12,11 @@ import theotherhalf.superconference.dto.ConferenceDTO;
 import theotherhalf.superconference.dto.JsonEmailDTO;
 import theotherhalf.superconference.dto.SectionDTO;
 import theotherhalf.superconference.dto.UserDTO;
+import theotherhalf.superconference.exceptions.CMSForbidden;
 import theotherhalf.superconference.exceptions.ControllerException;
 import theotherhalf.superconference.services.ConferenceService;
 import theotherhalf.superconference.services.SectionService;
+import theotherhalf.superconference.services.UserService;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -32,6 +34,12 @@ public class ConferenceController
 
     @Autowired
     private final SectionService sectionService;
+
+    @Autowired
+    private UserController userController;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     public ConferenceController(ConferenceService conferenceService, SectionService sectionService)
@@ -147,6 +155,7 @@ public class ConferenceController
     @PostMapping
     public ConferenceDTO addConference(@RequestBody @Valid ConferenceDTO conferenceDTO)
     {
+
         Conference conference = ConferenceDTO.toDomain(conferenceDTO);
         Conference savedConference = this.conferenceService.add(conference);
 
@@ -157,12 +166,19 @@ public class ConferenceController
 
     @Transactional
     @PutMapping
-    public ConferenceDTO updateConference(@RequestBody @Valid ConferenceDTO conferenceDTO)
+    public ConferenceDTO updateConference(@RequestHeader(name="Authorization") String token, @RequestBody @Valid ConferenceDTO conferenceDTO)
     {
-        if(null == conferenceDTO)
+        if(null == conferenceDTO.getId())
         {
             throw new ControllerException("[ERROR] No conference id given for update");
         }
+
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.userService.isAnySCM(tokenEmail, conferenceDTO.getId()))
+        {
+            throw new CMSForbidden("[ERROR] No rights to update conference");
+        }
+
         Conference conference = ConferenceDTO.toDomain(conferenceDTO);
         conference.setID(conferenceDTO.getId());
         Conference savedConference = this.conferenceService.update(conference);
@@ -174,9 +190,14 @@ public class ConferenceController
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping
-    public void deleteConference(@RequestParam("id") Long confId)
+    public void deleteConference(@RequestHeader(name="Authorization") String token, @RequestParam("id") Long confId)
     {
-        this.conferenceService.delete(confId); // fuck
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.userService.isAnySCM(tokenEmail, confId))
+        {
+            throw new CMSForbidden("[ERROR] No rights to update conference");
+        }
+        this.conferenceService.delete(confId);
     }
 
     @GetMapping
@@ -187,103 +208,103 @@ public class ConferenceController
     }
 
     // ------------ USERS -----------
-    @GetMapping(path = "{confId}/pcm")
-    public List<UserDTO> getAllPCM(@PathVariable("confId") Long confId)
-    {
-        List<CMSUser> usersPCM = this.conferenceService.getConferencePCM(confId);
-        return usersPCM.stream().map(UserDTO::toDTO).collect(Collectors.toList());
-    }
-
-    @GetMapping(path = "{confId}/scm")
-    public List<UserDTO> getAllSCM(@PathVariable("confId") Long confId)
-    {
-        List<CMSUser> usersPCM = this.conferenceService.getConferenceSCM(confId);
-        return usersPCM.stream().map(UserDTO::toDTO).collect(Collectors.toList());
-    }
-
-    @PutMapping(path = "{confId}/scm")
-    public void addSCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
-    {
-        String userEmail = this.getEmailFromJsonString(jsonBody);
-        this.conferenceService.addSCM(userEmail, confId);
-    }
-
-    @DeleteMapping(path = "{confId}/scm")
-    public void removeSCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
-    {
-        String userEmail = this.getEmailFromJsonString(jsonBody);
-        this.conferenceService.removeSCM(userEmail, confId);
-    }
-
-    @PutMapping(path = "{confId}/cscm")
-    public void addCSCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
-    {
-        String userEmail = this.getEmailFromJsonString(jsonBody);
-        this.conferenceService.addCSCM(userEmail, confId);
-    }
-
-    @DeleteMapping(path = "{confId}/cscm")
-    public void removeCSCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
-    {
-        String userEmail = this.getEmailFromJsonString(jsonBody);
-        this.conferenceService.removeCSCM(userEmail, confId);
-    }
-
-    @PutMapping(path = "{confId}/ccscm")
-    public void addCCSCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
-    {
-        String userEmail = this.getEmailFromJsonString(jsonBody);
-        this.conferenceService.addCCSCM(userEmail, confId);
-    }
-
-    @DeleteMapping(path = "{confId}/ccscm")
-    public void removeCCSCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
-    {
-        String userEmail = this.getEmailFromJsonString(jsonBody);
-        this.conferenceService.removeCCSCM(userEmail, confId);
-    }
-
-    @PutMapping(path = "{confId}/pcm")
-    public void addPCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
-    {
-        String userEmail = this.getEmailFromJsonString(jsonBody);
-        this.conferenceService.addPCM(userEmail, confId);
-    }
-
-    @DeleteMapping(path = "{confId}/pcm")
-    public void removePCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
-    {
-        String userEmail = this.getEmailFromJsonString(jsonBody);
-        this.conferenceService.removePCM(userEmail, confId);
-    }
-
-    @PutMapping(path = "{confId}/cpcm")
-    public void addCPCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
-    {
-        String userEmail = this.getEmailFromJsonString(jsonBody);
-        this.conferenceService.addCPCM(userEmail, confId);
-    }
-
-    @DeleteMapping(path = "{confId}/cpcm")
-    public void removeCPCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
-    {
-        String userEmail = this.getEmailFromJsonString(jsonBody);
-        this.conferenceService.removeCPCM(userEmail, confId);
-    }
-
-    @PutMapping(path = "{confId}/ccpcm")
-    public void addCCPCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
-    {
-        String userEmail = this.getEmailFromJsonString(jsonBody);
-        this.conferenceService.addCCPCM(userEmail, confId);
-    }
-
-    @DeleteMapping(path = "{confId}/ccpcm")
-    public void removeCCPCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
-    {
-        String userEmail = this.getEmailFromJsonString(jsonBody);
-        this.conferenceService.removeCCPCM(userEmail, confId);
-    }
+//    @GetMapping(path = "{confId}/pcm")
+//    public List<UserDTO> getAllPCM(@PathVariable("confId") Long confId)
+//    {
+//        List<CMSUser> usersPCM = this.conferenceService.getConferencePCM(confId);
+//        return usersPCM.stream().map(UserDTO::toDTO).collect(Collectors.toList());
+//    }
+//
+//    @GetMapping(path = "{confId}/scm")
+//    public List<UserDTO> getAllSCM(@PathVariable("confId") Long confId)
+//    {
+//        List<CMSUser> usersPCM = this.conferenceService.getConferenceSCM(confId);
+//        return usersPCM.stream().map(UserDTO::toDTO).collect(Collectors.toList());
+//    }
+//
+//    @PutMapping(path = "{confId}/scm")
+//    public void addSCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
+//    {
+//        String userEmail = this.getEmailFromJsonString(jsonBody);
+//        this.conferenceService.addSCM(userEmail, confId);
+//    }
+//
+//    @DeleteMapping(path = "{confId}/scm")
+//    public void removeSCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
+//    {
+//        String userEmail = this.getEmailFromJsonString(jsonBody);
+//        this.conferenceService.removeSCM(userEmail, confId);
+//    }
+//
+//    @PutMapping(path = "{confId}/cscm")
+//    public void addCSCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
+//    {
+//        String userEmail = this.getEmailFromJsonString(jsonBody);
+//        this.conferenceService.addCSCM(userEmail, confId);
+//    }
+//
+//    @DeleteMapping(path = "{confId}/cscm")
+//    public void removeCSCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
+//    {
+//        String userEmail = this.getEmailFromJsonString(jsonBody);
+//        this.conferenceService.removeCSCM(userEmail, confId);
+//    }
+//
+//    @PutMapping(path = "{confId}/ccscm")
+//    public void addCCSCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
+//    {
+//        String userEmail = this.getEmailFromJsonString(jsonBody);
+//        this.conferenceService.addCCSCM(userEmail, confId);
+//    }
+//
+//    @DeleteMapping(path = "{confId}/ccscm")
+//    public void removeCCSCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
+//    {
+//        String userEmail = this.getEmailFromJsonString(jsonBody);
+//        this.conferenceService.removeCCSCM(userEmail, confId);
+//    }
+//
+//    @PutMapping(path = "{confId}/pcm")
+//    public void addPCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
+//    {
+//        String userEmail = this.getEmailFromJsonString(jsonBody);
+//        this.conferenceService.addPCM(userEmail, confId);
+//    }
+//
+//    @DeleteMapping(path = "{confId}/pcm")
+//    public void removePCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
+//    {
+//        String userEmail = this.getEmailFromJsonString(jsonBody);
+//        this.conferenceService.removePCM(userEmail, confId);
+//    }
+//
+//    @PutMapping(path = "{confId}/cpcm")
+//    public void addCPCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
+//    {
+//        String userEmail = this.getEmailFromJsonString(jsonBody);
+//        this.conferenceService.addCPCM(userEmail, confId);
+//    }
+//
+//    @DeleteMapping(path = "{confId}/cpcm")
+//    public void removeCPCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
+//    {
+//        String userEmail = this.getEmailFromJsonString(jsonBody);
+//        this.conferenceService.removeCPCM(userEmail, confId);
+//    }
+//
+//    @PutMapping(path = "{confId}/ccpcm")
+//    public void addCCPCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
+//    {
+//        String userEmail = this.getEmailFromJsonString(jsonBody);
+//        this.conferenceService.addCCPCM(userEmail, confId);
+//    }
+//
+//    @DeleteMapping(path = "{confId}/ccpcm")
+//    public void removeCCPCM(@PathVariable("confId") Long confId, @RequestBody String jsonBody)
+//    {
+//        String userEmail = this.getEmailFromJsonString(jsonBody);
+//        this.conferenceService.removeCCPCM(userEmail, confId);
+//    }
 
     // ------ SECTIONS --------
 

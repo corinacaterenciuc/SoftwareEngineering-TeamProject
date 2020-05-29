@@ -51,6 +51,10 @@ public class ReviewService
     public Review addReviewToProposal(ENUMERATION_GRADES grade, String just, Long proposalId, Long conferenceId, String userEmail)
     {
         CMSUser user = this.userService.getUserAfterValidation(userEmail);
+        if(user.getEmail().equals(userEmail))
+        {
+            throw new ServiceException("[ERROR] Can't review your own proposal");
+        }
         Conference conference = this.conferenceService.getConferenceAfterValidation(conferenceId);
         Section main = conference.getDefaultSection();
         Proposal proposal = main.getProposal(proposalId);
@@ -89,6 +93,16 @@ public class ReviewService
         Section main = conference.getDefaultSection();
         Proposal proposal = main.getProposal(proposalId);
         proposal.updateReview(review);
+    }
+
+    public boolean isReviewer(Long confId, Long proposalId, String email)
+    {
+        boolean basicReviewers = this.proposalService.getProposal(confId, proposalId).getReviewers().stream().anyMatch(x -> x.getEmail().equals(email));
+        if (null != this.proposalService.getProposal(confId,proposalId).getSecondHandReviewer())
+        {
+            return basicReviewers || this.proposalService.getProposal(confId,proposalId).getSecondHandReviewer().getEmail().equals(email);
+        }
+        return basicReviewers;
     }
 
     @Transactional

@@ -236,7 +236,14 @@ public class Proposal extends BaseEntity
     @Transactional
     public void addBidder(CMSUser usr)
     {
-        this.biddingPeople.add(usr);
+        if(this.biddingPeople.stream().noneMatch(x -> x.getEmail().equals(usr.getEmail())))
+        {
+            this.biddingPeople.add(usr);
+        }
+        else
+        {
+            throw new ValidationException("[ERROR] Already bidden");
+        }
     }
 
     @Transactional

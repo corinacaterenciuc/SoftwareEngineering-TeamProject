@@ -1,19 +1,14 @@
 package theotherhalf.superconference.controller;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.node.TextNode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import theotherhalf.superconference.domain.Conference;
+import theotherhalf.superconference.api.jwt.JWTokenUtil;
 import theotherhalf.superconference.domain.CMSUser;
-import theotherhalf.superconference.domain.UserClaims;
 import theotherhalf.superconference.dto.UserClaimsDTO;
 import theotherhalf.superconference.dto.UserDTO;
+import theotherhalf.superconference.exceptions.CMSForbidden;
 import theotherhalf.superconference.exceptions.ControllerException;
 import theotherhalf.superconference.services.ConferenceService;
 import theotherhalf.superconference.services.FileService;
@@ -33,7 +28,11 @@ public class UserController
     private final ConferenceService conferenceService;
 
     @Autowired
+    private JWTokenUtil jwTokenUtil;
+
+    @Autowired
     private FileService fileService;
+
 
     @Autowired
     public UserController(UserService userService, ConferenceService conferenceService)
@@ -42,26 +41,54 @@ public class UserController
         this.conferenceService = conferenceService;
     }
 
+    public String getEmailFromToken(String token)
+    {
+        String actualToken = token.split(" ")[1];
+        String email = this.jwTokenUtil.getEmailFromToken(actualToken);
+        return email;
+    }
+
     @PostMapping
-    public UserDTO addNewUser(@RequestBody @Valid UserDTO userDTO)
+    public UserDTO addNewUser(@RequestHeader(name="Authorization") String token, @RequestBody @Valid UserDTO userDTO)
     {
         CMSUser user = UserDTO.toDomain(userDTO);
-        CMSUser savedUser = this.userService.addUser(user, userDTO.getPassword());
+        CMSUser savedUser = this.userService.addUser(user);
         return UserDTO.toDTO(savedUser);
     }
 
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping
-    public void deleteUser(@RequestParam("email") String email)
+    public void deleteUser(@RequestHeader(name="Authorization") String token, @RequestParam("email") String email)
     {
+        String tokenEmail = this.getEmailFromToken(token);
+        if(null == email)
+        {
+            throw new ControllerException("[ERROR] Null email given to delete");
+        }
+        if(!tokenEmail.equals(email))
+        {
+            throw new CMSForbidden("[ERROR] No rights to update user");
+        }
+
         this.userService.deleteUser(email);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping
-    public UserDTO updateUser(@RequestBody @Valid UserDTO userDTO)
+    public UserDTO updateUser(@RequestHeader(name="Authorization") String token, @RequestBody @Valid UserDTO userDTO)
     {
+        String tokenEmail = this.getEmailFromToken(token);
+
+        if(null == userDTO.getEmail())
+        {
+            throw new ControllerException("[ERROR] Null email given to update");
+        }
+        if(!tokenEmail.equals(userDTO.getEmail()))
+        {
+            throw new CMSForbidden("[ERROR] No rights to update user");
+        }
+
         CMSUser user = UserDTO.toDomain(userDTO);
         CMSUser updatedUser = this.userService.updateUser(user);
         return UserDTO.toDTO(updatedUser);
@@ -70,6 +97,7 @@ public class UserController
     @PutMapping(path="/admins")
     public void makeAdmin(@RequestBody String jsonBody)
     {
+
         JacksonJsonParser gson = new JacksonJsonParser();
         String eml = gson.parseMap(jsonBody).get("email").toString();
         this.userService.addAdmin(eml);

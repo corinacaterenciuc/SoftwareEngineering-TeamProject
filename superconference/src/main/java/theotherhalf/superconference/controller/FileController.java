@@ -12,9 +12,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import theotherhalf.superconference.domain.DBFile;
 import theotherhalf.superconference.dto.UploadFileResponse;
+import theotherhalf.superconference.exceptions.CMSForbidden;
 import theotherhalf.superconference.services.ConferenceService;
 import theotherhalf.superconference.services.FileService;
 import theotherhalf.superconference.services.ProposalService;
+import theotherhalf.superconference.services.UserService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,18 +33,33 @@ public class FileController
     @Autowired
     private FileService fileService;
 
+    @Autowired
+    private UserController userController;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping(path = "api/conferences/{confId}/proposals/{proposalId}/upload")
-    public UploadFileResponse uploadFile(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestParam("file") MultipartFile file)
+    public UploadFileResponse uploadFile(@RequestHeader(name="Authorization") String token, @PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestParam("file") MultipartFile file)
     {
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.proposalService.getProposal(confId, proposalId).getAuthor().getEmail().equals(tokenEmail))
+        {
+            throw new CMSForbidden("[ERROR] No rights to upload file to proposal");
+        }
+
         DBFile dbFile = fileService.storeFile(file);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("api/conferences/")
+                .path(confId.toString())
+                .path("/proposals/")
+                .path(proposalId.toString())
                 .path("/downloadFile/")
                 .path(dbFile.getId())
                 .toUriString();
 
-        this.proposalService.setFilePath(confId, proposalId, dbFile.getId());
+        this.proposalService.setFilePath(confId, proposalId, fileDownloadUri);
 
         return new UploadFileResponse(dbFile.getFileName(), fileDownloadUri,
                 file.getContentType(), file.getSize());

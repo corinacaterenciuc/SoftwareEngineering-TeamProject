@@ -7,11 +7,14 @@ import theotherhalf.superconference.domain.Proposal;
 import theotherhalf.superconference.domain.CMSUser;
 import theotherhalf.superconference.dto.JsonEmailDTO;
 import theotherhalf.superconference.dto.ProposalDTO;
+import theotherhalf.superconference.exceptions.CMSForbidden;
 import theotherhalf.superconference.exceptions.ControllerException;
 import theotherhalf.superconference.services.ProposalService;
 import theotherhalf.superconference.services.ReviewService;
+import theotherhalf.superconference.services.UserService;
 
 import javax.transaction.Transactional;
+import java.awt.desktop.UserSessionEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +34,9 @@ public class ProposalController
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private UserService userService;
 
     public ProposalController(ConferenceController conferenceController, UserController userController, ProposalService proposalService)
     {
@@ -75,11 +81,18 @@ public class ProposalController
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(path = "{confId}/proposals")
-    public void updateProposal(@PathVariable("confId") Long confId, @RequestBody ProposalDTO proposalDTO)
+    public void updateProposal(@RequestHeader(name="Authorization") String token, @PathVariable("confId") Long confId, @RequestBody ProposalDTO proposalDTO)
     {
         if(null == proposalDTO.getId())
         {
             throw new ControllerException("[ERROR] Null proposal id given to update");
+        }
+
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.proposalService.getProposal(confId, proposalDTO.getId()).getAuthor().getEmail().equals(tokenEmail)
+          && this.proposalService.getProposal(confId, proposalDTO.getId()).getCoAuthors().stream().noneMatch(x -> x.getEmail().equals(token)))
+        {
+            throw new CMSForbidden("[ERROR] No rights to update proposal");
         }
 
         Proposal theProposal = ProposalDTO.toPartialDomain(proposalDTO);
@@ -115,8 +128,14 @@ public class ProposalController
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "{confId}/proposals")
-    public void deleteProposal(@PathVariable("confId") Long confId, @RequestParam("id") Long proposalId)
+    public void deleteProposal(@RequestHeader(name="Authorization") String token, @PathVariable("confId") Long confId, @RequestParam("id") Long proposalId)
     {
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.proposalService.getProposal(confId, proposalId).getAuthor().getEmail().equals(tokenEmail))
+        {
+            throw new CMSForbidden("[ERROR] No rights to delete proposal");
+        }
+
         this.proposalService.removeProposal(confId, proposalId);
     }
 
@@ -127,41 +146,61 @@ public class ProposalController
     }
 
     @PutMapping("{confId}/proposals/{proposalId}/reviewers")
-    public void addReviewers(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody List<JsonEmailDTO> emails)
+    public void addReviewers(@RequestHeader(name="Authorization") String token, @PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody List<JsonEmailDTO> emails)
     {
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.userService.isAnySCM(tokenEmail, confId))
+        {
+            throw new CMSForbidden("[ERROR] No rights to add reviewers");
+        }
         this.reviewService.addReviewers(confId, proposalId, this.conferenceController.getEmailsFromJsonMailDTOs(emails));
     }
 
     @DeleteMapping("{confId}/proposals/{proposalId}/reviewers")
-    public void removeReviewers(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody List<JsonEmailDTO> emails)
+    public void removeReviewers(@RequestHeader(name="Authorization") String token, @PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody List<JsonEmailDTO> emails)
     {
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.userService.isAnySCM(tokenEmail, confId))
+        {
+            throw new CMSForbidden("[ERROR] No rights to delete reviewers");
+        }
         this.reviewService.removeReviewers(confId, proposalId, this.conferenceController.getEmailsFromJsonMailDTOs(emails));
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("{confId}/proposals/{proposalId}/bid")
-    public void bidOnProposal(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody JsonEmailDTO email)
+    public void bidOnProposal(@RequestHeader(name="Authorization") String token, @PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody JsonEmailDTO email)
     {
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.userService.isAnyPCM(tokenEmail, confId))
+        {
+            throw new CMSForbidden("[ERROR] No rights to bid on proposal");
+        }
         this.proposalService.addBid(confId, proposalId, email.getEmail());
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("{confId}/proposals/{proposalId}/unbid")
-    public void removeBidOnProposal(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody JsonEmailDTO email)
+    public void removeBidOnProposal(@RequestHeader(name="Authorization") String token, @PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody JsonEmailDTO email)
     {
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.userService.isAnyPCM(tokenEmail, confId))
+        {
+            throw new CMSForbidden("[ERROR] No rights to unbid from proposal");
+        }
         this.proposalService.removeBid(confId, proposalId, email.getEmail());
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("{confId}/proposals/{proposalId}/sh")
-    public void addSecondHandReviewer(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody JsonEmailDTO email)
+    public void addSecondHandReviewer(@RequestHeader(name="Authorization") String token, @PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody JsonEmailDTO email)
     {
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.userService.isAnySCM(tokenEmail, confId))
+        {
+            throw new CMSForbidden("[ERROR] No rights to unbid from proposal");
+        }
         this.proposalService.addSecondHandReviewer(confId, proposalId, email.getEmail());
     }
 
-//    @PutMapping("{confId}/proposals/{proposalId}/sh")
-//    public void addSecondHandReviewer(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody JsonEmailDTO email)
-//    {
-//        this.proposalService.addSecondHandReviewer(confId, proposalId, email.getEmail());
-//    }
 }

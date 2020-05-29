@@ -7,8 +7,10 @@ import theotherhalf.superconference.domain.Proposal;
 import theotherhalf.superconference.domain.Review;
 import theotherhalf.superconference.dto.JsonEmailDTO;
 import theotherhalf.superconference.dto.ReviewDTO;
+import theotherhalf.superconference.exceptions.CMSForbidden;
 import theotherhalf.superconference.exceptions.ControllerException;
 import theotherhalf.superconference.services.ReviewService;
+import theotherhalf.superconference.services.UserService;
 
 import javax.naming.ldap.Control;
 import javax.transaction.Transactional;
@@ -26,18 +28,33 @@ public class ReviewController
     @Autowired
     private ReviewService reviewService;
 
+    @Autowired
+    private UserController userController;
+
+    @Autowired
+    private UserService userService;
+
     public ReviewController(ConferenceController conferenceController, ReviewService reviewService) {
         this.conferenceController = conferenceController;
         this.reviewService = reviewService;
     }
 
+
     @PostMapping("{confId}/proposals/{proposalId}/reviews")
-    public ReviewDTO addReview(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody @Valid ReviewDTO reviewDTO)
+    public ReviewDTO addReview(@RequestHeader(name="Authorization") String token, @PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody @Valid ReviewDTO reviewDTO)
     {
         if(null == reviewDTO.getReviewer())
         {
             throw new ControllerException("[ERROR] Null reviewer id given");
         }
+
+        String tokenEmail = this.userController.getEmailFromToken(token);
+
+        if(!this.reviewService.isReviewer(confId, proposalId, tokenEmail) || !tokenEmail.equals(reviewDTO.getReviewer().getEmail()))
+        {
+            throw new CMSForbidden("[ERROR] No rights to add review");
+        }
+
         reviewDTO.setProposal(proposalId);
         String reviewer = reviewDTO.getReviewer().getEmail();
         Review rev = this.reviewService.addReviewToProposal(reviewDTO.getGrade(), reviewDTO.getJustification(), proposalId, confId, reviewer);
@@ -52,8 +69,14 @@ public class ReviewController
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("{confId}/proposals/{proposalId}/reviews")
-    public void updateReview(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody @Valid ReviewDTO reviewDTO)
+    public void updateReview(@RequestHeader(name="Authorization") String token, @PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestBody @Valid ReviewDTO reviewDTO)
     {
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.reviewService.isReviewer(confId, proposalId, tokenEmail) || !tokenEmail.equals(reviewDTO.getReviewer().getEmail()))
+        {
+            throw new CMSForbidden("[ERROR] No rights to update review");
+        }
+
         this.reviewService.updateReview(confId, proposalId, ReviewDTO.toDomain(reviewDTO), reviewDTO.getReviewer().getEmail());
     }
 
@@ -64,8 +87,14 @@ public class ReviewController
     }
 
     @DeleteMapping("{confId}/proposals/{proposalId}/reviews")
-    public void deleteReview(@PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestParam("id") Long reviewId)
+    public void deleteReview(@RequestHeader(name="Authorization") String token, @PathVariable("confId") Long confId, @PathVariable("proposalId") Long proposalId, @RequestParam("id") Long reviewId)
     {
+        String tokenEmail = this.userController.getEmailFromToken(token);
+        if(!this.userService.isAnySCM(tokenEmail, confId) && !this.reviewService.isReviewer(confId, proposalId, tokenEmail))
+        {
+            throw new CMSForbidden("[ERROR] No rights to update review");
+        }
+
         this.reviewService.removeReview(confId, proposalId, reviewId);
     }
 

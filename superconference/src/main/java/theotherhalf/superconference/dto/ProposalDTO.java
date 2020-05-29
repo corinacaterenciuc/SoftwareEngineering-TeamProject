@@ -78,10 +78,10 @@ public class ProposalDTO
                 proposal.getKeywords(),
                 proposal.getBiddingPeople().stream().map(x-> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()),
                 proposal.getReviewers().stream().map(x -> new JsonEmailDTO(x.getEmail())).collect(Collectors.toList()));
-//        if(null != proposal.getSecondHandReviewer())
-//        {
-//            proposalDTO.setSecondHandReviewer(new JsonEmailDTO(proposal.getSecondHandReviewer().getEmail()));
-//        }
+        if(null != proposal.getSecondHandReviewer())
+        {
+            proposalDTO.setSecondHandReviewer(new JsonEmailDTO(proposal.getSecondHandReviewer().getEmail()));
+        }
         return proposalDTO;
     }
 

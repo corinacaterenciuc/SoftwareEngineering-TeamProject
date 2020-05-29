@@ -3,6 +3,7 @@ package theotherhalf.superconference.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import theotherhalf.superconference.domain.*;
+import theotherhalf.superconference.exceptions.CMSForbidden;
 import theotherhalf.superconference.exceptions.ConferenceManagementSystemException;
 import theotherhalf.superconference.exceptions.ServiceException;
 import theotherhalf.superconference.exceptions.ValidationException;
@@ -40,6 +41,9 @@ public class UserService
     @Autowired
     private UserValidator userValidator;
 
+    @Autowired
+    private ConferenceService conferenceService;
+
 
     private String hashPassword(String password) throws NoSuchAlgorithmException
     {
@@ -48,22 +52,12 @@ public class UserService
         String encryptedString = new String(messageDigest.digest());
         return encryptedString;
     }
-    public CMSUser addUser(CMSUser user, String password) throws ConferenceManagementSystemException
+    public CMSUser addUser(CMSUser user) throws ConferenceManagementSystemException
     {
-        String pass = "";
-        try
-        {
-            pass = this.hashPassword(password);
-        }
-        catch (NoSuchAlgorithmException ex)
-        {
-            pass = password;
-        }
         if (this.repository.findById(user.getEmail()).isPresent())
         {
             throw new ServiceException("[ERROR] Email address already in use");
         }
-        user.setPassword(pass);
         this.userValidator.validate(user);
         return this.repository.save(user);
     }
@@ -76,6 +70,41 @@ public class UserService
         }
         this.repository.deleteById(email);
         return true;
+    }
+
+    public boolean isAdmin(String email)
+    {
+        return this.adminRepository.findAll().stream().anyMatch(x -> x.getEmail().equals(email));
+    }
+
+    public boolean isPCM(String email, Long confId)
+    {
+        Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
+        return this.roleRepository.findByConferenceAndUserAndRole(conference, this.getUserAfterValidation(email), ENUMERATION_ROLES.PCM).isPresent();
+    }
+
+    public boolean isAnyPCM(String email, Long confId)
+    {
+        Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
+        return
+                this.roleRepository.findByConferenceAndUserAndRole(conference, this.getUserAfterValidation(email), ENUMERATION_ROLES.PCM).isPresent()
+                || this.roleRepository.findByConferenceAndUserAndRole(conference, this.getUserAfterValidation(email), ENUMERATION_ROLES.CHAIR_PCM).isPresent()
+                || this.roleRepository.findByConferenceAndUserAndRole(conference, this.getUserAfterValidation(email), ENUMERATION_ROLES.CO_CHAIR_PCM).isPresent();
+    }
+
+    public boolean isSCM(String email, Long confId)
+    {
+        Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
+        return this.roleRepository.findByConferenceAndUserAndRole(conference, this.getUserAfterValidation(email), ENUMERATION_ROLES.SCM).isPresent();
+    }
+
+    public boolean isAnySCM(String email, Long confId)
+    {
+        Conference conference = this.conferenceService.getConferenceAfterValidation(confId);
+        return
+                this.roleRepository.findByConferenceAndUserAndRole(conference, this.getUserAfterValidation(email), ENUMERATION_ROLES.SCM).isPresent()
+                        || this.roleRepository.findByConferenceAndUserAndRole(conference, this.getUserAfterValidation(email), ENUMERATION_ROLES.CHAIR_SCM).isPresent()
+                        || this.roleRepository.findByConferenceAndUserAndRole(conference, this.getUserAfterValidation(email), ENUMERATION_ROLES.CO_CHAIR_SCM).isPresent();
     }
 
     @Transactional
@@ -278,12 +307,12 @@ public class UserService
 
     public void addAdmin(String userEmail)
     {
-        this.adminRepository.save(this.getUserAfterValidation(userEmail));
+        this.adminRepository.save(new AdminUser(userEmail, true));
     }
 
     public void removeAdmin(String userEmail)
     {
-        this.adminRepository.delete(this.getUserAfterValidation(userEmail));
+        this.adminRepository.delete(this.adminRepository.findAdminUserByEmail(userEmail));
     }
 
     public void addSCM(String userEmail, Conference conference)
