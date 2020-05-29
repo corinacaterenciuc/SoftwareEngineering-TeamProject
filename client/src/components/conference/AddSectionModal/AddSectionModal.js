@@ -15,8 +15,7 @@ const AddSectionModal = (props) => {
     const currEmail = useSelector(state => state.auth.email);
     const ctxConference = useSelector(state => state.context.currentConference);
     const users = useSelector(state => state.user.users.filter(u => u.email !== currEmail));
-    const proposals = [];
-    //const proposals = ctxConference.proposals;
+    const proposals = ctxConference?.proposals;
 
 
     const [formValid, setFormValid] = React.useState(true);

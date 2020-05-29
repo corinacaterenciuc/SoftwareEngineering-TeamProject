@@ -24,6 +24,7 @@ const UploadPresentationModal = (props) => {
     // Context
     const contextProposal = useSelector(state => state.context.currentProposal);
     const currUserEmail = useSelector(state => state.auth.email);
+    const proposalName = contextProposal?.proposalName;
 
     const [progressAmount, setProgressAmount] = useState(null);
     const [progressMessage, setProgressMessage] = useState('');
@@ -35,7 +36,6 @@ const UploadPresentationModal = (props) => {
 
 
     const [presentationFile, setPresentationFile] = useState(
-        //TODO
         contextProposal?.filePath ? FILE_SUBMITTED_TOKEN : null
     );
 
@@ -54,7 +54,7 @@ const UploadPresentationModal = (props) => {
                 size={MODAL_SIZE.default}
                 role={MODAL_ROLE.default}
             >
-                {!uploadPresentation && <ModalHeader>{`${contextProposal.proposalName} Proposal`}</ModalHeader>}
+                {!uploadPresentation && <ModalHeader>{`${proposalName} Proposal`}</ModalHeader>}
                 <ModalBody>
 
                     <div className={'AddPresentationFormDiv'}>
