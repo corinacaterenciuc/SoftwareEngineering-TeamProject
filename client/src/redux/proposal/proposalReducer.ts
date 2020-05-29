@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {Email, Proposal, Review} from "../entities";
 import {
     ADD_BID,
@@ -17,7 +18,28 @@ type ProposalState = { proposals: Proposal[], reviews: Review[] };
 const initialState: ProposalState =
     {
         proposals: [
-
+            {
+                id: 0,
+                proposalName: 'Hyperloop',
+                abstract: 'One fast train boi for getting from A to B',
+                topics: ['transportation', 'phyiscs'],
+                keywords: ['maglev', 'sealed tube', 'friction'],
+                conferenceId: 0,
+                secondHandReviewer: null,
+                reviewers: ['abc@gmail.com', 'def@gmail.com', 'bratuandrei0@gmail.com'],
+                bidders: []
+            },
+            {
+                id: 1,
+                proposalName: 'Cool Proposal',
+                abstract: 'Lorem ipsum doler amet',
+                topic: ['sociology', 'education'],
+                keywords: ['memes', 'survivorship bias', 'csf'],
+                conferenceId: 0,
+                secondHandReviewer: null,
+                reviewers: [],
+                bidders: ['bratuandrei0@gmail.com']
+            }
         ],
         reviews: []
     };

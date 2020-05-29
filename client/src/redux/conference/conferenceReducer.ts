@@ -45,11 +45,14 @@ const initialState: ConferenceState = {
             id: 0,
             title: 'Future Transportation Symposium',
             description: 'The most prestigious scientific conference on mobility',
-            zeroDeadline: new Date('2020-01-20'),
-            abstractDeadline: new Date('2020-01-25'),
-            proposalDeadline: new Date('2020-02-03'),
-            biddingDeadline: new Date('2020-02-07'),
-            evaluationDeadline: new Date('2020-02-11'),
+            zeroDeadline: new Date('2020-05-20'),
+            abstractDeadline: new Date('2020-06-05'),
+            proposalDeadline: new Date('2020-06-10'),
+            biddingDeadline: new Date('2020-06-12'),
+            evaluationDeadline: new Date('2020-06-17'),
+            presentationDeadline: new Date('2020-06-25'),
+            cscm: ['bratuandrei0@gmail.com'],
+            scms: ['delaneyryan@undertap.com', 'rosellawatson@undertap.com'],
             participants: []
         }
     ]

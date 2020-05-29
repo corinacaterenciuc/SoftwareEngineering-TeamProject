@@ -38,12 +38,14 @@ const ProposalSection = () => {
                     exact
                     path={'/dashboard/proposals/:subsection(my-proposals)'}
                     render={(props) => {
-                        proposals = proposals.filter(p => p.author === currEmail);
+                        // proposals = proposals.filter(p => p.author === currEmail &&
+                        //     conferences.find(c => c.id === p.conferenceId && c.proposalDeadline > new Date())
+                        // );
                         return (<>
                             <ListContainer {...props}>
                                 <Button kind={BUTTON_KIND.secondary} style={{width: '50%'}} onClick={() => {
                                     /*
-                                    Non-null proposal context implies that
+                                    Non-null proposal context would imply that
                                     AddEditProposalModal should operate in edit mode.
                                     */
                                     dispatch({type: RESET_CONTEXT_PROPOSAL});
@@ -115,8 +117,8 @@ const ProposalSection = () => {
                     path={'/dashboard/proposals/:subsection(resolve)'}
                     render={(props) => {
                         // those where principal acts CPCM
-                        conferences = conferences.filter(c => c.cpcm === currEmail);
-                        proposals = proposals.filter(p => conferences.map(c => c.id).includes(p.id));
+                        // conferences = conferences.filter(c => c.cpcm === currEmail);
+                        // proposals = proposals.filter(p => conferences.map(c => c.id).includes(p.id));
                         return (
                             <>
                                 <ListContainer {...props}>

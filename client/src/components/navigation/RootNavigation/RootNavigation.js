@@ -1,12 +1,10 @@
 import React from 'react';
 import './RootNavigation.css';
-import {UnprotectedRoute} from "../UnprotectedRoute/UnprotectedRoute";
 import AuthForm from "../../auth/AuthForm/AuthForm";
 import Dashboard from "../../generic/Dashboard/Dashboard";
 import {Redirect, Route, Switch} from "react-router-dom";
 import Logout from "../../auth/Logout/Logout";
 import NotFound from "../NotFound/NotFound";
-import {ProtectedRoute} from "../ProtectedRoute/ProtectedRoute";
 import {useDispatch} from "react-redux";
 
 const RootNavigation = () => {
@@ -14,11 +12,11 @@ const RootNavigation = () => {
 
     return (<div className="RootNavigation">
         <Switch>
-            <UnprotectedRoute path="/login" component={AuthForm} componentProps={{isRegister: false}}/>
+            <Route path="/login" component={AuthForm} componentProps={{isRegister: false}}/>
 
-            <UnprotectedRoute path="/register" component={AuthForm} componentProps={{isRegister: true}}/>
+            <Route path="/register" component={AuthForm} componentProps={{isRegister: true}}/>
 
-            <ProtectedRoute path={'/dashboard'} component={Dashboard}/>
+            <Route path={'/dashboard'} component={Dashboard}/>
 
             <Route path={'/logout'} component={Logout}/>
 

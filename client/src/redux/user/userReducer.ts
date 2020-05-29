@@ -5,37 +5,38 @@ import {GET_USERS, REMOVE_USER, UPDATE_USER} from './userActions'
 type UserState = { users: User[] };
 type Action = { type: string, payload: object }
 
-const initState: UserState = {
-    users:
-        [
-            {
-                email: "delaneyryan@undertap.com",
-                firstname: "Rosella",
-                lastname: "Watson"
-            },
-            {
-                email: "rosellawatson@undertap.com",
-                firstname: "Drake",
-                lastname: "Lawson"
-            },
-            {
-                email: "drakelawson@undertap.com",
-                firstname: "Mabel",
-                lastname: "Thompson"
-            },
-            {
-                email: "mabelthompson@undertap.com",
-                firstname: "Tameka",
-                lastname: "Marshall"
-            },
-            {
-                email: "tamekamarshall@undertap.com",
-                firstname: "Pugh",
-                lastname: "English"
-            },
-            {
-                email: "pughenglish@undertap.com",
-                firstname: "Amie",
+const initState: UserState =
+    {
+        users:
+            [
+                {
+                    email: "delaneyryan@undertap.com",
+                    firstname: "Rosella",
+                    lastname: "Watson"
+                },
+                {
+                    email: "rosellawatson@undertap.com",
+                    firstname: "Drake",
+                    lastname: "Lawson"
+                },
+                {
+                    email: "drakelawson@undertap.com",
+                    firstname: "Mabel",
+                    lastname: "Thompson"
+                },
+                {
+                    email: "mabelthompson@undertap.com",
+                    firstname: "Tameka",
+                    lastname: "Marshall"
+                },
+                {
+                    email: "tamekamarshall@undertap.com",
+                    firstname: "Pugh",
+                    lastname: "English"
+                },
+                {
+                    email: "pughenglish@undertap.com",
+                    firstname: "Amie",
                 lastname: "Brewer"
             },
             {
@@ -148,37 +149,47 @@ const initState: UserState = {
                 firstname: "Pauline",
                 lastname: "Donovan"
             },
-            {
-                email: "paulinedonovan@undertap.com",
-                firstname: "Houston",
-                lastname: "Poole"
-            },
-            {
-                email: "houstonpoole@undertap.com",
-                firstname: "Madeline",
-                lastname: "Raymond"
-            },
-            {
-                email: "madelineraymond@undertap.com",
-                firstname: "Rocha",
-                lastname: "Olson"
-            },
-            {
-                email: "rochaolson@undertap.com",
-                firstname: "Dionne",
-                lastname: "Black"
-            },
-            {
-                email: "dionneblack@undertap.com",
-                firstname: "Stone",
-                lastname: "Pope"
-            },
-            {
-                email: "stonepope@undertap.com",
-                firstname: "Hunt",
-                lastname: "Greene"
-            }
-        ]
+                {
+                    email: "paulinedonovan@undertap.com",
+                    firstname: "Houston",
+                    lastname: "Poole"
+                },
+                {
+                    email: "houstonpoole@undertap.com",
+                    firstname: "Madeline",
+                    lastname: "Raymond"
+                },
+                {
+                    email: "madelineraymond@undertap.com",
+                    firstname: "Rocha",
+                    lastname: "Olson"
+                },
+                {
+                    email: "rochaolson@undertap.com",
+                    firstname: "Dionne",
+                    lastname: "Black"
+                },
+                {
+                    email: "dionneblack@undertap.com",
+                    firstname: "Stone",
+                    lastname: "Pope"
+                },
+                {
+                    email: "stonepope@undertap.com",
+                    firstname: "Hunt",
+                    lastname: "Greene"
+                },
+                {
+                    email: 'mihalcarazvan@gmail.com',
+                    firstname: 'Mihalca',
+                    lastname: 'Razvan'
+                },
+                {
+                    email: 'bratuandrei0@gmail.com',
+                    firstname: 'Andrei',
+                    lastname: 'Bratu'
+                }
+            ]
 };
 
 export default function (state: UserState = initState, action: Action) {

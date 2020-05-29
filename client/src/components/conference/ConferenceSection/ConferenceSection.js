@@ -122,7 +122,6 @@ const ConferenceSection = () => {
                         </>
                     }
                 />
-
                 <Route path={'*'} component={NotFound}/>
             </Switch>
         </div>
