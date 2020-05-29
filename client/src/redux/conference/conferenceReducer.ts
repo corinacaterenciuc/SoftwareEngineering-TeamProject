@@ -52,6 +52,7 @@ const initialState: ConferenceState = {
         biddingDeadline: Date.parse('2019-23-10'),
         evaluationDeadline: Date.parse('2019-25-10'),
         presentationDeadline: Date.parse('2019-05-11'),
+        participants: [],
     }]
 };
 

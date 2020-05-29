@@ -13,6 +13,7 @@ import {useDispatch, useSelector} from "react-redux";
 import AddEditProposalModal from "../AddEditProposalModal/AddEditProposalModal";
 import {Button, KIND as BUTTON_KIND} from "baseui/button";
 import {RESET_CONTEXT_PROPOSAL} from "../../../redux/context/contextActions";
+import AssignReviewersModal from "../AssignReviewersModal/AssignReviewersModal";
 
 const ProposalSection = () => {
     const dispatch = useDispatch();
@@ -24,7 +25,8 @@ const ProposalSection = () => {
         {title: 'Bidding', itemId: '/dashboard/proposals/bidding'},
         {title: 'Review', itemId: "/dashboard/proposals/review"},
         {title: 'Resolve', itemId: '/dashboard/proposals/resolve'},
-        {title: 'Improve Proposals', itemId: '/dashboard/proposals/improve'}
+        {title: 'Improve Proposals', itemId: '/dashboard/proposals/improve'},
+        {title: 'Assign Reviewers', itemId: '/dashboard/proposals/assign-reviewers'}
     ];
 
     return (
@@ -143,6 +145,29 @@ const ProposalSection = () => {
                             </ListContainer>
                             <AddEditProposalModal
                                 improveScenario={true}
+                                modalOpen={modalOpen}
+                                setModalOpen={setModalOpen}
+                            />
+                        </>
+                    }
+                />
+                <Route
+                    exact
+                    path={'/dashboard/proposals/:subsection(assign-reviewers)'}
+                    render={props =>
+                        <>
+                            <ListContainer {...props}>
+                                {
+                                    proposals.map(p =>
+                                        <ProposalCard
+                                            key={p.id}
+                                            navProps={props}
+                                            proposal={p}
+                                            setModalOpen={setModalOpen}
+                                        />)
+                                }
+                            </ListContainer>
+                            <AssignReviewersModal
                                 modalOpen={modalOpen}
                                 setModalOpen={setModalOpen}
                             />

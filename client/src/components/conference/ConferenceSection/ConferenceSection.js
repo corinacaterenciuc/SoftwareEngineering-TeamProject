@@ -76,7 +76,10 @@ const ConferenceSection = () => {
                                         />)
                                 }
                             </ListContainer>
-                            <UploadPresentationModal modalOpen={modalOpen} setModalOpen={setModalOpen}/>
+                            <UploadPresentationModal
+                                uploadPresentation={true}
+                                modalOpen={modalOpen}
+                                setModalOpen={setModalOpen}/>
                         </>
                     }
                 />

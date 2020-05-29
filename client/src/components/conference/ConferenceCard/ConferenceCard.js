@@ -1,6 +1,6 @@
 import React from 'react';
 import './ConferenceCard.css';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Card, StyledAction, StyledBody} from "baseui/card";
 import {UPDATE_CONTEXT_CONFERENCE} from "../../../redux/context/contextActions";
 import {Button} from "baseui/button";
@@ -9,6 +9,8 @@ const ConferenceCard = (props) => {
     const dispatch = useDispatch();
     let {conference, navProps, setModalOpen} = props;
     const {subsection} = navProps?.match.params;
+
+    let email = useSelector(state => state.auth.email);
 
     // Button logic
     let buttonText = '';
@@ -20,7 +22,8 @@ const ConferenceCard = (props) => {
             buttonText = 'Add Section';
             break;
         case 'attend-conference':
-            buttonText = 'Attend Conference';
+            const hasAttended = conference.participants.includes(email);
+            buttonText = hasAttended ? 'Cancel attendance' : 'Attend Conference';
             break;
         case 'upload-presentation':
             buttonText = 'Upload Presentation';

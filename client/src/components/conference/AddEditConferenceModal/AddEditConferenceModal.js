@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import './AddEditConferenceModal.css';
 import {Modal, ModalBody, ModalButton, ModalFooter, ModalHeader, ROLE} from "baseui/modal";
 import {KIND} from "baseui/button";
